@@ -1,204 +1,236 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.animate-slide-down {
+    animation: slide-down 0.3s ease-out;
+}
+
 @layer base {
-  body {
-    @apply bg-white text-gray-900;
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    direction: rtl;
-  }
+    body {
+        @apply bg-white text-gray-900;
+        font-family: "Tajawal", "Cairo", sans-serif;
+        direction: rtl;
+    }
 
-  /* تطبيق خط Cairo للعناوين */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-    font-weight: 600;
-  }
+    /* تطبيق خط Cairo للعناوين */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Cairo", "Tajawal", sans-serif;
+        font-weight: 600;
+    }
 
-  /* تحسين العناوين الكبيرة */
-  h1 {
-    font-weight: 700;
-  }
+    /* تحسين العناوين الكبيرة */
+    h1 {
+        font-weight: 700;
+    }
 
-  h2 {
-    font-weight: 600;
-  }
+    h2 {
+        font-weight: 600;
+    }
 
-  /* تطبيق Tajawal للنصوص العادية */
-  p, span, div, a, button, input, textarea, label {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تطبيق Tajawal للنصوص العادية */
+    p,
+    span,
+    div,
+    a,
+    button,
+    input,
+    textarea,
+    label {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين الأزرار */
-  button {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 500;
-  }
+    /* تحسين الأزرار */
+    button {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 500;
+    }
 
-  /* تحسين النماذج */
-  input, textarea, select {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تحسين النماذج */
+    input,
+    textarea,
+    select {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين القوائم */
-  ul, ol, li {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تحسين القوائم */
+    ul,
+    ol,
+    li {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين الجداول */
-  table, th, td {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تحسين الجداول */
+    table,
+    th,
+    td {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين الروابط */
-  a {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 500;
-  }
+    /* تحسين الروابط */
+    a {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 500;
+    }
 }
 
 @layer components {
-  /* فئات مخصصة للخطوط */
-  .font-cairo {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-  }
-
-  .font-tajawal {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
-
-  /* عناوين احترافية */
-  .heading-primary {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  .heading-secondary {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  /* نصوص احترافية */
-  .text-body {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 400;
-    line-height: 1.6;
-  }
-
-  .text-emphasis {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 600;
-  }
-
-  /* أزرار احترافية */
-  .btn-primary {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-  }
-
-  .btn-secondary {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 500;
-  }
-
-  /* تخطيط لوحة التحكم المحسن */
-  .dashboard-container {
-    @apply flex min-h-screen bg-gray-50;
-  }
-
-  .dashboard-sidebar {
-    @apply fixed right-0 top-0 h-full w-72 bg-white border-l border-gray-200 shadow-sm z-30 flex flex-col;
-  }
-
-  .dashboard-content {
-    @apply flex-1 flex flex-col;
-    margin-right: 18rem; /* 288px = w-72 */
-    padding-right: 1.25rem; /* 20px مسافة متوسطة ومتناظرة */
-  }
-
-  .dashboard-main {
-    @apply flex-1 overflow-auto;
-  }
-
-  .dashboard-wrapper {
-    @apply p-6 max-w-7xl mx-auto;
-  }
-
-  /* تحسينات للشاشات المتوسطة */
-  @media (max-width: 1024px) {
-    .dashboard-content {
-      margin-right: 16rem; /* تقليل المسافة قليلاً */
-      padding-right: 1rem;
+    /* فئات مخصصة للخطوط */
+    .font-cairo {
+        font-family: "Cairo", "Tajawal", sans-serif;
     }
-    
+
+    .font-tajawal {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
+
+    /* عناوين احترافية */
+    .heading-primary {
+        font-family: "Cairo", "Tajawal", sans-serif;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .heading-secondary {
+        font-family: "Cairo", "Tajawal", sans-serif;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    /* نصوص احترافية */
+    .text-body {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    .text-emphasis {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 600;
+    }
+
+    /* أزرار احترافية */
+    .btn-primary {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+    }
+
+    .btn-secondary {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 500;
+    }
+
+    /* تخطيط لوحة التحكم المحسن */
+    .dashboard-container {
+        @apply flex min-h-screen bg-gray-50;
+    }
+
     .dashboard-sidebar {
-      @apply w-64;
+        @apply fixed right-0 top-0 h-full w-72 bg-white border-l border-gray-200 shadow-sm z-30 flex flex-col;
     }
-  }
 
-  /* تحسينات للشاشات الصغيرة */
-  @media (max-width: 768px) {
     .dashboard-content {
-      margin-right: 0;
-      padding-right: 0;
+        @apply flex-1 flex flex-col;
+        margin-right: 18rem; /* 288px = w-72 */
+        padding-right: 1.25rem; /* 20px مسافة متوسطة ومتناظرة */
     }
-    
-    .dashboard-sidebar {
-      @apply -translate-x-full transition-transform duration-300;
-    }
-    
-    .dashboard-sidebar.open {
-      @apply translate-x-0;
-    }
-  }
 
-  /* متغيرات التصميم الموحدة */
-  :root {
-    --sidebar-width: 18rem;
-    --sidebar-gap: 1.25rem;
-    --content-padding: 1.5rem;
-    --border-radius: 0.5rem;
-    --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-  }
+    .dashboard-main {
+        @apply flex-1 overflow-auto;
+    }
+
+    .dashboard-wrapper {
+        @apply p-6 max-w-7xl mx-auto;
+    }
+
+    /* تحسينات للشاشات المتوسطة */
+    @media (max-width: 1024px) {
+        .dashboard-content {
+            margin-right: 16rem; /* تقليل المسافة قليلاً */
+            padding-right: 1rem;
+        }
+
+        .dashboard-sidebar {
+            @apply w-64;
+        }
+    }
+
+    /* تحسينات للشاشات الصغيرة */
+    @media (max-width: 768px) {
+        .dashboard-content {
+            margin-right: 0;
+            padding-right: 0;
+        }
+
+        .dashboard-sidebar {
+            @apply -translate-x-full transition-transform duration-300;
+        }
+
+        .dashboard-sidebar.open {
+            @apply translate-x-0;
+        }
+    }
+
+    /* متغيرات التصميم الموحدة */
+    :root {
+        --sidebar-width: 18rem;
+        --sidebar-gap: 1.25rem;
+        --content-padding: 1.5rem;
+        --border-radius: 0.5rem;
+        --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    }
 }
 
 /* تحسينات إضافية للنص العربي */
 @layer utilities {
-  .text-smooth {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+    .text-smooth {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 
-  .letter-spacing-arabic {
-    letter-spacing: 0.025em;
-  }
+    .letter-spacing-arabic {
+        letter-spacing: 0.025em;
+    }
 
-  /* تحسين المسافات للنص العربي */
-  .line-height-relaxed-ar {
-    line-height: 1.75;
-  }
+    /* تحسين المسافات للنص العربي */
+    .line-height-relaxed-ar {
+        line-height: 1.75;
+    }
 
-  .line-height-loose-ar {
-    line-height: 2;
-  }
+    .line-height-loose-ar {
+        line-height: 2;
+    }
 
-  /* فئات مساعدة للمسافات المتناسقة */
-  .spacing-consistent {
-    gap: var(--sidebar-gap);
-  }
+    /* فئات مساعدة للمسافات المتناسقة */
+    .spacing-consistent {
+        gap: var(--sidebar-gap);
+    }
 
-  .padding-consistent {
-    padding: var(--content-padding);
-  }
+    .padding-consistent {
+        padding: var(--content-padding);
+    }
 }
 
 /* تحسينات خاصة بالاتجاه العربي */
 html[dir="rtl"] {
-  font-family: 'Tajawal', 'Cairo', sans-serif;
+    font-family: "Tajawal", "Cairo", sans-serif;
 }
 
 html[dir="rtl"] h1,
@@ -207,10 +239,39 @@ html[dir="rtl"] h3,
 html[dir="rtl"] h4,
 html[dir="rtl"] h5,
 html[dir="rtl"] h6 {
-  font-family: 'Cairo', 'Tajawal', sans-serif;
+    font-family: "Cairo", "Tajawal", sans-serif;
 }
 
 /* تحسين الأداء */
 .font-display-swap {
-  font-display: swap;
+    font-display: swap;
+}
+
+/* تخصيص مكان السكرول */
+.custom-scrollbar-left {
+    direction: ltr;
+    text-align: right;
+}
+
+.custom-scrollbar-left > * {
+    direction: rtl;
+    text-align: right;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
 }
