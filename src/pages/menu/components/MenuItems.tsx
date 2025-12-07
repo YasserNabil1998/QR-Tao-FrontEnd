@@ -12,6 +12,7 @@ interface MenuItemsProps {
 
 const MenuItems = ({ items, onAddToCart }: MenuItemsProps) => {
     const [selectedItem, setSelectedItem] = useState<any>(null);
+    const mockItems = [
         {
             id: 1,
             name: "برجر كلاسيك",
