@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../../../../lib/supabase";
+import { useToast } from "../../../../hooks/useToast";
+import CustomSelect from "../../../../components/common/CustomSelect";
 
 interface Payment {
     id: string;
@@ -39,6 +40,7 @@ export default function PaymentMethods() {
     const [dateFilter, setDateFilter] = useState(
         new Date().toISOString().split("T")[0]
     );
+    const { showToast, ToastContainer } = useToast();
 
     const [newPayment, setNewPayment] = useState<{
         amount: number;
@@ -119,25 +121,33 @@ export default function PaymentMethods() {
     ];
 
     useEffect(() => {
-        fetchPayments();
-        generateDailyReports();
+        // Simulate loading
+        setTimeout(() => {
+            setPayments(mockPayments);
+            setLoading(false);
+        }, 300);
     }, []);
 
-    const fetchPayments = async () => {
-        try {
-            // في التطبيق الحقيقي، سيتم جلب البيانات من Supabase
-            setPayments(mockPayments);
-        } catch (error) {
-            console.error("خطأ في جلب المدفوعات:", error);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (payments.length > 0) {
+            generateDailyReports();
         }
+    }, [payments]);
+
+    // دالة لتنسيق التاريخ بالميلادي
+    const formatDate = (dateString: string): string => {
+        if (!dateString) return "غير محدد";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
     const generateDailyReports = () => {
         const reports: { [key: string]: DailyReport } = {};
 
-        mockPayments.forEach((payment) => {
+        payments.forEach((payment) => {
             const date = payment.payment_date;
             if (!reports[date]) {
                 reports[date] = {
@@ -168,119 +178,47 @@ export default function PaymentMethods() {
         );
     };
 
-    const handleAddPayment = async () => {
-        try {
-            const currentTime = new Date().toLocaleTimeString("ar-SA", {
-                hour: "2-digit",
-                minute: "2-digit",
-            });
-
-            const { error } = await supabase.from("payments").insert({
-                payment_date: new Date().toISOString().split("T")[0],
-                payment_time: currentTime,
-                amount: newPayment.amount,
-                payment_method: newPayment.payment_method,
-                table_number: newPayment.table_number,
-                customer_name: newPayment.customer_name,
-                reference_number: newPayment.reference_number,
-                notes: newPayment.notes,
-                created_by: "المستخدم الحالي",
-                status: "completed",
-                restaurant_id: "00000000-0000-0000-0000-000000000000",
-            });
-
-            if (error) throw error;
-
-            // إنشاء قيد محاسبي تلقائي
-            await createAccountingEntry(
-                newPayment.amount,
-                newPayment.payment_method
-            );
-
-            setShowAddPaymentModal(false);
-            resetNewPayment();
-            fetchPayments();
-            generateDailyReports();
-        } catch (error) {
-            console.error("خطأ في إضافة الدفعة:", error);
+    const handleAddPayment = () => {
+        // Validation
+        if (newPayment.amount <= 0) {
+            showToast("يرجى إدخال مبلغ صحيح", "error");
+            return;
         }
-    };
-
-    const createAccountingEntry = async (
-        amount: number,
-        paymentMethod: string
-    ) => {
-        try {
-            const entryNumber = `JE-PAY-${Date.now()}`;
-            let description = `دفعة ${
-                paymentMethod === "cash" ? "نقدية" : "فيزا"
-            } - ${amount} ج.م`;
-
-            const { data: entryData, error: entryError } = await supabase
-                .from("journal_entries")
-                .insert({
-                    entry_number: entryNumber,
-                    entry_date: new Date().toISOString().split("T")[0],
-                    description,
-                    reference_type: "payment",
-                    total_amount: amount,
-                    created_by: "المستخدم الحالي",
-                    status: "approved",
-                    restaurant_id: "00000000-0000-0000-0000-000000000000",
-                })
-                .select()
-                .single();
-
-            if (entryError) throw entryError;
-
-            // إضافة تفاصيل القيد
-            const entryLines =
-                paymentMethod === "cash"
-                    ? [
-                          {
-                              account_id: "1110",
-                              debit_amount: amount,
-                              credit_amount: 0,
-                              description: "الصندوق",
-                          },
-                          {
-                              account_id: "4100",
-                              debit_amount: 0,
-                              credit_amount: amount,
-                              description: "إيرادات المبيعات",
-                          },
-                      ]
-                    : [
-                          {
-                              account_id: "1120",
-                              debit_amount: amount,
-                              credit_amount: 0,
-                              description: "البنك - فيزا",
-                          },
-                          {
-                              account_id: "4100",
-                              debit_amount: 0,
-                              credit_amount: amount,
-                              description: "إيرادات المبيعات",
-                          },
-                      ];
-
-            const { error: linesError } = await supabase
-                .from("journal_entry_lines")
-                .insert(
-                    entryLines.map((line) => ({
-                        journal_entry_id: entryData.id,
-                        account_id: line.account_id,
-                        debit_amount: line.debit_amount,
-                        credit_amount: line.credit_amount,
-                        description: line.description,
-                    }))
-                );
-
-            if (linesError) throw linesError;
-        } catch (error) {
-            console.error("خطأ في إنشاء القيد المحاسبي:", error);
+        if (!newPayment.table_number.trim()) {
+            showToast("يرجى إدخال رقم الطاولة", "error");
+            return;
         }
+        if (
+            newPayment.payment_method === "visa" &&
+            !newPayment.reference_number.trim()
+        ) {
+            showToast("يرجى إدخال رقم المرجع للدفعة بالفيزا", "error");
+            return;
+        }
+
+        const currentTime = new Date().toLocaleTimeString("ar-SA", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+
+        const newPaymentData: Payment = {
+            id: `payment-${Date.now()}`,
+            payment_date: new Date().toISOString().split("T")[0],
+            payment_time: currentTime,
+            amount: newPayment.amount,
+            payment_method: newPayment.payment_method,
+            table_number: newPayment.table_number,
+            customer_name: newPayment.customer_name || undefined,
+            reference_number: newPayment.reference_number || undefined,
+            notes: newPayment.notes || undefined,
+            created_by: "المستخدم الحالي",
+            status: "completed",
+        };
+
+        setPayments((prev) => [newPaymentData, ...prev]);
+        showToast("تم تسجيل الدفعة بنجاح", "success");
+        setShowAddPaymentModal(false);
+        resetNewPayment();
     };
 
     const resetNewPayment = () => {
@@ -477,52 +415,65 @@ export default function PaymentMethods() {
             </div>
 
             {/* فلاتر */}
-            <div className="flex gap-4 mb-6">
-                <select
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                >
-                    <option value="all">جميع طرق الدفع</option>
-                    <option value="cash">نقدي</option>
-                    <option value="visa">فيزا</option>
-                </select>
+            <div className="flex gap-4 mb-6 items-center">
+                <div className="w-48">
+                    <CustomSelect
+                        value={filter}
+                        onChange={(value) => setFilter(value)}
+                        options={[
+                            { value: "all", label: "جميع طرق الدفع" },
+                            { value: "cash", label: "نقدي" },
+                            { value: "visa", label: "فيزا" },
+                        ]}
+                        placeholder="فلترة حسب طريقة الدفع"
+                    />
+                </div>
                 <input
                     type="date"
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-2"
+                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
             </div>
 
             {/* جدول المدفوعات */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="w-full table-fixed">
+                        <colgroup>
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "10%" }} />
+                        </colgroup>
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     التاريخ والوقت
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     المبلغ
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     طريقة الدفع
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الطاولة
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     العميل
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     رقم المرجع
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الكاشير
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الحالة
                                 </th>
                             </tr>
@@ -533,22 +484,25 @@ export default function PaymentMethods() {
                                     key={payment.id}
                                     className="hover:bg-gray-50"
                                 >
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <td className="px-3 py-4">
                                         <div>
-                                            <div className="font-medium">
-                                                {new Date(
+                                            <div className="text-sm font-medium text-gray-900">
+                                                {formatDate(
                                                     payment.payment_date
-                                                ).toLocaleDateString("ar-SA")}
+                                                )}
                                             </div>
-                                            <div className="text-gray-500">
+                                            <div className="text-sm text-gray-500">
                                                 {payment.payment_time}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {payment.amount.toLocaleString()} ج.م
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm font-medium text-gray-900">
+                                            {payment.amount.toLocaleString()}{" "}
+                                            ج.م
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <td className="px-3 py-4">
                                         <div className="flex items-center">
                                             <i
                                                 className={`${
@@ -558,24 +512,34 @@ export default function PaymentMethods() {
                                                         : "ri-bank-card-line text-blue-600"
                                                 } ml-2`}
                                             ></i>
-                                            {getPaymentMethodText(
-                                                payment.payment_method
-                                            )}
+                                            <span className="text-sm text-gray-900">
+                                                {getPaymentMethodText(
+                                                    payment.payment_method
+                                                )}
+                                            </span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {payment.table_number || "-"}
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900 truncate">
+                                            {payment.table_number || "-"}
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {payment.customer_name || "-"}
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900 truncate">
+                                            {payment.customer_name || "-"}
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {payment.reference_number || "-"}
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900 truncate">
+                                            {payment.reference_number || "-"}
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {payment.created_by}
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900 truncate">
+                                            {payment.created_by}
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <span
                                             className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
                                                 payment.status
@@ -594,22 +558,25 @@ export default function PaymentMethods() {
             {/* مودال إضافة دفعة */}
             {showAddPaymentModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 تسجيل دفعة جديدة
                             </h3>
                             <button
-                                onClick={() => setShowAddPaymentModal(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                onClick={() => {
+                                    setShowAddPaymentModal(false);
+                                    resetNewPayment();
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     المبلغ
                                 </label>
                                 <input
@@ -622,7 +589,7 @@ export default function PaymentMethods() {
                                                 parseFloat(e.target.value) || 0,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     min="0"
                                     step="0.01"
                                     placeholder="0.00"
@@ -631,28 +598,29 @@ export default function PaymentMethods() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     طريقة الدفع
                                 </label>
-                                <select
+                                <CustomSelect
                                     value={newPayment.payment_method}
-                                    onChange={(e) =>
+                                    onChange={(value) =>
                                         setNewPayment((prev) => ({
                                             ...prev,
-                                            payment_method: e.target.value as
+                                            payment_method: value as
                                                 | "cash"
                                                 | "visa",
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                                >
-                                    <option value="cash">نقدي</option>
-                                    <option value="visa">فيزا</option>
-                                </select>
+                                    options={[
+                                        { value: "cash", label: "نقدي" },
+                                        { value: "visa", label: "فيزا" },
+                                    ]}
+                                    placeholder="اختر طريقة الدفع"
+                                />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     رقم الطاولة
                                 </label>
                                 <input
@@ -664,13 +632,14 @@ export default function PaymentMethods() {
                                             table_number: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="مثال: طاولة 5"
+                                    required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     اسم العميل
                                 </label>
                                 <input
@@ -682,14 +651,14 @@ export default function PaymentMethods() {
                                             customer_name: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="اختياري"
                                 />
                             </div>
 
                             {newPayment.payment_method === "visa" && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
                                         رقم المرجع
                                     </label>
                                     <input
@@ -702,14 +671,15 @@ export default function PaymentMethods() {
                                                     e.target.value,
                                             }))
                                         }
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="رقم العملية البنكية"
+                                        required
                                     />
                                 </div>
                             )}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     ملاحظات
                                 </label>
                                 <textarea
@@ -720,24 +690,27 @@ export default function PaymentMethods() {
                                             notes: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     rows={2}
                                     placeholder="ملاحظات إضافية"
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                                 <button
-                                    onClick={() =>
-                                        setShowAddPaymentModal(false)
-                                    }
-                                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                                    type="button"
+                                    onClick={() => {
+                                        setShowAddPaymentModal(false);
+                                        resetNewPayment();
+                                    }}
+                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إلغاء
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={handleAddPayment}
-                                    className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
+                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     تسجيل الدفعة
                                 </button>
@@ -750,40 +723,48 @@ export default function PaymentMethods() {
             {/* مودال التقارير اليومية */}
             {showDailyReportModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 التقارير اليومية للمدفوعات
                             </h3>
                             <button
                                 onClick={() => setShowDailyReportModal(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
+                                <table className="w-full table-fixed">
+                                    <colgroup>
+                                        <col style={{ width: "15%" }} />
+                                        <col style={{ width: "17%" }} />
+                                        <col style={{ width: "17%" }} />
+                                        <col style={{ width: "17%" }} />
+                                        <col style={{ width: "12%" }} />
+                                        <col style={{ width: "22%" }} />
+                                    </colgroup>
                                     <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 التاريخ
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 المدفوعات النقدية
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 مدفوعات الفيزا
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 الإجمالي
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 عدد العمليات
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 نسبة الفيزا
                                             </th>
                                         </tr>
@@ -794,14 +775,14 @@ export default function PaymentMethods() {
                                                 key={report.date}
                                                 className="hover:bg-gray-50"
                                             >
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                    {new Date(
-                                                        report.date
-                                                    ).toLocaleDateString(
-                                                        "ar-SA"
-                                                    )}
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {formatDate(
+                                                            report.date
+                                                        )}
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <td className="px-3 py-4">
                                                     <div>
                                                         <div className="font-medium text-green-600">
                                                             {report.cash_total.toLocaleString()}{" "}
@@ -813,9 +794,9 @@ export default function PaymentMethods() {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <td className="px-3 py-4">
                                                     <div>
-                                                        <div className="font-medium text-blue-600">
+                                                        <div className="text-sm font-medium text-blue-600">
                                                             {report.visa_total.toLocaleString()}{" "}
                                                             ج.م
                                                         </div>
@@ -825,14 +806,18 @@ export default function PaymentMethods() {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                                    {report.total_amount.toLocaleString()}{" "}
-                                                    ج.م
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm font-bold text-gray-900">
+                                                        {report.total_amount.toLocaleString()}{" "}
+                                                        ج.م
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {report.total_count}
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm text-gray-900">
+                                                        {report.total_count}
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <td className="px-3 py-4">
                                                     <div className="flex items-center">
                                                         <div className="w-16 bg-gray-200 rounded-full h-2 ml-2">
                                                             <div
@@ -861,48 +846,58 @@ export default function PaymentMethods() {
                                     </tbody>
                                     <tfoot className="bg-gray-50">
                                         <tr>
-                                            <td className="px-6 py-4 text-right font-bold">
+                                            <td className="px-3 py-4 text-right font-bold">
                                                 الإجمالي:
                                             </td>
-                                            <td className="px-6 py-4 font-bold text-green-600">
-                                                {dailyReports
-                                                    .reduce(
+                                            <td className="px-3 py-4">
+                                                <div className="font-bold text-green-600">
+                                                    {dailyReports
+                                                        .reduce(
+                                                            (sum, r) =>
+                                                                sum +
+                                                                r.cash_total,
+                                                            0
+                                                        )
+                                                        .toLocaleString()}{" "}
+                                                    ج.م
+                                                </div>
+                                            </td>
+                                            <td className="px-3 py-4">
+                                                <div className="font-bold text-blue-600">
+                                                    {dailyReports
+                                                        .reduce(
+                                                            (sum, r) =>
+                                                                sum +
+                                                                r.visa_total,
+                                                            0
+                                                        )
+                                                        .toLocaleString()}{" "}
+                                                    ج.م
+                                                </div>
+                                            </td>
+                                            <td className="px-3 py-4">
+                                                <div className="font-bold text-gray-900">
+                                                    {dailyReports
+                                                        .reduce(
+                                                            (sum, r) =>
+                                                                sum +
+                                                                r.total_amount,
+                                                            0
+                                                        )
+                                                        .toLocaleString()}{" "}
+                                                    ج.م
+                                                </div>
+                                            </td>
+                                            <td className="px-3 py-4">
+                                                <div className="font-bold">
+                                                    {dailyReports.reduce(
                                                         (sum, r) =>
-                                                            sum + r.cash_total,
+                                                            sum + r.total_count,
                                                         0
-                                                    )
-                                                    .toLocaleString()}{" "}
-                                                ج.م
+                                                    )}
+                                                </div>
                                             </td>
-                                            <td className="px-6 py-4 font-bold text-blue-600">
-                                                {dailyReports
-                                                    .reduce(
-                                                        (sum, r) =>
-                                                            sum + r.visa_total,
-                                                        0
-                                                    )
-                                                    .toLocaleString()}{" "}
-                                                ج.م
-                                            </td>
-                                            <td className="px-6 py-4 font-bold text-gray-900">
-                                                {dailyReports
-                                                    .reduce(
-                                                        (sum, r) =>
-                                                            sum +
-                                                            r.total_amount,
-                                                        0
-                                                    )
-                                                    .toLocaleString()}{" "}
-                                                ج.م
-                                            </td>
-                                            <td className="px-6 py-4 font-bold">
-                                                {dailyReports.reduce(
-                                                    (sum, r) =>
-                                                        sum + r.total_count,
-                                                    0
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4"></td>
+                                            <td className="px-3 py-4"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -911,6 +906,8 @@ export default function PaymentMethods() {
                     </div>
                 </div>
             )}
+
+            <ToastContainer />
         </div>
     );
 }

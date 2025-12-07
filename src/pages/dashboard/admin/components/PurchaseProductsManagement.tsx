@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useToast } from "../../../../hooks/useToast";
+import CustomSelect from "../../../../components/common/CustomSelect";
 
 interface PurchaseProduct {
     id: string;
@@ -37,6 +39,7 @@ export default function PurchaseProductsManagement() {
     const [filter, setFilter] = useState("all");
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("name");
+    const { showToast, ToastContainer } = useToast();
 
     // بيانات تجريبية للمنتجات
     const mockProducts: PurchaseProduct[] = [
@@ -202,30 +205,32 @@ export default function PurchaseProductsManagement() {
         ],
     };
 
+    const fetchProducts = () => {
+        setLoading(true);
+        // Simulate loading
+        setTimeout(() => {
+            setProducts(mockProducts);
+            setLoading(false);
+        }, 300);
+    };
+
     useEffect(() => {
         fetchProducts();
     }, []);
 
-    const fetchProducts = async () => {
-        try {
-            // محاكاة جلب البيانات من قاعدة البيانات
-            setTimeout(() => {
-                setProducts(mockProducts);
-                setLoading(false);
-            }, 1000);
-        } catch (error) {
-            console.error("خطأ في جلب منتجات المشتريات:", error);
-            setLoading(false);
-        }
-    };
-
-    const fetchPriceHistory = async (productId: string) => {
-        try {
+    const fetchPriceHistory = (productId: string) => {
             const history = mockPriceHistory[productId] || [];
             setPriceHistory(history);
-        } catch (error) {
-            console.error("خطأ في جلب تاريخ الأسعار:", error);
-        }
+    };
+
+    // دالة لتنسيق التاريخ بالميلادي
+    const formatDate = (dateString: string): string => {
+        if (!dateString) return "غير محدد";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
     const getPriceChangeColor = (percentage: number) => {
@@ -335,11 +340,22 @@ export default function PurchaseProductsManagement() {
                     قائمة منتجات المشتريات
                 </h2>
                 <div className="flex gap-3">
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer">
+                    <button
+                        onClick={() => {
+                            showToast("ميزة تصدير التقرير قيد التطوير", "info");
+                        }}
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer transition-colors"
+                    >
                         <i className="ri-download-line"></i>
                         تصدير التقرير
                     </button>
-                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer">
+                    <button
+                        onClick={() => {
+                            fetchProducts();
+                            showToast("تم تحديث الأسعار بنجاح", "success");
+                        }}
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer transition-colors"
+                    >
                         <i className="ri-refresh-line"></i>
                         تحديث الأسعار
                     </button>
@@ -445,100 +461,96 @@ export default function PurchaseProductsManagement() {
             </div>
 
             {/* فلاتر وبحث */}
-            <div className="bg-white rounded-lg shadow p-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            البحث
-                        </label>
-                        <div className="relative">
+            <div className="flex gap-4 mb-6 items-center">
+                <div className="relative w-64">
                             <input
                                 type="text"
-                                placeholder="ابحث عن منتج..."
+                        placeholder="البحث في المنتجات..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10"
+                        className="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                             />
                             <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                         </div>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            فلترة حسب الاتجاه
-                        </label>
-                        <select
+                <div className="w-48">
+                    <CustomSelect
                             value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                        >
-                            <option value="all">جميع المنتجات</option>
-                            <option value="price_up">أسعار مرتفعة</option>
-                            <option value="price_down">أسعار منخفضة</option>
-                            <option value="price_stable">أسعار ثابتة</option>
-                            <option value="high_change">
-                                تغيير كبير (&gt;10%)
-                            </option>
-                        </select>
+                        onChange={(value) => setFilter(value)}
+                        options={[
+                            { value: "all", label: "جميع المنتجات" },
+                            { value: "price_up", label: "أسعار مرتفعة" },
+                            { value: "price_down", label: "أسعار منخفضة" },
+                            { value: "price_stable", label: "أسعار ثابتة" },
+                            {
+                                value: "high_change",
+                                label: "تغيير كبير (>10%)",
+                            },
+                        ]}
+                        placeholder="فلترة حسب الاتجاه"
+                    />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            ترتيب حسب
-                        </label>
-                        <select
+                <div className="w-48">
+                    <CustomSelect
                             value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                        >
-                            <option value="name">الاسم</option>
-                            <option value="price_current">السعر الحالي</option>
-                            <option value="price_change">نسبة التغيير</option>
-                            <option value="last_purchase">آخر شراء</option>
-                            <option value="quantity">الكمية المشتراة</option>
-                        </select>
-                    </div>
-                    <div className="flex items-end">
-                        <button className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg whitespace-nowrap cursor-pointer">
-                            <i className="ri-filter-line ml-2"></i>
-                            تطبيق الفلاتر
-                        </button>
-                    </div>
+                        onChange={(value) => setSortBy(value)}
+                        options={[
+                            { value: "name", label: "الاسم" },
+                            { value: "price_current", label: "السعر الحالي" },
+                            { value: "price_change", label: "نسبة التغيير" },
+                            { value: "last_purchase", label: "آخر شراء" },
+                            { value: "quantity", label: "الكمية المشتراة" },
+                        ]}
+                        placeholder="ترتيب حسب"
+                    />
                 </div>
             </div>
 
             {/* جدول المنتجات */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="w-full table-fixed">
+                        <colgroup>
+                            <col style={{ width: "18%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "10%" }} />
+                            <col style={{ width: "12%" }} />
+                        </colgroup>
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     المنتج
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الفئة
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     السعر الحالي
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     السعر السابق
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     التغيير
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الاتجاه
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     المتوسط
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الكمية الإجمالية
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     آخر شراء
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الإجراءات
                                 </th>
                             </tr>
@@ -549,39 +561,39 @@ export default function PurchaseProductsManagement() {
                                     key={product.id}
                                     className="hover:bg-gray-50"
                                 >
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="flex items-center">
                                             <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center ml-3">
                                                 <i className="ri-shopping-basket-line text-orange-600"></i>
                                             </div>
                                             <div>
-                                                <div className="text-sm font-medium text-gray-900">
+                                                <div className="text-sm font-medium text-gray-900 truncate">
                                                     {product.item_name}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
+                                                <div className="text-sm text-gray-500 truncate">
                                                     {product.supplier_name}
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                             {product.category}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900">
                                             {product.current_price} ج.م/
                                             {product.unit}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="text-sm text-gray-600">
                                             {product.previous_price} ج.م/
                                             {product.unit}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div
                                             className={`text-sm font-medium flex items-center ${getPriceChangeColor(
                                                 product.price_change_percentage
@@ -601,7 +613,7 @@ export default function PurchaseProductsManagement() {
                                             %
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <span
                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTrendBadgeColor(
                                                 product.price_trend
@@ -610,30 +622,30 @@ export default function PurchaseProductsManagement() {
                                             {getTrendText(product.price_trend)}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
                                             {product.average_price} ج.م/
                                             {product.unit}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
                                             {product.total_purchased_quantity}{" "}
                                             {product.unit}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
-                                            {new Date(
+                                            {formatDate(
                                                 product.last_purchase_date
-                                            ).toLocaleDateString("ar-SA")}
+                                            )}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div className="flex gap-2">
+                                    <td className="px-3 py-4">
+                                        <div className="flex items-center gap-1 justify-end">
                                             <button
                                                 onClick={() => {
-                                                    setSelectedProduct(
+                                                    _setSelectedProduct(
                                                         product.id
                                                     );
                                                     fetchPriceHistory(
@@ -643,22 +655,34 @@ export default function PurchaseProductsManagement() {
                                                         true
                                                     );
                                                 }}
-                                                className="text-blue-600 hover:text-blue-900 cursor-pointer"
+                                                className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                                                 title="تاريخ الأسعار"
                                             >
-                                                <i className="ri-line-chart-line"></i>
+                                                <i className="ri-line-chart-line text-lg"></i>
                                             </button>
                                             <button
-                                                className="text-green-600 hover:text-green-900 cursor-pointer"
+                                                onClick={() => {
+                                                    showToast(
+                                                        "ميزة تحليل السعر قيد التطوير",
+                                                        "info"
+                                                    );
+                                                }}
+                                                className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
                                                 title="تحليل السعر"
                                             >
-                                                <i className="ri-bar-chart-line"></i>
+                                                <i className="ri-bar-chart-line text-lg"></i>
                                             </button>
                                             <button
-                                                className="text-purple-600 hover:text-purple-900 cursor-pointer"
+                                                onClick={() => {
+                                                    showToast(
+                                                        "ميزة مقارنة الموردين قيد التطوير",
+                                                        "info"
+                                                    );
+                                                }}
+                                                className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
                                                 title="مقارنة الموردين"
                                             >
-                                                <i className="ri-scales-line"></i>
+                                                <i className="ri-scales-line text-lg"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -672,14 +696,17 @@ export default function PurchaseProductsManagement() {
             {/* مودال تاريخ الأسعار */}
             {showPriceHistoryModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 تاريخ أسعار المنتج
                             </h3>
                             <button
-                                onClick={() => setShowPriceHistoryModal(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                onClick={() => {
+                                    setShowPriceHistoryModal(false);
+                                    _setSelectedProduct(null);
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
@@ -712,12 +739,7 @@ export default function PurchaseProductsManagement() {
                                             }}
                                         ></div>
                                         <div className="text-xs text-gray-600 mt-1 transform -rotate-45 origin-top-right">
-                                            {new Date(
-                                                entry.purchase_date
-                                            ).toLocaleDateString("ar-SA", {
-                                                month: "short",
-                                                day: "numeric",
-                                            })}
+                                            {formatDate(entry.purchase_date)}
                                         </div>
                                     </div>
                                 ))}
@@ -726,22 +748,29 @@ export default function PurchaseProductsManagement() {
 
                         {/* جدول تاريخ الأسعار */}
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
+                            <table className="w-full table-fixed">
+                                <colgroup>
+                                    <col style={{ width: "20%" }} />
+                                    <col style={{ width: "15%" }} />
+                                    <col style={{ width: "15%" }} />
+                                    <col style={{ width: "25%" }} />
+                                    <col style={{ width: "25%" }} />
+                                </colgroup>
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             تاريخ الشراء
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             السعر
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             الكمية
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             المورد
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             التغيير من السابق
                                         </th>
                                     </tr>
@@ -758,31 +787,40 @@ export default function PurchaseProductsManagement() {
                                             100;
 
                                         return (
-                                            <tr key={entry.id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {new Date(
+                                            <tr
+                                                key={entry.id}
+                                                className="hover:bg-gray-50"
+                                            >
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm text-gray-900">
+                                                        {formatDate(
                                                         entry.purchase_date
-                                                    ).toLocaleDateString(
-                                                        "ar-SA"
                                                     )}
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm font-medium text-gray-900">
                                                     {entry.price} ج.م
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm text-gray-900">
                                                     {entry.quantity}
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm text-gray-900 truncate">
                                                     {entry.supplier_name}
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                <td className="px-3 py-4">
                                                     {index === 0 ? (
-                                                        <span className="text-gray-500">
+                                                        <span className="text-sm text-gray-500">
                                                             -
                                                         </span>
                                                     ) : (
                                                         <span
-                                                            className={`font-medium ${getPriceChangeColor(
+                                                            className={`text-sm font-medium ${getPriceChangeColor(
                                                                 priceChange
                                                             )}`}
                                                         >
@@ -805,6 +843,8 @@ export default function PurchaseProductsManagement() {
                     </div>
                 </div>
             )}
+
+            <ToastContainer />
         </div>
     );
 }

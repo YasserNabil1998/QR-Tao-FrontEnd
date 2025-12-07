@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../../../../lib/supabase";
+import { useToast } from "../../../../hooks/useToast";
+import CustomSelect from "../../../../components/common/CustomSelect";
 
 interface Account {
     id: string;
@@ -38,10 +39,6 @@ interface JournalEntryLine {
 export default function GeneralLedger() {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
-    const [_selectedEntry, _setSelectedEntry] = useState<JournalEntry | null>(
-        null
-    );
-    const [_entryLines, _setEntryLines] = useState<JournalEntryLine[]>([]);
     const [showAddAccountModal, setShowAddAccountModal] = useState(false);
     const [showAddEntryModal, setShowAddEntryModal] = useState(false);
     const [showTrialBalance, setShowTrialBalance] = useState(false);
@@ -55,6 +52,17 @@ export default function GeneralLedger() {
             .split("T")[0],
         to: new Date().toISOString().split("T")[0],
     });
+    const [searchQuery, setSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(
+        null
+    );
+    const [entryLines, setEntryLines] = useState<JournalEntryLine[]>([]);
+    const [entryDetailsLines, setEntryDetailsLines] = useState<
+        JournalEntryLine[]
+    >([]);
+    const [showEntryDetailsModal, setShowEntryDetailsModal] = useState(false);
+    const { showToast, ToastContainer } = useToast();
 
     const [newAccount, setNewAccount] = useState({
         account_code: "",
@@ -248,86 +256,177 @@ export default function GeneralLedger() {
         {
             id: "1",
             entry_number: "JE-2024-001",
-            entry_date: "2024-01-15",
+            entry_date: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                15
+            )
+                .toISOString()
+                .split("T")[0],
             description: "شراء مواد خام من مزارع الخليج",
             reference_type: "purchase",
             reference_id: "PO-2024-001",
             total_amount: 5000,
             created_by: "أحمد محمد",
             approved_by: "المدير المالي",
-            approved_date: "2024-01-15",
+            approved_date: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                15
+            )
+                .toISOString()
+                .split("T")[0],
             status: "posted",
         },
         {
             id: "2",
             entry_number: "JE-2024-002",
-            entry_date: "2024-01-16",
+            entry_date: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                16
+            )
+                .toISOString()
+                .split("T")[0],
             description: "دفع راتب شهر يناير",
             reference_type: "salary",
             total_amount: 15000,
             created_by: "سارة أحمد",
             approved_by: "المدير المالي",
-            approved_date: "2024-01-16",
+            approved_date: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                16
+            )
+                .toISOString()
+                .split("T")[0],
             status: "posted",
         },
         {
             id: "3",
             entry_number: "JE-2024-003",
-            entry_date: "2024-01-17",
+            entry_date: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                17
+            )
+                .toISOString()
+                .split("T")[0],
             description: "مبيعات نقدية",
             reference_type: "invoice",
             total_amount: 8500,
             created_by: "محمد علي",
             status: "approved",
         },
+        {
+            id: "4",
+            entry_number: "JE-2024-004",
+            entry_date: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                18
+            )
+                .toISOString()
+                .split("T")[0],
+            description: "قيد محاسبي يدوي - تسوية",
+            reference_type: "manual",
+            total_amount: 3000,
+            created_by: "محمد علي",
+            status: "draft",
+        },
+    ];
+
+    // Mock data for entry lines
+    const mockEntryLines: JournalEntryLine[] = [
+        {
+            id: "1",
+            journal_entry_id: "1",
+            account_id: "5",
+            account: mockAccounts.find((acc) => acc.id === "5")!,
+            debit_amount: 5000,
+            credit_amount: 0,
+            description: "شراء مواد خام",
+        },
+        {
+            id: "2",
+            journal_entry_id: "1",
+            account_id: "8",
+            account: mockAccounts.find((acc) => acc.id === "8")!,
+            debit_amount: 0,
+            credit_amount: 5000,
+            description: "دين على الموردين",
+        },
+        {
+            id: "3",
+            journal_entry_id: "2",
+            account_id: "16",
+            account: mockAccounts.find((acc) => acc.id === "16")!,
+            debit_amount: 15000,
+            credit_amount: 0,
+            description: "دفع راتب",
+        },
+        {
+            id: "4",
+            journal_entry_id: "2",
+            account_id: "2",
+            account: mockAccounts.find((acc) => acc.id === "2")!,
+            debit_amount: 0,
+            credit_amount: 15000,
+            description: "دفع من البنك",
+        },
     ];
 
     useEffect(() => {
-        fetchAccounts();
-        fetchJournalEntries();
+        // Simulate loading
+        setTimeout(() => {
+            setAccounts(mockAccounts);
+            setJournalEntries(mockJournalEntries);
+            setEntryLines(mockEntryLines);
+            setLoading(false);
+        }, 300);
     }, []);
 
-    const fetchAccounts = async () => {
-        try {
-            // في التطبيق الحقيقي، سيتم جلب البيانات من Supabase
-            setAccounts(mockAccounts);
-        } catch (error) {
-            console.error("خطأ في جلب الحسابات:", error);
-        } finally {
-            setLoading(false);
-        }
+    // دالة لتنسيق التاريخ بالميلادي
+    const formatDate = (dateString: string): string => {
+        if (!dateString) return "غير محدد";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
-    const fetchJournalEntries = async () => {
-        try {
-            // في التطبيق الحقيقي، سيتم جلب البيانات من Supabase
-            setJournalEntries(mockJournalEntries);
-        } catch (error) {
-            console.error("خطأ في جلب القيود:", error);
+    const handleAddAccount = () => {
+        // Validation
+        if (!newAccount.account_code.trim()) {
+            showToast("يرجى إدخال رمز الحساب", "error");
+            return;
         }
-    };
-
-    const handleAddAccount = async () => {
-        try {
-            const accountCode = newAccount.account_code;
-            const { error } = await supabase.from("chart_of_accounts").insert({
-                account_code: accountCode,
-                account_name: newAccount.account_name,
-                account_type: newAccount.account_type,
-                parent_account_id: newAccount.parent_account_id || null,
-                balance: newAccount.opening_balance,
-                is_active: true,
-                restaurant_id: "00000000-0000-0000-0000-000000000000",
-            });
-
-            if (error) throw error;
-
-            setShowAddAccountModal(false);
-            resetNewAccount();
-            fetchAccounts();
-        } catch (error) {
-            console.error("خطأ في إضافة الحساب:", error);
+        if (!newAccount.account_name.trim()) {
+            showToast("يرجى إدخال اسم الحساب", "error");
+            return;
         }
+        if (
+            accounts.some((acc) => acc.account_code === newAccount.account_code)
+        ) {
+            showToast("رمز الحساب موجود بالفعل", "error");
+            return;
+        }
+
+        const newAccountData: Account = {
+            id: `account-${Date.now()}`,
+            account_code: newAccount.account_code,
+            account_name: newAccount.account_name,
+            account_type: newAccount.account_type,
+            parent_account_id: newAccount.parent_account_id || undefined,
+            balance: newAccount.opening_balance,
+            is_active: true,
+        };
+
+        setAccounts((prev) => [...prev, newAccountData]);
+        showToast("تم إضافة الحساب بنجاح", "success");
+        setShowAddAccountModal(false);
+        resetNewAccount();
     };
 
     const resetNewAccount = () => {
@@ -340,68 +439,81 @@ export default function GeneralLedger() {
         });
     };
 
-    const handleAddJournalEntry = async () => {
-        try {
-            const totalDebit = newEntry.lines.reduce(
-                (sum, line) => sum + line.debit_amount,
-                0
-            );
-            const totalCredit = newEntry.lines.reduce(
-                (sum, line) => sum + line.credit_amount,
-                0
-            );
+    const handleAddJournalEntry = () => {
+        // Validation
+        if (!newEntry.description.trim()) {
+            showToast("يرجى إدخال وصف القيد", "error");
+            return;
+        }
 
-            if (totalDebit !== totalCredit) {
-                alert("إجمالي المدين يجب أن يساوي إجمالي الدائن");
-                return;
-            }
+        const validLines = newEntry.lines.filter(
+            (line) =>
+                line.account_id &&
+                (line.debit_amount > 0 || line.credit_amount > 0)
+        );
 
-            const entryNumber = `JE-${Date.now()}`;
+        if (validLines.length < 2) {
+            showToast("يرجى إضافة سطرين على الأقل", "error");
+            return;
+        }
 
-            const { data: entryData, error: entryError } = await supabase
-                .from("journal_entries")
-                .insert({
-                    entry_number: entryNumber,
-                    entry_date: new Date().toISOString().split("T")[0],
-                    description: newEntry.description,
-                    reference_type: newEntry.reference_type,
-                    total_amount: totalDebit,
-                    created_by: "المستخدم الحالي",
-                    status: "draft",
-                    restaurant_id: "00000000-0000-0000-0000-000000000000",
-                })
-                .select()
-                .single();
+        const totalDebit = validLines.reduce(
+            (sum, line) => sum + line.debit_amount,
+            0
+        );
+        const totalCredit = validLines.reduce(
+            (sum, line) => sum + line.credit_amount,
+            0
+        );
 
-            if (entryError) throw entryError;
+        if (totalDebit !== totalCredit) {
+            showToast("إجمالي المدين يجب أن يساوي إجمالي الدائن", "error");
+            return;
+        }
 
-            // إضافة تفاصيل القيد
-            const entryLines = newEntry.lines
-                .filter(
-                    (line) =>
-                        line.account_id &&
-                        (line.debit_amount > 0 || line.credit_amount > 0)
-                )
-                .map((line) => ({
-                    journal_entry_id: entryData.id,
+        const entryNumber = `JE-${new Date().getFullYear()}-${String(
+            journalEntries.length + 1
+        ).padStart(3, "0")}`;
+
+        const entryId = `entry-${Date.now()}`;
+        const newEntryData: JournalEntry = {
+            id: entryId,
+            entry_number: entryNumber,
+            entry_date: new Date().toISOString().split("T")[0],
+            description: newEntry.description,
+            reference_type: newEntry.reference_type,
+            total_amount: totalDebit,
+            created_by: "المستخدم الحالي",
+            status: "draft",
+        };
+
+        // Create entry lines for the new entry
+        const newEntryLines: JournalEntryLine[] = validLines.map(
+            (line, index) => {
+                const account = accounts.find(
+                    (acc) => acc.id === line.account_id
+                );
+                if (!account) {
+                    throw new Error(`Account not found: ${line.account_id}`);
+                }
+                return {
+                    id: `line-${entryId}-${index}`,
+                    journal_entry_id: entryId,
                     account_id: line.account_id,
+                    account: account,
                     debit_amount: line.debit_amount,
                     credit_amount: line.credit_amount,
-                    description: line.description,
-                }));
+                    description: line.description || "",
+                };
+            }
+        );
 
-            const { error: linesError } = await supabase
-                .from("journal_entry_lines")
-                .insert(entryLines);
-
-            if (linesError) throw linesError;
-
-            setShowAddEntryModal(false);
-            resetNewEntry();
-            fetchJournalEntries();
-        } catch (error) {
-            console.error("خطأ في إضافة القيد:", error);
-        }
+        // Update state
+        setJournalEntries((prev) => [newEntryData, ...prev]);
+        setEntryLines((prev) => [...newEntryLines, ...prev]);
+        showToast("تم إضافة القيد بنجاح", "success");
+        setShowAddEntryModal(false);
+        resetNewEntry();
     };
 
     const resetNewEntry = () => {
@@ -498,6 +610,82 @@ export default function GeneralLedger() {
                 return "مرحل";
             default:
                 return status;
+        }
+    };
+
+    // Filter journal entries
+    const filteredJournalEntries = journalEntries.filter((entry) => {
+        const entryDate = new Date(entry.entry_date);
+        const fromDate = new Date(dateFilter.from);
+        const toDate = new Date(dateFilter.to);
+        toDate.setHours(23, 59, 59, 999);
+
+        const matchesDate = entryDate >= fromDate && entryDate <= toDate;
+        const matchesSearch =
+            !searchQuery ||
+            entry.entry_number
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            entry.description
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            entry.created_by.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus =
+            statusFilter === "all" || entry.status === statusFilter;
+
+        return matchesDate && matchesSearch && matchesStatus;
+    });
+
+    const handleViewEntryDetails = (entry: JournalEntry) => {
+        setSelectedEntry(entry);
+        // Get entry lines from state (which includes both mock and newly added entries)
+        const linesFromState = entryLines.filter(
+            (line) => line.journal_entry_id === entry.id
+        );
+        // If no lines found in state, try mockEntryLines (for initial mock data)
+        const finalLines =
+            linesFromState.length > 0
+                ? linesFromState
+                : mockEntryLines.filter(
+                      (line) => line.journal_entry_id === entry.id
+                  );
+        setEntryDetailsLines(finalLines);
+        setShowEntryDetailsModal(true);
+    };
+
+    const handleApproveEntry = (entry: JournalEntry) => {
+        if (entry.status === "draft") {
+            setJournalEntries((prev) =>
+                prev.map((e) =>
+                    e.id === entry.id
+                        ? {
+                              ...e,
+                              status: "approved" as const,
+                              approved_by: "المستخدم الحالي",
+                              approved_date: new Date()
+                                  .toISOString()
+                                  .split("T")[0],
+                          }
+                        : e
+                )
+            );
+            showToast("تم اعتماد القيد بنجاح", "success");
+        }
+    };
+
+    const handlePostEntry = (entry: JournalEntry) => {
+        if (entry.status === "approved") {
+            setJournalEntries((prev) =>
+                prev.map((e) =>
+                    e.id === entry.id
+                        ? {
+                              ...e,
+                              status: "posted" as const,
+                          }
+                        : e
+                )
+            );
+            showToast("تم ترحيل القيد بنجاح", "success");
         }
     };
 
@@ -786,22 +974,29 @@ export default function GeneralLedger() {
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
+                                <table className="w-full table-fixed">
+                                    <colgroup>
+                                        <col style={{ width: "12%" }} />
+                                        <col style={{ width: "30%" }} />
+                                        <col style={{ width: "18%" }} />
+                                        <col style={{ width: "20%" }} />
+                                        <col style={{ width: "20%" }} />
+                                    </colgroup>
                                     <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 رمز الحساب
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 اسم الحساب
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 نوع الحساب
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 الرصيد
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 الحالة
                                             </th>
                                         </tr>
@@ -812,40 +1007,51 @@ export default function GeneralLedger() {
                                                 key={account.id}
                                                 className="hover:bg-gray-50"
                                             >
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                    {account.account_code}
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {account.account_code}
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    <span
-                                                        className={
-                                                            account.parent_account_id
-                                                                ? "mr-4"
-                                                                : ""
-                                                        }
-                                                    >
-                                                        {account.account_name}
-                                                    </span>
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm text-gray-900 truncate">
+                                                        <span
+                                                            className={
+                                                                account.parent_account_id
+                                                                    ? "mr-4"
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            {
+                                                                account.account_name
+                                                            }
+                                                        </span>
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {getAccountTypeText(
-                                                        account.account_type
-                                                    )}
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm text-gray-900">
+                                                        {getAccountTypeText(
+                                                            account.account_type
+                                                        )}
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    <span
-                                                        className={
-                                                            account.balance >= 0
-                                                                ? "text-green-600"
-                                                                : "text-red-600"
-                                                        }
-                                                    >
-                                                        {Math.abs(
-                                                            account.balance
-                                                        ).toLocaleString()}{" "}
-                                                        ج.م
-                                                    </span>
+                                                <td className="px-3 py-4">
+                                                    <div className="text-sm">
+                                                        <span
+                                                            className={
+                                                                account.balance >=
+                                                                0
+                                                                    ? "text-green-600 font-medium"
+                                                                    : "text-red-600 font-medium"
+                                                            }
+                                                        >
+                                                            {Math.abs(
+                                                                account.balance
+                                                            ).toLocaleString()}{" "}
+                                                            ج.م
+                                                        </span>
+                                                    </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="px-3 py-4">
                                                     <span
                                                         className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                                                             account.is_active
@@ -881,104 +1087,213 @@ export default function GeneralLedger() {
                                 </button>
                             </div>
 
-                            <div className="flex gap-4 mb-4">
-                                <input
-                                    type="date"
-                                    value={dateFilter.from}
-                                    onChange={(e) =>
-                                        setDateFilter((prev) => ({
-                                            ...prev,
-                                            from: e.target.value,
-                                        }))
-                                    }
-                                    className="border border-gray-300 rounded-lg px-3 py-2"
-                                />
-                                <input
-                                    type="date"
-                                    value={dateFilter.to}
-                                    onChange={(e) =>
-                                        setDateFilter((prev) => ({
-                                            ...prev,
-                                            to: e.target.value,
-                                        }))
-                                    }
-                                    className="border border-gray-300 rounded-lg px-3 py-2"
-                                />
+                            <div className="flex flex-wrap gap-4 mb-4 items-end">
+                                <div className="flex-1 min-w-[200px]">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        من تاريخ
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={dateFilter.from}
+                                        onChange={(e) =>
+                                            setDateFilter((prev) => ({
+                                                ...prev,
+                                                from: e.target.value,
+                                            }))
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    />
+                                </div>
+                                <div className="flex-1 min-w-[200px]">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        إلى تاريخ
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={dateFilter.to}
+                                        onChange={(e) =>
+                                            setDateFilter((prev) => ({
+                                                ...prev,
+                                                to: e.target.value,
+                                            }))
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    />
+                                </div>
+                                <div className="flex-1 min-w-[200px]">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        الحالة
+                                    </label>
+                                    <CustomSelect
+                                        value={statusFilter}
+                                        onChange={(value) =>
+                                            setStatusFilter(value)
+                                        }
+                                        options={[
+                                            { value: "all", label: "الكل" },
+                                            { value: "draft", label: "مسودة" },
+                                            {
+                                                value: "approved",
+                                                label: "معتمد",
+                                            },
+                                            { value: "posted", label: "مرحل" },
+                                        ]}
+                                        placeholder="اختر الحالة"
+                                    />
+                                </div>
+                                <div className="flex-1 min-w-[200px]">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        البحث
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
+                                        placeholder="ابحث برقم القيد، الوصف، أو المنشئ..."
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    />
+                                </div>
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
+                                <table className="w-full table-fixed">
+                                    <colgroup>
+                                        <col style={{ width: "12%" }} />
+                                        <col style={{ width: "12%" }} />
+                                        <col style={{ width: "30%" }} />
+                                        <col style={{ width: "15%" }} />
+                                        <col style={{ width: "15%" }} />
+                                        <col style={{ width: "16%" }} />
+                                    </colgroup>
                                     <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 رقم القيد
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 التاريخ
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 الوصف
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 المبلغ
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 الحالة
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 الإجراءات
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {journalEntries.map((entry) => (
-                                            <tr
-                                                key={entry.id}
-                                                className="hover:bg-gray-50"
-                                            >
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                    {entry.entry_number}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {new Date(
-                                                        entry.entry_date
-                                                    ).toLocaleDateString(
-                                                        "ar-SA"
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-gray-900">
-                                                    {entry.description}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {entry.total_amount.toLocaleString()}{" "}
-                                                    ج.م
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span
-                                                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                                                            entry.status
-                                                        )}`}
-                                                    >
-                                                        {getStatusText(
-                                                            entry.status
-                                                        )}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                    <button
-                                                        onClick={() =>
-                                                            setSelectedEntry(
-                                                                entry
-                                                            )
-                                                        }
-                                                        className="text-blue-600 hover:text-blue-900 cursor-pointer"
-                                                        title="عرض التفاصيل"
-                                                    >
-                                                        <i className="ri-eye-line"></i>
-                                                    </button>
+                                        {filteredJournalEntries.length === 0 ? (
+                                            <tr>
+                                                <td
+                                                    colSpan={6}
+                                                    className="px-3 py-8 text-center text-gray-500"
+                                                >
+                                                    لا توجد قيود محاسبية
                                                 </td>
                                             </tr>
-                                        ))}
+                                        ) : (
+                                            filteredJournalEntries.map(
+                                                (entry) => (
+                                                    <tr
+                                                        key={entry.id}
+                                                        className="hover:bg-gray-50"
+                                                    >
+                                                        <td className="px-3 py-4">
+                                                            <div className="text-sm font-medium text-gray-900 truncate">
+                                                                {
+                                                                    entry.entry_number
+                                                                }
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-4">
+                                                            <div className="text-sm text-gray-900">
+                                                                {formatDate(
+                                                                    entry.entry_date
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-4">
+                                                            <div className="text-sm text-gray-900 truncate">
+                                                                {
+                                                                    entry.description
+                                                                }
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-4">
+                                                            <div className="text-sm font-medium text-gray-900">
+                                                                {entry.total_amount.toLocaleString()}{" "}
+                                                                ج.م
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-4">
+                                                            <span
+                                                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                                                                    entry.status
+                                                                )}`}
+                                                            >
+                                                                {getStatusText(
+                                                                    entry.status
+                                                                )}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-3 py-4">
+                                                            <div className="flex items-center justify-end gap-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        handleViewEntryDetails(
+                                                                            entry
+                                                                        )
+                                                                    }
+                                                                    className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                                                    title="عرض التفاصيل"
+                                                                >
+                                                                    <i className="ri-eye-line text-lg"></i>
+                                                                </button>
+                                                                {entry.status ===
+                                                                    "draft" && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() =>
+                                                                            handleApproveEntry(
+                                                                                entry
+                                                                            )
+                                                                        }
+                                                                        className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                                        title="اعتماد القيد"
+                                                                    >
+                                                                        <i className="ri-check-line text-lg"></i>
+                                                                    </button>
+                                                                )}
+                                                                {entry.status ===
+                                                                    "approved" && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() =>
+                                                                            handlePostEntry(
+                                                                                entry
+                                                                            )
+                                                                        }
+                                                                        className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                                                                        title="ترحيل القيد"
+                                                                    >
+                                                                        <i className="ri-arrow-right-line text-lg"></i>
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
@@ -1072,22 +1387,25 @@ export default function GeneralLedger() {
             {/* مودال إضافة حساب */}
             {showAddAccountModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 إضافة حساب جديد
                             </h3>
                             <button
-                                onClick={() => setShowAddAccountModal(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                onClick={() => {
+                                    setShowAddAccountModal(false);
+                                    resetNewAccount();
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     رمز الحساب
                                 </label>
                                 <input
@@ -1099,14 +1417,14 @@ export default function GeneralLedger() {
                                             account_code: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="مثال: 1100"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     اسم الحساب
                                 </label>
                                 <input
@@ -1118,69 +1436,80 @@ export default function GeneralLedger() {
                                             account_name: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="مثال: النقدية"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     نوع الحساب
                                 </label>
-                                <select
+                                <CustomSelect
                                     value={newAccount.account_type}
-                                    onChange={(e) =>
+                                    onChange={(value) =>
                                         setNewAccount((prev) => ({
                                             ...prev,
-                                            account_type: e.target.value as any,
+                                            account_type:
+                                                value as Account["account_type"],
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                                >
-                                    <option value="assets">الأصول</option>
-                                    <option value="liabilities">الخصوم</option>
-                                    <option value="equity">حقوق الملكية</option>
-                                    <option value="revenue">الإيرادات</option>
-                                    <option value="expenses">المصروفات</option>
-                                </select>
+                                    options={[
+                                        { value: "assets", label: "الأصول" },
+                                        {
+                                            value: "liabilities",
+                                            label: "الخصوم",
+                                        },
+                                        {
+                                            value: "equity",
+                                            label: "حقوق الملكية",
+                                        },
+                                        {
+                                            value: "revenue",
+                                            label: "الإيرادات",
+                                        },
+                                        {
+                                            value: "expenses",
+                                            label: "المصروفات",
+                                        },
+                                    ]}
+                                    placeholder="اختر نوع الحساب"
+                                />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     الحساب الرئيسي
                                 </label>
-                                <select
+                                <CustomSelect
                                     value={newAccount.parent_account_id}
-                                    onChange={(e) =>
+                                    onChange={(value) =>
                                         setNewAccount((prev) => ({
                                             ...prev,
-                                            parent_account_id: e.target.value,
+                                            parent_account_id: value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                                >
-                                    <option value="">لا يوجد</option>
-                                    {accounts
-                                        .filter(
-                                            (acc) =>
-                                                acc.account_type ===
-                                                    newAccount.account_type &&
-                                                !acc.parent_account_id
-                                        )
-                                        .map((account) => (
-                                            <option
-                                                key={account.id}
-                                                value={account.id}
-                                            >
-                                                {account.account_name}
-                                            </option>
-                                        ))}
-                                </select>
+                                    options={[
+                                        { value: "", label: "لا يوجد" },
+                                        ...accounts
+                                            .filter(
+                                                (acc) =>
+                                                    acc.account_type ===
+                                                        newAccount.account_type &&
+                                                    !acc.parent_account_id
+                                            )
+                                            .map((account) => ({
+                                                value: account.id,
+                                                label: account.account_name,
+                                            })),
+                                    ]}
+                                    placeholder="اختر الحساب الرئيسي"
+                                />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     الرصيد الافتتاحي
                                 </label>
                                 <input
@@ -1193,23 +1522,27 @@ export default function GeneralLedger() {
                                                 parseFloat(e.target.value) || 0,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     step="0.01"
+                                    placeholder="0.00"
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                                 <button
-                                    onClick={() =>
-                                        setShowAddAccountModal(false)
-                                    }
-                                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                                    type="button"
+                                    onClick={() => {
+                                        setShowAddAccountModal(false);
+                                        resetNewAccount();
+                                    }}
+                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إلغاء
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={handleAddAccount}
-                                    className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
+                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إضافة الحساب
                                 </button>
@@ -1222,22 +1555,25 @@ export default function GeneralLedger() {
             {/* مودال إضافة قيد */}
             {showAddEntryModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 إضافة قيد محاسبي
                             </h3>
                             <button
-                                onClick={() => setShowAddEntryModal(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                onClick={() => {
+                                    setShowAddEntryModal(false);
+                                    resetNewEntry();
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     وصف القيد
                                 </label>
                                 <input
@@ -1249,33 +1585,34 @@ export default function GeneralLedger() {
                                             description: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="وصف العملية المحاسبية"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                     نوع المرجع
                                 </label>
-                                <select
+                                <CustomSelect
                                     value={newEntry.reference_type}
-                                    onChange={(e) =>
+                                    onChange={(value) =>
                                         setNewEntry((prev) => ({
                                             ...prev,
-                                            reference_type: e.target
-                                                .value as any,
+                                            reference_type:
+                                                value as JournalEntry["reference_type"],
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                                >
-                                    <option value="manual">قيد يدوي</option>
-                                    <option value="purchase">مشتريات</option>
-                                    <option value="invoice">فاتورة</option>
-                                    <option value="payment">دفعة</option>
-                                    <option value="salary">راتب</option>
-                                </select>
+                                    options={[
+                                        { value: "manual", label: "قيد يدوي" },
+                                        { value: "purchase", label: "مشتريات" },
+                                        { value: "invoice", label: "فاتورة" },
+                                        { value: "payment", label: "دفعة" },
+                                        { value: "salary", label: "راتب" },
+                                    ]}
+                                    placeholder="اختر نوع المرجع"
+                                />
                             </div>
 
                             <div>
@@ -1284,8 +1621,9 @@ export default function GeneralLedger() {
                                         تفاصيل القيد
                                     </h4>
                                     <button
+                                        type="button"
                                         onClick={addEntryLine}
-                                        className="text-orange-600 hover:text-orange-800 cursor-pointer"
+                                        className="text-orange-600 hover:text-orange-800 cursor-pointer flex items-center gap-1 transition-colors"
                                     >
                                         <i className="ri-add-line"></i> إضافة
                                         سطر
@@ -1293,22 +1631,22 @@ export default function GeneralLedger() {
                                 </div>
 
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full border border-gray-200">
+                                    <table className="w-full border border-gray-200 rounded-lg">
                                         <thead className="bg-gray-50">
                                             <tr>
-                                                <th className="px-4 py-2 text-right text-sm font-medium text-gray-700">
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
                                                     الحساب
                                                 </th>
-                                                <th className="px-4 py-2 text-right text-sm font-medium text-gray-700">
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
                                                     الوصف
                                                 </th>
-                                                <th className="px-4 py-2 text-right text-sm font-medium text-gray-700">
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
                                                     مدين
                                                 </th>
-                                                <th className="px-4 py-2 text-right text-sm font-medium text-gray-700">
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
                                                     دائن
                                                 </th>
-                                                <th className="px-4 py-2 text-center text-sm font-medium text-gray-700">
+                                                <th className="px-3 py-2 text-center text-sm font-medium text-gray-700">
                                                     إجراء
                                                 </th>
                                             </tr>
@@ -1320,7 +1658,7 @@ export default function GeneralLedger() {
                                                         key={index}
                                                         className="border-t"
                                                     >
-                                                        <td className="px-4 py-2">
+                                                        <td className="px-3 py-2">
                                                             <select
                                                                 value={
                                                                     line.account_id
@@ -1333,7 +1671,7 @@ export default function GeneralLedger() {
                                                                             .value
                                                                     )
                                                                 }
-                                                                className="w-full border border-gray-300 rounded px-2 py-1 text-sm pr-8"
+                                                                className="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                                             >
                                                                 <option value="">
                                                                     اختر الحساب
@@ -1362,7 +1700,7 @@ export default function GeneralLedger() {
                                                                 )}
                                                             </select>
                                                         </td>
-                                                        <td className="px-4 py-2">
+                                                        <td className="px-3 py-2">
                                                             <input
                                                                 type="text"
                                                                 value={
@@ -1376,11 +1714,11 @@ export default function GeneralLedger() {
                                                                             .value
                                                                     )
                                                                 }
-                                                                className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                                                                className="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                                                 placeholder="وصف السطر"
                                                             />
                                                         </td>
-                                                        <td className="px-4 py-2">
+                                                        <td className="px-3 py-2">
                                                             <input
                                                                 type="number"
                                                                 value={
@@ -1397,12 +1735,13 @@ export default function GeneralLedger() {
                                                                         ) || 0
                                                                     )
                                                                 }
-                                                                className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                                                                className="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                                                 step="0.01"
                                                                 min="0"
+                                                                placeholder="0.00"
                                                             />
                                                         </td>
-                                                        <td className="px-4 py-2">
+                                                        <td className="px-3 py-2">
                                                             <input
                                                                 type="number"
                                                                 value={
@@ -1419,23 +1758,26 @@ export default function GeneralLedger() {
                                                                         ) || 0
                                                                     )
                                                                 }
-                                                                className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                                                                className="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                                                 step="0.01"
                                                                 min="0"
+                                                                placeholder="0.00"
                                                             />
                                                         </td>
-                                                        <td className="px-4 py-2 text-center">
+                                                        <td className="px-3 py-2 text-center">
                                                             {newEntry.lines
                                                                 .length > 2 && (
                                                                 <button
+                                                                    type="button"
                                                                     onClick={() =>
                                                                         removeEntryLine(
                                                                             index
                                                                         )
                                                                     }
-                                                                    className="text-red-600 hover:text-red-800 cursor-pointer"
+                                                                    className="w-8 h-8 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                                                    title="حذف السطر"
                                                                 >
-                                                                    <i className="ri-delete-bin-line"></i>
+                                                                    <i className="ri-delete-bin-line text-lg"></i>
                                                                 </button>
                                                             )}
                                                         </td>
@@ -1447,31 +1789,35 @@ export default function GeneralLedger() {
                                             <tr>
                                                 <td
                                                     colSpan={2}
-                                                    className="px-4 py-2 text-right font-medium"
+                                                    className="px-3 py-2 text-right font-medium"
                                                 >
                                                     الإجمالي:
                                                 </td>
-                                                <td className="px-4 py-2 font-medium">
-                                                    {newEntry.lines
-                                                        .reduce(
-                                                            (sum, line) =>
-                                                                sum +
-                                                                line.debit_amount,
-                                                            0
-                                                        )
-                                                        .toFixed(2)}{" "}
-                                                    ج.م
+                                                <td className="px-3 py-2">
+                                                    <div className="font-medium text-gray-900">
+                                                        {newEntry.lines
+                                                            .reduce(
+                                                                (sum, line) =>
+                                                                    sum +
+                                                                    line.debit_amount,
+                                                                0
+                                                            )
+                                                            .toFixed(2)}{" "}
+                                                        ج.م
+                                                    </div>
                                                 </td>
-                                                <td className="px-4 py-2 font-medium">
-                                                    {newEntry.lines
-                                                        .reduce(
-                                                            (sum, line) =>
-                                                                sum +
-                                                                line.credit_amount,
-                                                            0
-                                                        )
-                                                        .toFixed(2)}{" "}
-                                                    ج.م
+                                                <td className="px-3 py-2">
+                                                    <div className="font-medium text-gray-900">
+                                                        {newEntry.lines
+                                                            .reduce(
+                                                                (sum, line) =>
+                                                                    sum +
+                                                                    line.credit_amount,
+                                                                0
+                                                            )
+                                                            .toFixed(2)}{" "}
+                                                        ج.م
+                                                    </div>
                                                 </td>
                                                 <td></td>
                                             </tr>
@@ -1487,23 +1833,29 @@ export default function GeneralLedger() {
                                         (sum, line) => sum + line.credit_amount,
                                         0
                                     ) && (
-                                    <div className="text-red-600 text-sm mt-2">
+                                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-600 text-sm mt-2">
+                                        <i className="ri-error-warning-line ml-1"></i>
                                         تحذير: إجمالي المدين لا يساوي إجمالي
                                         الدائن
                                     </div>
                                 )}
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                                 <button
-                                    onClick={() => setShowAddEntryModal(false)}
-                                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                                    type="button"
+                                    onClick={() => {
+                                        setShowAddEntryModal(false);
+                                        resetNewEntry();
+                                    }}
+                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إلغاء
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={handleAddJournalEntry}
-                                    className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
+                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     حفظ القيد
                                 </button>
@@ -1516,57 +1868,74 @@ export default function GeneralLedger() {
             {/* مودال ميزان المراجعة */}
             {showTrialBalance && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 ميزان المراجعة
                             </h3>
                             <button
                                 onClick={() => setShowTrialBalance(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
 
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
+                            <table className="w-full table-fixed">
+                                <colgroup>
+                                    <col style={{ width: "15%" }} />
+                                    <col style={{ width: "35%" }} />
+                                    <col style={{ width: "25%" }} />
+                                    <col style={{ width: "25%" }} />
+                                </colgroup>
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             رمز الحساب
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             اسم الحساب
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             مدين
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             دائن
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {calculateTrialBalance().map((account) => (
-                                        <tr key={account.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {account.account_code}
+                                        <tr
+                                            key={account.id}
+                                            className="hover:bg-gray-50"
+                                        >
+                                            <td className="px-3 py-4">
+                                                <div className="text-sm font-medium text-gray-900">
+                                                    {account.account_code}
+                                                </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {account.account_name}
+                                            <td className="px-3 py-4">
+                                                <div className="text-sm text-gray-900 truncate">
+                                                    {account.account_name}
+                                                </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {account.debit_balance > 0
-                                                    ? account.debit_balance.toLocaleString() +
-                                                      " ج.م"
-                                                    : "-"}
+                                            <td className="px-3 py-4">
+                                                <div className="text-sm text-gray-900">
+                                                    {account.debit_balance > 0
+                                                        ? account.debit_balance.toLocaleString() +
+                                                          " ج.م"
+                                                        : "-"}
+                                                </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {account.credit_balance > 0
-                                                    ? account.credit_balance.toLocaleString() +
-                                                      " ج.م"
-                                                    : "-"}
+                                            <td className="px-3 py-4">
+                                                <div className="text-sm text-gray-900">
+                                                    {account.credit_balance > 0
+                                                        ? account.credit_balance.toLocaleString() +
+                                                          " ج.م"
+                                                        : "-"}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -1575,30 +1944,35 @@ export default function GeneralLedger() {
                                     <tr>
                                         <td
                                             colSpan={2}
-                                            className="px-6 py-4 text-right font-bold"
+                                            className="px-3 py-4 text-right font-bold"
                                         >
                                             الإجمالي:
                                         </td>
-                                        <td className="px-6 py-4 font-bold">
-                                            {calculateTrialBalance()
-                                                .reduce(
-                                                    (sum, acc) =>
-                                                        sum + acc.debit_balance,
-                                                    0
-                                                )
-                                                .toLocaleString()}{" "}
-                                            ج.م
+                                        <td className="px-3 py-4">
+                                            <div className="font-bold text-gray-900">
+                                                {calculateTrialBalance()
+                                                    .reduce(
+                                                        (sum, acc) =>
+                                                            sum +
+                                                            acc.debit_balance,
+                                                        0
+                                                    )
+                                                    .toLocaleString()}{" "}
+                                                ج.م
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-4 font-bold">
-                                            {calculateTrialBalance()
-                                                .reduce(
-                                                    (sum, acc) =>
-                                                        sum +
-                                                        acc.credit_balance,
-                                                    0
-                                                )
-                                                .toLocaleString()}{" "}
-                                            ج.م
+                                        <td className="px-3 py-4">
+                                            <div className="font-bold text-gray-900">
+                                                {calculateTrialBalance()
+                                                    .reduce(
+                                                        (sum, acc) =>
+                                                            sum +
+                                                            acc.credit_balance,
+                                                        0
+                                                    )
+                                                    .toLocaleString()}{" "}
+                                                ج.م
+                                            </div>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -1611,14 +1985,14 @@ export default function GeneralLedger() {
             {/* مودال الأرباح والخسائر */}
             {showProfitLoss && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 قائمة الأرباح والخسائر
                             </h3>
                             <button
                                 onClick={() => setShowProfitLoss(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
@@ -1725,14 +2099,14 @@ export default function GeneralLedger() {
             {/* مودال التدفقات النقدية */}
             {showCashFlow && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
                                 قائمة التدفقات النقدية
                             </h3>
                             <button
                                 onClick={() => setShowCashFlow(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
@@ -1928,6 +2302,273 @@ export default function GeneralLedger() {
                     </div>
                 </div>
             )}
+
+            {/* مودال تفاصيل القيد */}
+            {showEntryDetailsModal && selectedEntry && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
+                                تفاصيل القيد: {selectedEntry.entry_number}
+                            </h3>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowEntryDetailsModal(false);
+                                    setSelectedEntry(null);
+                                    setEntryDetailsLines([]);
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                            >
+                                <i className="ri-close-line text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        رقم القيد
+                                    </label>
+                                    <div className="text-sm text-gray-900 font-medium">
+                                        {selectedEntry.entry_number}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        التاريخ
+                                    </label>
+                                    <div className="text-sm text-gray-900">
+                                        {formatDate(selectedEntry.entry_date)}
+                                    </div>
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        الوصف
+                                    </label>
+                                    <div className="text-sm text-gray-900">
+                                        {selectedEntry.description}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        نوع المرجع
+                                    </label>
+                                    <div className="text-sm text-gray-900">
+                                        {selectedEntry.reference_type ===
+                                            "manual" && "قيد يدوي"}
+                                        {selectedEntry.reference_type ===
+                                            "purchase" && "مشتريات"}
+                                        {selectedEntry.reference_type ===
+                                            "invoice" && "فاتورة"}
+                                        {selectedEntry.reference_type ===
+                                            "payment" && "دفعة"}
+                                        {selectedEntry.reference_type ===
+                                            "salary" && "راتب"}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        الحالة
+                                    </label>
+                                    <span
+                                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                                            selectedEntry.status
+                                        )}`}
+                                    >
+                                        {getStatusText(selectedEntry.status)}
+                                    </span>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        المبلغ الإجمالي
+                                    </label>
+                                    <div className="text-sm font-bold text-gray-900">
+                                        {selectedEntry.total_amount.toLocaleString()}{" "}
+                                        ج.م
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        المنشئ
+                                    </label>
+                                    <div className="text-sm text-gray-900">
+                                        {selectedEntry.created_by}
+                                    </div>
+                                </div>
+                                {selectedEntry.approved_by && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            المعتمد بواسطة
+                                        </label>
+                                        <div className="text-sm text-gray-900">
+                                            {selectedEntry.approved_by}
+                                        </div>
+                                    </div>
+                                )}
+                                {selectedEntry.approved_date && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            تاريخ الاعتماد
+                                        </label>
+                                        <div className="text-sm text-gray-900">
+                                            {formatDate(
+                                                selectedEntry.approved_date
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div>
+                                <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                                    تفاصيل القيد
+                                </h4>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full table-fixed border border-gray-200 rounded-lg">
+                                        <colgroup>
+                                            <col style={{ width: "25%" }} />
+                                            <col style={{ width: "35%" }} />
+                                            <col style={{ width: "20%" }} />
+                                            <col style={{ width: "20%" }} />
+                                        </colgroup>
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
+                                                    الحساب
+                                                </th>
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
+                                                    الوصف
+                                                </th>
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
+                                                    مدين
+                                                </th>
+                                                <th className="px-3 py-2 text-right text-sm font-medium text-gray-700">
+                                                    دائن
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {entryDetailsLines.length === 0 ? (
+                                                <tr>
+                                                    <td
+                                                        colSpan={4}
+                                                        className="px-3 py-4 text-center text-gray-500"
+                                                    >
+                                                        لا توجد تفاصيل
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                entryDetailsLines.map(
+                                                    (line) => (
+                                                        <tr
+                                                            key={line.id}
+                                                            className="hover:bg-gray-50"
+                                                        >
+                                                            <td className="px-3 py-2">
+                                                                <div className="text-sm text-gray-900">
+                                                                    {
+                                                                        line
+                                                                            .account
+                                                                            .account_code
+                                                                    }{" "}
+                                                                    -{" "}
+                                                                    {
+                                                                        line
+                                                                            .account
+                                                                            .account_name
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-3 py-2">
+                                                                <div className="text-sm text-gray-900 truncate">
+                                                                    {
+                                                                        line.description
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-3 py-2">
+                                                                <div className="text-sm text-gray-900">
+                                                                    {line.debit_amount >
+                                                                    0
+                                                                        ? line.debit_amount.toLocaleString() +
+                                                                          " ج.م"
+                                                                        : "-"}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-3 py-2">
+                                                                <div className="text-sm text-gray-900">
+                                                                    {line.credit_amount >
+                                                                    0
+                                                                        ? line.credit_amount.toLocaleString() +
+                                                                          " ج.م"
+                                                                        : "-"}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )
+                                            )}
+                                        </tbody>
+                                        <tfoot className="bg-gray-50">
+                                            <tr>
+                                                <td
+                                                    colSpan={2}
+                                                    className="px-3 py-2 text-right font-medium"
+                                                >
+                                                    الإجمالي:
+                                                </td>
+                                                <td className="px-3 py-2">
+                                                    <div className="font-medium text-gray-900">
+                                                        {entryDetailsLines
+                                                            .reduce(
+                                                                (sum, line) =>
+                                                                    sum +
+                                                                    line.debit_amount,
+                                                                0
+                                                            )
+                                                            .toLocaleString()}{" "}
+                                                        ج.م
+                                                    </div>
+                                                </td>
+                                                <td className="px-3 py-2">
+                                                    <div className="font-medium text-gray-900">
+                                                        {entryDetailsLines
+                                                            .reduce(
+                                                                (sum, line) =>
+                                                                    sum +
+                                                                    line.credit_amount,
+                                                                0
+                                                            )
+                                                            .toLocaleString()}{" "}
+                                                        ج.م
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowEntryDetailsModal(false);
+                                        setSelectedEntry(null);
+                                        setEntryDetailsLines([]);
+                                    }}
+                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
+                                >
+                                    إغلاق
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <ToastContainer />
         </div>
     );
 }

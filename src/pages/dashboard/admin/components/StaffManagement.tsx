@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useToast } from "../../../../hooks/useToast";
+import CustomSelect from "../../../../components/common/CustomSelect";
 
 interface Staff {
     id: string;
@@ -26,6 +28,19 @@ export default function StaffManagement({
     const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterRole, setFilterRole] = useState("all");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [staffToDelete, setStaffToDelete] = useState<Staff | null>(null);
+    const [formData, setFormData] = useState({
+        full_name: "",
+        email: "",
+        phone: "",
+        role: "waiter" as "admin" | "chef" | "cashier" | "waiter",
+        salary: 0,
+        shift: "morning" as "morning" | "evening" | "night",
+        hire_date: new Date().toISOString().split("T")[0],
+        status: "active" as "active" | "inactive",
+    });
+    const { showToast, ToastContainer } = useToast();
 
     // Mock data for demonstration - fixed to match Staff interface
     const mockStaff: Staff[] = [
@@ -91,8 +106,104 @@ export default function StaffManagement({
         setTimeout(() => {
             setStaff(mockStaff);
             setLoading(false);
-        }, 1000);
+        }, 300);
     }, []);
+
+    useEffect(() => {
+        if (editingStaff) {
+            setFormData({
+                full_name: editingStaff.full_name || "",
+                email: editingStaff.email || "",
+                phone: editingStaff.phone || "",
+                role: editingStaff.role || "waiter",
+                salary: editingStaff.salary || 0,
+                shift: editingStaff.shift || "morning",
+                hire_date:
+                    editingStaff.hire_date ||
+                    new Date().toISOString().split("T")[0],
+                status: editingStaff.status || "active",
+            });
+            setShowAddModal(true);
+        } else {
+            resetForm();
+        }
+    }, [editingStaff]);
+
+    const resetForm = () => {
+        setFormData({
+            full_name: "",
+            email: "",
+            phone: "",
+            role: "waiter",
+            salary: 0,
+            shift: "morning",
+            hire_date: new Date().toISOString().split("T")[0],
+            status: "active",
+        });
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Validation
+        if (!formData.full_name.trim()) {
+            showToast("يرجى إدخال الاسم الكامل", "error");
+            return;
+        }
+        if (!formData.email.trim()) {
+            showToast("يرجى إدخال البريد الإلكتروني", "error");
+            return;
+        }
+        if (!formData.phone.trim()) {
+            showToast("يرجى إدخال رقم الهاتف", "error");
+            return;
+        }
+        if (formData.salary <= 0) {
+            showToast("يرجى إدخال راتب صحيح", "error");
+            return;
+        }
+
+        if (editingStaff) {
+            // Update existing staff
+            setStaff((prev) =>
+                prev.map((s) =>
+                    s.id === editingStaff.id ? { ...s, ...formData } : s
+                )
+            );
+            showToast("تم تحديث بيانات الموظف بنجاح", "success");
+        } else {
+            // Add new staff
+            const newStaff: Staff = {
+                id: `staff-${Date.now()}`,
+                ...formData,
+            };
+            setStaff((prev) => [...prev, newStaff]);
+            showToast("تم إضافة الموظف بنجاح", "success");
+        }
+
+        setShowAddModal(false);
+        setEditingStaff(null);
+        resetForm();
+    };
+
+    const handleDelete = (member: Staff) => {
+        setStaffToDelete(member);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = () => {
+        if (staffToDelete) {
+            setStaff((prev) => prev.filter((s) => s.id !== staffToDelete.id));
+            showToast("تم حذف الموظف بنجاح", "success");
+            setShowDeleteModal(false);
+            setStaffToDelete(null);
+        }
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
+        setStaffToDelete(null);
+    };
 
     const roles = [
         { value: "all", label: "جميع الأدوار" },
@@ -165,7 +276,11 @@ export default function StaffManagement({
                     إدارة الموظفين
                 </h2>
                 <button
-                    onClick={() => setShowAddModal(true)}
+                    onClick={() => {
+                        setEditingStaff(null);
+                        resetForm();
+                        setShowAddModal(true);
+                    }}
                     className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap cursor-pointer"
                 >
                     <i className="ri-user-add-line ml-2"></i>
@@ -280,17 +395,12 @@ export default function StaffManagement({
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             الدور
                         </label>
-                        <select
+                        <CustomSelect
                             value={filterRole}
-                            onChange={(e) => setFilterRole(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pr-8"
-                        >
-                            {roles.map((role) => (
-                                <option key={role.value} value={role.value}>
-                                    {role.label}
-                                </option>
-                            ))}
-                        </select>
+                            onChange={(value) => setFilterRole(value)}
+                            options={roles}
+                            placeholder="اختر الدور"
+                        />
                     </div>
                 </div>
             </div>
@@ -298,28 +408,37 @@ export default function StaffManagement({
             {/* Staff Table */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full table-fixed">
+                        <colgroup>
+                            <col style={{ width: "25%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "13%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "14%" }} />
+                        </colgroup>
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الموظف
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الدور
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الهاتف
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الراتب
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الوردية
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الحالة
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الإجراءات
                                 </th>
                             </tr>
@@ -330,78 +449,85 @@ export default function StaffManagement({
                                     key={member.id}
                                     className="hover:bg-gray-50"
                                 >
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
+                                    <td className="px-3 py-4">
+                                        <div className="flex items-center min-w-0">
                                             <div className="flex-shrink-0 h-10 w-10">
                                                 <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
-                                                    <span className="text-orange-600 font-semibold">
+                                                    <span className="text-orange-600 font-semibold text-sm">
                                                         {member.full_name?.charAt(
                                                             0
                                                         ) || "م"}
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="mr-4">
-                                                <div className="text-sm font-medium text-gray-900">
+                                            <div className="mr-3 min-w-0 flex-1">
+                                                <div className="text-sm font-medium text-gray-900 truncate">
                                                     {member.full_name}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
+                                                <div className="text-xs text-gray-500 truncate">
                                                     {member.email}
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <span
-                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleColor(
+                                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(
                                                 member.role
                                             )}`}
                                         >
                                             {getRoleLabel(member.role)}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900 truncate">
                                             {member.phone}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900">
                                             {member.salary?.toLocaleString() ||
                                                 0}{" "}
                                             ج.م
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
                                             {getShiftLabel(member.shift)}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-3 py-4">
                                         {member.status === "active" ? (
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                                 <i className="ri-check-line ml-1"></i>
                                                 نشط
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                 <i className="ri-close-line ml-1"></i>
                                                 غير نشط
                                             </span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div className="flex items-center space-x-2 space-x-reverse">
+                                    <td className="px-3 py-4">
+                                        <div className="flex items-center gap-1 justify-end">
                                             <button
                                                 onClick={() =>
                                                     setEditingStaff(member)
                                                 }
-                                                className="text-orange-600 hover:text-orange-900 cursor-pointer"
+                                                className="w-8 h-8 flex items-center justify-center text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+                                                title="تعديل"
                                             >
-                                                <i className="ri-edit-line"></i>
+                                                <i className="ri-edit-line text-lg"></i>
                                             </button>
-                                            <button className="text-red-600 hover:text-red-900 cursor-pointer">
-                                                <i className="ri-delete-bin-line"></i>
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(member)
+                                                }
+                                                className="w-8 h-8 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                                title="حذف"
+                                            >
+                                                <i className="ri-delete-bin-line text-lg"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -412,23 +538,29 @@ export default function StaffManagement({
                 </div>
             </div>
 
-            {/* Add Staff Modal */}
+            {/* Add/Edit Staff Modal */}
             {showAddModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-xl font-bold text-gray-900">
-                                إضافة موظف جديد
+                                {editingStaff
+                                    ? "تعديل بيانات الموظف"
+                                    : "إضافة موظف جديد"}
                             </h3>
                             <button
-                                onClick={() => setShowAddModal(false)}
+                                onClick={() => {
+                                    setShowAddModal(false);
+                                    setEditingStaff(null);
+                                    resetForm();
+                                }}
                                 className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
 
-                        <form className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -436,8 +568,16 @@ export default function StaffManagement({
                                     </label>
                                     <input
                                         type="text"
+                                        value={formData.full_name}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                full_name: e.target.value,
+                                            })
+                                        }
                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="أدخل الاسم الكامل"
+                                        required
                                     />
                                 </div>
 
@@ -447,8 +587,16 @@ export default function StaffManagement({
                                     </label>
                                     <input
                                         type="email"
+                                        value={formData.email}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                email: e.target.value,
+                                            })
+                                        }
                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="أدخل البريد الإلكتروني"
+                                        required
                                     />
                                 </div>
                             </div>
@@ -460,8 +608,16 @@ export default function StaffManagement({
                                     </label>
                                     <input
                                         type="tel"
+                                        value={formData.phone}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                phone: e.target.value,
+                                            })
+                                        }
                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="أدخل رقم الهاتف"
+                                        required
                                     />
                                 </div>
 
@@ -469,13 +625,19 @@ export default function StaffManagement({
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         الدور
                                     </label>
-                                    <select className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 pr-8">
-                                        <option>اختر الدور</option>
-                                        <option value="admin">مدير</option>
-                                        <option value="chef">شيف</option>
-                                        <option value="cashier">كاشير</option>
-                                        <option value="waiter">نادل</option>
-                                    </select>
+                                    <CustomSelect
+                                        value={formData.role}
+                                        onChange={(value) =>
+                                            setFormData({
+                                                ...formData,
+                                                role: value as any,
+                                            })
+                                        }
+                                        options={roles.filter(
+                                            (r) => r.value !== "all"
+                                        )}
+                                        placeholder="اختر الدور"
+                                    />
                                 </div>
                             </div>
 
@@ -486,8 +648,21 @@ export default function StaffManagement({
                                     </label>
                                     <input
                                         type="number"
+                                        value={formData.salary}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                salary:
+                                                    parseFloat(
+                                                        e.target.value
+                                                    ) || 0,
+                                            })
+                                        }
                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="أدخل الراتب"
+                                        min="0"
+                                        step="0.01"
+                                        required
                                     />
                                 </div>
 
@@ -495,29 +670,71 @@ export default function StaffManagement({
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         الوردية
                                     </label>
-                                    <select className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 pr-8">
-                                        <option>اختر الوردية</option>
-                                        <option value="morning">صباحي</option>
-                                        <option value="evening">مسائي</option>
-                                        <option value="night">ليلي</option>
-                                    </select>
+                                    <CustomSelect
+                                        value={formData.shift}
+                                        onChange={(value) =>
+                                            setFormData({
+                                                ...formData,
+                                                shift: value as any,
+                                            })
+                                        }
+                                        options={_shifts}
+                                        placeholder="اختر الوردية"
+                                    />
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    تاريخ التوظيف
-                                </label>
-                                <input
-                                    type="date"
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        تاريخ التوظيف
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={formData.hire_date}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                hire_date: e.target.value,
+                                            })
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        الحالة
+                                    </label>
+                                    <CustomSelect
+                                        value={formData.status}
+                                        onChange={(value) =>
+                                            setFormData({
+                                                ...formData,
+                                                status: value as any,
+                                            })
+                                        }
+                                        options={[
+                                            { value: "active", label: "نشط" },
+                                            {
+                                                value: "inactive",
+                                                label: "غير نشط",
+                                            },
+                                        ]}
+                                        placeholder="اختر الحالة"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex justify-end space-x-4">
                                 <button
                                     type="button"
-                                    onClick={() => setShowAddModal(false)}
+                                    onClick={() => {
+                                        setShowAddModal(false);
+                                        setEditingStaff(null);
+                                        resetForm();
+                                    }}
                                     className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     إلغاء
@@ -526,13 +743,59 @@ export default function StaffManagement({
                                     type="submit"
                                     className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
                                 >
-                                    إضافة الموظف
+                                    {editingStaff
+                                        ? "حفظ التعديلات"
+                                        : "إضافة الموظف"}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && staffToDelete && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+                        <div className="flex items-center justify-center mb-4">
+                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                <i className="ri-error-warning-line text-3xl text-red-500"></i>
+                            </div>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                            تأكيد الحذف
+                        </h3>
+                        <p className="text-gray-600 text-center mb-4">
+                            هل أنت متأكد من حذف الموظف{" "}
+                            <span className="font-semibold">
+                                {staffToDelete.full_name}
+                            </span>
+                            ؟
+                        </p>
+                        <p className="text-sm text-gray-500 text-center mb-6">
+                            لا يمكن التراجع عن هذه العملية.
+                        </p>
+                        <div className="flex justify-start gap-3">
+                            <button
+                                type="button"
+                                onClick={cancelDelete}
+                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                            >
+                                إلغاء
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmDelete}
+                                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                            >
+                                حذف
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <ToastContainer />
         </div>
     );
 }

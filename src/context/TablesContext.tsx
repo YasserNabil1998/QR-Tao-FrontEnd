@@ -105,4 +105,3 @@ export const TablesProvider = ({ children }: TablesProviderProps) => {
         </TablesContext.Provider>
     );
 };
-

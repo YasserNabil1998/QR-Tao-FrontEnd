@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useToast } from "../../../../hooks/useToast";
+import CustomSelect from "../../../../components/common/CustomSelect";
 
 interface AnalyticsData {
     revenue: {
@@ -38,48 +40,225 @@ export default function AdvancedAnalytics({
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
     const [timeRange, setTimeRange] = useState("week");
+    const { showToast, ToastContainer } = useToast();
 
-    // Mock data for demonstration
-    const mockAnalytics: AnalyticsData = {
-        revenue: {
+    // Mock data for different time ranges
+    const getAnalyticsData = (range: string): AnalyticsData => {
+        const baseData = {
             daily: [1200, 1500, 1800, 2100, 1900, 2300, 2000],
             weekly: [8500, 9200, 8800, 9500],
             monthly: [35000, 38000, 42000],
-        },
-        orders: {
-            total: 1250,
-            completed: 1180,
-            cancelled: 45,
-            pending: 25,
-        },
-        customers: {
-            new: 180,
-            returning: 320,
-            total: 500,
-        },
-        popularItems: [
-            { name: "برجر اللحم المشوي", orders: 145, revenue: 2175 },
-            { name: "بيتزا مارجريتا", orders: 132, revenue: 1980 },
-            { name: "سلطة قيصر", orders: 98, revenue: 980 },
-            { name: "باستا الفريدو", orders: 87, revenue: 1305 },
-            { name: "دجاج مشوي", orders: 76, revenue: 1140 },
-        ],
-        peakHours: [
-            { hour: "12:00", orders: 45 },
-            { hour: "13:00", orders: 62 },
-            { hour: "14:00", orders: 38 },
-            { hour: "19:00", orders: 58 },
-            { hour: "20:00", orders: 71 },
-            { hour: "21:00", orders: 52 },
-        ],
+        };
+
+        switch (range) {
+            case "day":
+                return {
+                    revenue: {
+                        daily: [
+                            200, 350, 450, 600, 550, 700, 650, 800, 750, 900,
+                            850, 1000, 950, 1100, 1050, 1200, 1150, 1300, 1250,
+                            1400, 1350, 1500, 1450, 1600,
+                        ],
+                        weekly: baseData.weekly,
+                        monthly: baseData.monthly,
+                    },
+                    orders: {
+                        total: 85,
+                        completed: 80,
+                        cancelled: 3,
+                        pending: 2,
+                    },
+                    customers: {
+                        new: 12,
+                        returning: 25,
+                        total: 37,
+                    },
+                    popularItems: [
+                        { name: "برجر اللحم المشوي", orders: 10, revenue: 150 },
+                        { name: "بيتزا مارجريتا", orders: 9, revenue: 135 },
+                        { name: "سلطة قيصر", orders: 7, revenue: 70 },
+                        { name: "باستا الفريدو", orders: 6, revenue: 90 },
+                        { name: "دجاج مشوي", orders: 5, revenue: 75 },
+                    ],
+                    peakHours: [
+                        { hour: "12:00", orders: 8 },
+                        { hour: "13:00", orders: 12 },
+                        { hour: "14:00", orders: 6 },
+                        { hour: "19:00", orders: 10 },
+                        { hour: "20:00", orders: 15 },
+                        { hour: "21:00", orders: 11 },
+                    ],
+                };
+            case "week":
+                return {
+                    revenue: {
+                        daily: [1200, 1500, 1800, 2100, 1900, 2300, 2000],
+                        weekly: [8500, 9200, 8800, 9500],
+                        monthly: baseData.monthly,
+                    },
+                    orders: {
+                        total: 1250,
+                        completed: 1180,
+                        cancelled: 45,
+                        pending: 25,
+                    },
+                    customers: {
+                        new: 180,
+                        returning: 320,
+                        total: 500,
+                    },
+                    popularItems: [
+                        {
+                            name: "برجر اللحم المشوي",
+                            orders: 145,
+                            revenue: 2175,
+                        },
+                        { name: "بيتزا مارجريتا", orders: 132, revenue: 1980 },
+                        { name: "سلطة قيصر", orders: 98, revenue: 980 },
+                        { name: "باستا الفريدو", orders: 87, revenue: 1305 },
+                        { name: "دجاج مشوي", orders: 76, revenue: 1140 },
+                    ],
+                    peakHours: [
+                        { hour: "12:00", orders: 45 },
+                        { hour: "13:00", orders: 62 },
+                        { hour: "14:00", orders: 38 },
+                        { hour: "19:00", orders: 58 },
+                        { hour: "20:00", orders: 71 },
+                        { hour: "21:00", orders: 52 },
+                    ],
+                };
+            case "month":
+                return {
+                    revenue: {
+                        daily: baseData.daily,
+                        weekly: [35000, 38000, 42000, 40000],
+                        monthly: [150000, 165000, 180000],
+                    },
+                    orders: {
+                        total: 5200,
+                        completed: 4920,
+                        cancelled: 180,
+                        pending: 100,
+                    },
+                    customers: {
+                        new: 750,
+                        returning: 1350,
+                        total: 2100,
+                    },
+                    popularItems: [
+                        {
+                            name: "برجر اللحم المشوي",
+                            orders: 620,
+                            revenue: 9300,
+                        },
+                        { name: "بيتزا مارجريتا", orders: 560, revenue: 8400 },
+                        { name: "سلطة قيصر", orders: 420, revenue: 4200 },
+                        { name: "باستا الفريدو", orders: 370, revenue: 5550 },
+                        { name: "دجاج مشوي", orders: 320, revenue: 4800 },
+                    ],
+                    peakHours: [
+                        { hour: "12:00", orders: 190 },
+                        { hour: "13:00", orders: 260 },
+                        { hour: "14:00", orders: 160 },
+                        { hour: "19:00", orders: 240 },
+                        { hour: "20:00", orders: 300 },
+                        { hour: "21:00", orders: 220 },
+                    ],
+                };
+            case "year":
+                return {
+                    revenue: {
+                        daily: baseData.daily,
+                        weekly: baseData.weekly,
+                        monthly: [
+                            1800000, 1950000, 2100000, 2250000, 2400000,
+                            2550000, 2700000, 2850000, 3000000, 3150000,
+                            3300000, 3450000,
+                        ],
+                    },
+                    orders: {
+                        total: 62500,
+                        completed: 59000,
+                        cancelled: 2200,
+                        pending: 1300,
+                    },
+                    customers: {
+                        new: 9000,
+                        returning: 16200,
+                        total: 25200,
+                    },
+                    popularItems: [
+                        {
+                            name: "برجر اللحم المشوي",
+                            orders: 7400,
+                            revenue: 111000,
+                        },
+                        {
+                            name: "بيتزا مارجريتا",
+                            orders: 6720,
+                            revenue: 100800,
+                        },
+                        { name: "سلطة قيصر", orders: 5040, revenue: 50400 },
+                        { name: "باستا الفريدو", orders: 4440, revenue: 66600 },
+                        { name: "دجاج مشوي", orders: 3840, revenue: 57600 },
+                    ],
+                    peakHours: [
+                        { hour: "12:00", orders: 2280 },
+                        { hour: "13:00", orders: 3120 },
+                        { hour: "14:00", orders: 1920 },
+                        { hour: "19:00", orders: 2880 },
+                        { hour: "20:00", orders: 3600 },
+                        { hour: "21:00", orders: 2640 },
+                    ],
+                };
+            default:
+                return {
+                    revenue: {
+                        daily: baseData.daily,
+                        weekly: baseData.weekly,
+                        monthly: baseData.monthly,
+                    },
+                    orders: {
+                        total: 1250,
+                        completed: 1180,
+                        cancelled: 45,
+                        pending: 25,
+                    },
+                    customers: {
+                        new: 180,
+                        returning: 320,
+                        total: 500,
+                    },
+                    popularItems: [
+                        {
+                            name: "برجر اللحم المشوي",
+                            orders: 145,
+                            revenue: 2175,
+                        },
+                        { name: "بيتزا مارجريتا", orders: 132, revenue: 1980 },
+                        { name: "سلطة قيصر", orders: 98, revenue: 980 },
+                        { name: "باستا الفريدو", orders: 87, revenue: 1305 },
+                        { name: "دجاج مشوي", orders: 76, revenue: 1140 },
+                    ],
+                    peakHours: [
+                        { hour: "12:00", orders: 45 },
+                        { hour: "13:00", orders: 62 },
+                        { hour: "14:00", orders: 38 },
+                        { hour: "19:00", orders: 58 },
+                        { hour: "20:00", orders: 71 },
+                        { hour: "21:00", orders: 52 },
+                    ],
+                };
+        }
     };
 
     useEffect(() => {
         // Simulate loading
+        setLoading(true);
         setTimeout(() => {
-            setAnalytics(mockAnalytics);
+            setAnalytics(getAnalyticsData(timeRange));
             setLoading(false);
-        }, 1000);
+        }, 300);
     }, [timeRange]);
 
     if (loading) {
@@ -99,21 +278,27 @@ export default function AdvancedAnalytics({
                 <h2 className="text-2xl font-bold text-gray-900">
                     التحليلات المتقدمة
                 </h2>
-                <div className="flex items-center space-x-4 space-x-reverse">
-                    <select
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                <div className="flex items-center gap-3">
+                    <div className="w-48">
+                        <CustomSelect
+                            value={timeRange}
+                            onChange={(value) => setTimeRange(value)}
+                            options={[
+                                { value: "day", label: "اليوم" },
+                                { value: "week", label: "الأسبوع" },
+                                { value: "month", label: "الشهر" },
+                                { value: "year", label: "السنة" },
+                            ]}
+                            placeholder="اختر الفترة"
+                        />
+                    </div>
+                    <button
+                        onClick={() => {
+                            showToast("ميزة تصدير التقرير قيد التطوير", "info");
+                        }}
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap cursor-pointer flex items-center gap-2"
                     >
-                        <option value="day">اليوم</option>
-                        <option value="week">الأسبوع</option>
-                        <option value="month">الشهر</option>
-                        <option value="year">السنة</option>
-                    </select>
-                    <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap cursor-pointer">
-                        <div className="w-4 h-4 flex items-center justify-center ml-2 inline-block">
-                            <i className="ri-download-line"></i>
-                        </div>
+                        <i className="ri-download-line"></i>
                         تصدير التقرير
                     </button>
                 </div>
@@ -121,22 +306,32 @@ export default function AdvancedAnalytics({
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600">
                                 إجمالي الإيرادات
                             </p>
-                            <p className="text-2xl font-semibold text-gray-900">
-                                {analytics.revenue.weekly
-                                    .reduce((a, b) => a + b, 0)
-                                    .toLocaleString()}{" "}
+                            <p className="text-2xl font-bold text-gray-900">
+                                {timeRange === "day"
+                                    ? analytics.revenue.daily
+                                          .reduce((a, b) => a + b, 0)
+                                          .toLocaleString()
+                                    : timeRange === "week"
+                                    ? analytics.revenue.weekly
+                                          .reduce((a, b) => a + b, 0)
+                                          .toLocaleString()
+                                    : timeRange === "month"
+                                    ? analytics.revenue.monthly
+                                          .reduce((a, b) => a + b, 0)
+                                          .toLocaleString()
+                                    : analytics.revenue.monthly
+                                          .reduce((a, b) => a + b, 0)
+                                          .toLocaleString()}{" "}
                                 ج.م
                             </p>
-                            <p className="text-sm text-green-600 mt-1">
-                                <div className="w-4 h-4 flex items-center justify-center ml-1 inline-block">
-                                    <i className="ri-arrow-up-line"></i>
-                                </div>
+                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                                <i className="ri-arrow-up-line ml-1"></i>
                                 +12.5% من الأسبوع الماضي
                             </p>
                         </div>
@@ -146,19 +341,17 @@ export default function AdvancedAnalytics({
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600">
                                 إجمالي الطلبات
                             </p>
-                            <p className="text-2xl font-semibold text-gray-900">
+                            <p className="text-2xl font-bold text-gray-900">
                                 {analytics.orders.total}
                             </p>
-                            <p className="text-sm text-green-600 mt-1">
-                                <div className="w-4 h-4 flex items-center justify-center ml-1 inline-block">
-                                    <i className="ri-arrow-up-line"></i>
-                                </div>
+                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                                <i className="ri-arrow-up-line ml-1"></i>
                                 +8.3% من الأسبوع الماضي
                             </p>
                         </div>
@@ -168,19 +361,17 @@ export default function AdvancedAnalytics({
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600">
                                 العملاء الجدد
                             </p>
-                            <p className="text-2xl font-semibold text-gray-900">
+                            <p className="text-2xl font-bold text-gray-900">
                                 {analytics.customers.new}
                             </p>
-                            <p className="text-sm text-green-600 mt-1">
-                                <div className="w-4 h-4 flex items-center justify-center ml-1 inline-block">
-                                    <i className="ri-arrow-up-line"></i>
-                                </div>
+                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                                <i className="ri-arrow-up-line ml-1"></i>
                                 +15.2% من الأسبوع الماضي
                             </p>
                         </div>
@@ -190,13 +381,13 @@ export default function AdvancedAnalytics({
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-600">
                                 معدل الإكمال
                             </p>
-                            <p className="text-2xl font-semibold text-gray-900">
+                            <p className="text-2xl font-bold text-gray-900">
                                 {(
                                     (analytics.orders.completed /
                                         analytics.orders.total) *
@@ -204,10 +395,8 @@ export default function AdvancedAnalytics({
                                 ).toFixed(1)}
                                 %
                             </p>
-                            <p className="text-sm text-green-600 mt-1">
-                                <div className="w-4 h-4 flex items-center justify-center ml-1 inline-block">
-                                    <i className="ri-arrow-up-line"></i>
-                                </div>
+                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                                <i className="ri-arrow-up-line ml-1"></i>
                                 +2.1% من الأسبوع الماضي
                             </p>
                         </div>
@@ -221,49 +410,117 @@ export default function AdvancedAnalytics({
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Revenue Chart */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                        الإيرادات اليومية
+                <div className="bg-white rounded-lg shadow p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                        {timeRange === "day"
+                            ? "الإيرادات بالساعة"
+                            : timeRange === "week"
+                            ? "الإيرادات اليومية"
+                            : timeRange === "month"
+                            ? "الإيرادات الأسبوعية"
+                            : "الإيرادات الشهرية"}
                     </h3>
-                    <div className="h-64 flex items-end justify-between space-x-2 space-x-reverse">
-                        {analytics.revenue.daily.map((revenue, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center"
-                            >
-                                <div
-                                    className="bg-orange-500 rounded-t w-8 transition-all duration-300 hover:bg-orange-600"
-                                    style={{
-                                        height: `${
-                                            (revenue /
-                                                Math.max(
-                                                    ...analytics.revenue.daily
-                                                )) *
-                                            200
-                                        }px`,
-                                    }}
-                                ></div>
-                                <span className="text-xs text-gray-500 mt-2">
-                                    {
-                                        [
-                                            "الأحد",
-                                            "الاثنين",
-                                            "الثلاثاء",
-                                            "الأربعاء",
-                                            "الخميس",
-                                            "الجمعة",
-                                            "السبت",
-                                        ][index]
-                                    }
-                                </span>
-                            </div>
-                        ))}
+                    <div className="overflow-x-auto">
+                        <div
+                            className={`h-64 flex items-end ${
+                                timeRange === "day" ? "gap-1" : "gap-2"
+                            } min-w-max`}
+                        >
+                            {(timeRange === "day"
+                                ? analytics.revenue.daily
+                                : timeRange === "week"
+                                ? analytics.revenue.daily
+                                : timeRange === "month"
+                                ? analytics.revenue.weekly
+                                : analytics.revenue.monthly
+                            ).map((revenue, index) => {
+                                const maxValue = Math.max(
+                                    ...(timeRange === "day"
+                                        ? analytics.revenue.daily
+                                        : timeRange === "week"
+                                        ? analytics.revenue.daily
+                                        : timeRange === "month"
+                                        ? analytics.revenue.weekly
+                                        : analytics.revenue.monthly)
+                                );
+                                const labels =
+                                    timeRange === "day"
+                                        ? Array.from(
+                                              { length: 24 },
+                                              (_, i) =>
+                                                  `${String(i).padStart(
+                                                      2,
+                                                      "0"
+                                                  )}:00`
+                                          )
+                                        : timeRange === "week"
+                                        ? [
+                                              "الأحد",
+                                              "الاثنين",
+                                              "الثلاثاء",
+                                              "الأربعاء",
+                                              "الخميس",
+                                              "الجمعة",
+                                              "السبت",
+                                          ]
+                                        : timeRange === "month"
+                                        ? [
+                                              "الأسبوع 1",
+                                              "الأسبوع 2",
+                                              "الأسبوع 3",
+                                              "الأسبوع 4",
+                                          ]
+                                        : [
+                                              "يناير",
+                                              "فبراير",
+                                              "مارس",
+                                              "أبريل",
+                                              "مايو",
+                                              "يونيو",
+                                              "يوليو",
+                                              "أغسطس",
+                                              "سبتمبر",
+                                              "أكتوبر",
+                                              "نوفمبر",
+                                              "ديسمبر",
+                                          ];
+                                const barWidth =
+                                    timeRange === "day" ? "w-6" : "w-8";
+                                return (
+                                    <div
+                                        key={index}
+                                        className="flex flex-col items-center"
+                                        title={`${revenue.toLocaleString()} ج.م`}
+                                    >
+                                        <div
+                                            className={`bg-orange-500 rounded-t ${barWidth} transition-all duration-300 hover:bg-orange-600 cursor-pointer`}
+                                            style={{
+                                                height: `${
+                                                    (revenue / maxValue) * 200
+                                                }px`,
+                                                minHeight:
+                                                    revenue > 0 ? "4px" : "0px",
+                                            }}
+                                        ></div>
+                                        <span
+                                            className={`text-xs text-gray-500 mt-2 text-center ${
+                                                timeRange === "day"
+                                                    ? "transform -rotate-45 origin-top-right whitespace-nowrap"
+                                                    : ""
+                                            }`}
+                                        >
+                                            {labels[index] || `#${index + 1}`}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 
                 {/* Peak Hours Chart */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg shadow p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">
                         ساعات الذروة
                     </h3>
                     <div className="h-64 flex items-end justify-between space-x-2 space-x-reverse">
@@ -298,8 +555,8 @@ export default function AdvancedAnalytics({
             {/* Popular Items and Order Status */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Popular Items */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg shadow p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">
                         الأطباق الأكثر طلباً
                     </h3>
                     <div className="space-y-4">
@@ -334,8 +591,8 @@ export default function AdvancedAnalytics({
                 </div>
 
                 {/* Order Status */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg shadow p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">
                         حالة الطلبات
                     </h3>
                     <div className="space-y-4">
@@ -463,8 +720,8 @@ export default function AdvancedAnalytics({
             </div>
 
             {/* Customer Analytics */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">
                     تحليل العملاء
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -499,6 +756,8 @@ export default function AdvancedAnalytics({
                     </div>
                 </div>
             </div>
+
+            <ToastContainer />
         </div>
     );
 }

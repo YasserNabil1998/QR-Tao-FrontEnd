@@ -5,13 +5,79 @@ import { useToast } from "../../../../hooks/useToast";
 
 const TablesManagement = () => {
     const { user, loading: authLoading } = useAuth();
-    const { tables, setTables, addTable, updateTable, deleteTable } =
-        useTablesContext();
+    const { showToast, ToastContainer } = useToast();
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingTable, setEditingTable] = useState<any>(null);
     const [restaurantId, setRestaurantId] = useState<string | null>(null);
-    const { showToast, ToastContainer } = useToast();
+
+    // Initialize local state for tables (fallback if context not available)
+    const [localTables, setLocalTables] = useState<any[]>([
+        {
+            id: "table-1",
+            table_number: "1",
+            capacity: 4,
+            location: "الطابق الأول، بجانب النافذة",
+            status: "available",
+            restaurant_id: "demo-restaurant",
+            qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                `${window.location.origin}/menu/demo-restaurant?table=table-1`
+            )}`,
+        },
+        {
+            id: "table-2",
+            table_number: "2",
+            capacity: 6,
+            location: "الطابق الأول، وسط القاعة",
+            status: "occupied",
+            restaurant_id: "demo-restaurant",
+            qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                `${window.location.origin}/menu/demo-restaurant?table=table-2`
+            )}`,
+        },
+        {
+            id: "table-3",
+            table_number: "3",
+            capacity: 2,
+            location: "الطابق الثاني، ركن هادئ",
+            status: "available",
+            restaurant_id: "demo-restaurant",
+            qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                `${window.location.origin}/menu/demo-restaurant?table=table-3`
+            )}`,
+        },
+    ]);
+
+    // Try to get tables from context, or use local state
+    let tablesContext: any = null;
+    try {
+        tablesContext = useTablesContext();
+    } catch (error) {
+        // Context not available, will use local state
+    }
+
+    // Use context if available, otherwise use local state
+    const tables = tablesContext?.tables || localTables;
+    const setTables = tablesContext?.setTables || setLocalTables;
+    const addTable =
+        tablesContext?.addTable ||
+        ((table: any) => {
+            setLocalTables((prev) => [...prev, table]);
+        });
+    const updateTable =
+        tablesContext?.updateTable ||
+        ((id: string, updates: Partial<any>) => {
+            setLocalTables((prev) =>
+                prev.map((table) =>
+                    table.id === id ? { ...table, ...updates } : table
+                )
+            );
+        });
+    const deleteTable =
+        tablesContext?.deleteTable ||
+        ((id: string) => {
+            setLocalTables((prev) => prev.filter((table) => table.id !== id));
+        });
 
     useEffect(() => {
         if (authLoading) {
