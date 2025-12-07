@@ -5,6 +5,7 @@ node_modules/
 /node_modules
 node_modules
 .vscode
+.vscode/
 
 # Testing
 /coverage
@@ -38,7 +39,7 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-.vscode
+
 
 # Vite
 .vite
