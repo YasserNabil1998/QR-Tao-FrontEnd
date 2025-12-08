@@ -462,7 +462,7 @@ export default function InventoryManagement({
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
                                             {item.cost_per_unit.toLocaleString()}{" "}
-                                            ج.م/{item.unit}
+                                            $/{item.unit}
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -572,7 +572,7 @@ export default function InventoryManagement({
                                         0
                                     )
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -794,7 +794,7 @@ export default function InventoryManagement({
 
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium text-gray-700">
-                                        التكلفة لكل وحدة (ج.م){" "}
+                                        التكلفة لكل وحدة ($){" "}
                                         <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
@@ -902,7 +902,7 @@ export default function InventoryManagement({
                                                         formData.current_stock *
                                                         formData.cost_per_unit
                                                     ).toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div>

@@ -366,7 +366,7 @@ export default function StaffManagement({
                                         0
                                     )
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -488,7 +488,7 @@ export default function StaffManagement({
                                         <div className="text-sm font-medium text-gray-900">
                                             {member.salary?.toLocaleString() ||
                                                 0}{" "}
-                                            ج.م
+                                            $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -644,7 +644,7 @@ export default function StaffManagement({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        الراتب (ج.م)
+                                        الراتب ($)
                                     </label>
                                     <input
                                         type="number"

@@ -219,8 +219,8 @@ export default function PurchaseProductsManagement() {
     }, []);
 
     const fetchPriceHistory = (productId: string) => {
-            const history = mockPriceHistory[productId] || [];
-            setPriceHistory(history);
+        const history = mockPriceHistory[productId] || [];
+        setPriceHistory(history);
     };
 
     // دالة لتنسيق التاريخ بالميلادي
@@ -463,18 +463,18 @@ export default function PurchaseProductsManagement() {
             {/* فلاتر وبحث */}
             <div className="flex gap-4 mb-6 items-center">
                 <div className="relative w-64">
-                            <input
-                                type="text"
+                    <input
+                        type="text"
                         placeholder="البحث في المنتجات..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                            />
-                            <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        </div>
+                    />
+                    <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
                 <div className="w-48">
                     <CustomSelect
-                            value={filter}
+                        value={filter}
                         onChange={(value) => setFilter(value)}
                         options={[
                             { value: "all", label: "جميع المنتجات" },
@@ -488,10 +488,10 @@ export default function PurchaseProductsManagement() {
                         ]}
                         placeholder="فلترة حسب الاتجاه"
                     />
-                    </div>
+                </div>
                 <div className="w-48">
                     <CustomSelect
-                            value={sortBy}
+                        value={sortBy}
                         onChange={(value) => setSortBy(value)}
                         options={[
                             { value: "name", label: "الاسم" },
@@ -583,13 +583,13 @@ export default function PurchaseProductsManagement() {
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900">
-                                            {product.current_price} ج.م/
+                                            {product.current_price} $/
                                             {product.unit}
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-600">
-                                            {product.previous_price} ج.م/
+                                            {product.previous_price} $/
                                             {product.unit}
                                         </div>
                                     </td>
@@ -624,7 +624,7 @@ export default function PurchaseProductsManagement() {
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
-                                            {product.average_price} ج.م/
+                                            {product.average_price} $/
                                             {product.unit}
                                         </div>
                                     </td>
@@ -794,23 +794,23 @@ export default function PurchaseProductsManagement() {
                                                 <td className="px-3 py-4">
                                                     <div className="text-sm text-gray-900">
                                                         {formatDate(
-                                                        entry.purchase_date
-                                                    )}
+                                                            entry.purchase_date
+                                                        )}
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-4">
                                                     <div className="text-sm font-medium text-gray-900">
-                                                    {entry.price} ج.م
+                                                        {entry.price} $
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-4">
                                                     <div className="text-sm text-gray-900">
-                                                    {entry.quantity}
+                                                        {entry.quantity}
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-4">
                                                     <div className="text-sm text-gray-900 truncate">
-                                                    {entry.supplier_name}
+                                                        {entry.supplier_name}
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-4">

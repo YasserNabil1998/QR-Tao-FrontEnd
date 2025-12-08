@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "../../../../hooks/useToast";
 import CustomSelect from "../../../../components/common/CustomSelect";
+import { formatCurrency } from "../../../../utils/currency";
 
 interface Order {
     id: string;
@@ -528,10 +529,10 @@ export default function OrdersList() {
                             <tr>
                                 <td>${item.name}</td>
                                 <td>${item.quantity}</td>
-                                <td>${item.price.toFixed(2)} ج.م</td>
+                                <td>${item.price.toFixed(2)} $</td>
                                 <td>${(item.price * item.quantity).toFixed(
                                     2
-                                )} ج.م</td>
+                                )} $</td>
                             </tr>
                         `
                             )
@@ -542,15 +543,15 @@ export default function OrdersList() {
                 <div class="total-section">
                     <div class="total-row">
                         <span>المجموع الفرعي:</span>
-                        <span>${orderToPrint.total.toFixed(2)} ج.م</span>
+                        <span>${orderToPrint.total.toFixed(2)} $</span>
                     </div>
                     <div class="total-row">
                         <span>الضريبة (15%):</span>
-                        <span>${tax.toFixed(2)} ج.م</span>
+                        <span>${tax.toFixed(2)} $</span>
                     </div>
                     <div class="total-row final">
                         <span>الإجمالي:</span>
-                        <span>${totalWithTax.toFixed(2)} ج.م</span>
+                        <span>${totalWithTax.toFixed(2)} $</span>
                     </div>
                 </div>
 
@@ -768,7 +769,7 @@ export default function OrdersList() {
                                                         item.price *
                                                         item.quantity
                                                     ).toFixed(2)}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                         ))}
@@ -799,7 +800,7 @@ export default function OrdersList() {
                                             الإجمالي:
                                         </span>
                                         <span className="font-bold text-lg text-gray-900">
-                                            {order.total.toFixed(2)} ج.م
+                                            {order.total.toFixed(2)} $
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
@@ -1083,10 +1084,10 @@ export default function OrdersList() {
                                                         item.price *
                                                         item.quantity
                                                     ).toFixed(2)}{" "}
-                                                    ج.م
+                                                    $
                                                 </p>
                                                 <p className="text-sm text-gray-600">
-                                                    {item.price.toFixed(2)} ج.م
+                                                    {item.price.toFixed(2)} $
                                                     للقطعة
                                                 </p>
                                             </div>
@@ -1102,7 +1103,7 @@ export default function OrdersList() {
                                         المجموع الفرعي:
                                     </span>
                                     <span className="text-gray-900">
-                                        {selectedOrder.total.toFixed(2)} ج.م
+                                        {selectedOrder.total.toFixed(2)} $
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
@@ -1113,7 +1114,7 @@ export default function OrdersList() {
                                         {(selectedOrder.total * 0.15).toFixed(
                                             2
                                         )}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2 mt-2">
@@ -1122,7 +1123,7 @@ export default function OrdersList() {
                                         {(selectedOrder.total * 1.15).toFixed(
                                             2
                                         )}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                             </div>

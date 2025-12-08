@@ -423,7 +423,7 @@ export default function SuppliersManagement() {
                                         0
                                     )
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -446,7 +446,7 @@ export default function SuppliersManagement() {
                                         0
                                     )
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -561,7 +561,7 @@ export default function SuppliersManagement() {
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
                                             {supplier.credit_limit.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -575,7 +575,7 @@ export default function SuppliersManagement() {
                                             }`}
                                         >
                                             {supplier.current_balance.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -1271,7 +1271,7 @@ export default function SuppliersManagement() {
                                         الحد الائتماني:
                                     </span>{" "}
                                     {selectedSupplier.credit_limit.toLocaleString()}{" "}
-                                    ج.م
+                                    $
                                 </p>
                                 <p className="text-sm text-gray-600 mb-2">
                                     <span className="font-medium">
@@ -1285,7 +1285,7 @@ export default function SuppliersManagement() {
                                         }
                                     >
                                         {selectedSupplier.current_balance.toLocaleString()}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </p>
                                 <p className="text-sm text-gray-600">

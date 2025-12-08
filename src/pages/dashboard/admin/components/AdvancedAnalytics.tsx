@@ -328,7 +328,7 @@ export default function AdvancedAnalytics({
                                     : analytics.revenue.monthly
                                           .reduce((a, b) => a + b, 0)
                                           .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                             <p className="text-sm text-green-600 mt-1 flex items-center">
                                 <i className="ri-arrow-up-line ml-1"></i>
@@ -490,7 +490,7 @@ export default function AdvancedAnalytics({
                                     <div
                                         key={index}
                                         className="flex flex-col items-center"
-                                        title={`${revenue.toLocaleString()} ج.م`}
+                                        title={`${revenue.toLocaleString()} $`}
                                     >
                                         <div
                                             className={`bg-orange-500 rounded-t ${barWidth} transition-all duration-300 hover:bg-orange-600 cursor-pointer`}
@@ -582,7 +582,7 @@ export default function AdvancedAnalytics({
                                 </div>
                                 <div className="text-right">
                                     <p className="font-semibold text-gray-900">
-                                        {item.revenue} ج.م
+                                        {item.revenue} $
                                     </p>
                                 </div>
                             </div>

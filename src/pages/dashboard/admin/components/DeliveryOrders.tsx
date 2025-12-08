@@ -388,7 +388,7 @@ export default function DeliveryOrders() {
             selectedOrder.total_amount - selectedOrder.paid_amount;
         if (paymentData.amount > remainingAmount) {
             showToast(
-                `المبلغ المدخل أكبر من المتبقي (${remainingAmount.toLocaleString()} ج.م)`,
+                `المبلغ المدخل أكبر من المتبقي (${remainingAmount.toLocaleString()} $)`,
                 "error"
             );
             return;
@@ -431,7 +431,7 @@ export default function DeliveryOrders() {
             setPayments((prev) => [newPayment, ...prev]);
 
             showToast(
-                `تم تسجيل دفعة بقيمة ${paymentData.amount.toLocaleString()} ج.م بنجاح`,
+                `تم تسجيل دفعة بقيمة ${paymentData.amount.toLocaleString()} $ بنجاح`,
                 "success"
             );
 
@@ -696,7 +696,7 @@ export default function DeliveryOrders() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -712,7 +712,7 @@ export default function DeliveryOrders() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -731,7 +731,7 @@ export default function DeliveryOrders() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -748,7 +748,7 @@ export default function DeliveryOrders() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -879,11 +879,10 @@ export default function DeliveryOrders() {
                                         {order.delivery_address}
                                     </td>
                                     <td className="px-2 py-4 text-sm font-semibold text-gray-900 truncate">
-                                        {order.total_amount.toLocaleString()}{" "}
-                                        ج.م
+                                        {order.total_amount.toLocaleString()} $
                                     </td>
                                     <td className="px-2 py-4 text-sm font-medium text-green-600 truncate">
-                                        {order.paid_amount.toLocaleString()} ج.م
+                                        {order.paid_amount.toLocaleString()} $
                                     </td>
                                     <td className="px-2 py-4 text-sm text-gray-600 truncate">
                                         {getPaymentMethodText(
@@ -1244,7 +1243,7 @@ export default function DeliveryOrders() {
                                                         item.quantity *
                                                         item.unit_price
                                                     ).toFixed(2)}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                                 {newOrder.items.length > 1 && (
                                                     <button
@@ -1277,14 +1276,13 @@ export default function DeliveryOrders() {
                                                     0
                                                 )
                                                 .toFixed(2)}{" "}
-                                            ج.م
+                                            $
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span>رسوم التوصيل:</span>
                                         <span>
-                                            {newOrder.delivery_fee.toFixed(2)}{" "}
-                                            ج.م
+                                            {newOrder.delivery_fee.toFixed(2)} $
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-lg font-bold border-t pt-2 mt-2">
@@ -1299,7 +1297,7 @@ export default function DeliveryOrders() {
                                                     0
                                                 ) + newOrder.delivery_fee
                                             ).toFixed(2)}{" "}
-                                            ج.م
+                                            $
                                         </span>
                                     </div>
                                 </div>
@@ -1408,10 +1406,10 @@ export default function DeliveryOrders() {
                                                     {item.quantity}
                                                 </td>
                                                 <td className="px-3 py-4 text-sm text-gray-900 truncate">
-                                                    {item.unit_price} ج.م
+                                                    {item.unit_price} $
                                                 </td>
                                                 <td className="px-3 py-4 text-sm font-medium text-gray-900 truncate">
-                                                    {item.total_price} ج.م
+                                                    {item.total_price} $
                                                 </td>
                                                 <td className="px-3 py-4 text-sm text-gray-500 truncate">
                                                     {item.notes || "-"}
@@ -1431,28 +1429,28 @@ export default function DeliveryOrders() {
                                             selectedOrder.total_amount -
                                             selectedOrder.delivery_fee
                                         ).toLocaleString()}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-sm mb-2">
                                     <span>رسوم التوصيل:</span>
                                     <span>
                                         {selectedOrder.delivery_fee.toLocaleString()}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-lg font-bold border-t pt-2">
                                     <span>الإجمالي:</span>
                                     <span>
                                         {selectedOrder.total_amount.toLocaleString()}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-sm text-green-600 mt-2">
                                     <span>المبلغ المدفوع:</span>
                                     <span>
                                         {selectedOrder.paid_amount.toLocaleString()}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-sm text-red-600">
@@ -1462,7 +1460,7 @@ export default function DeliveryOrders() {
                                             selectedOrder.total_amount -
                                             selectedOrder.paid_amount
                                         ).toLocaleString()}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                             </div>
@@ -1498,12 +1496,12 @@ export default function DeliveryOrders() {
                                 <p className="text-lg font-bold text-gray-900">
                                     الإجمالي:{" "}
                                     {selectedOrder.total_amount.toLocaleString()}{" "}
-                                    ج.م
+                                    $
                                 </p>
                                 <p className="text-sm text-green-600">
                                     المدفوع:{" "}
                                     {selectedOrder.paid_amount.toLocaleString()}{" "}
-                                    ج.م
+                                    $
                                 </p>
                                 <p className="text-sm text-red-600 font-medium">
                                     المتبقي:{" "}
@@ -1511,7 +1509,7 @@ export default function DeliveryOrders() {
                                         selectedOrder.total_amount -
                                         selectedOrder.paid_amount
                                     ).toLocaleString()}{" "}
-                                    ج.م
+                                    $
                                 </p>
                             </div>
 
@@ -1647,7 +1645,7 @@ export default function DeliveryOrders() {
                                             {selectedOrder.total_amount.toFixed(
                                                 2
                                             )}{" "}
-                                            ج.م
+                                            $
                                         </p>
                                     </div>
                                     <div>
@@ -1658,7 +1656,7 @@ export default function DeliveryOrders() {
                                             {selectedOrder.paid_amount.toFixed(
                                                 2
                                             )}{" "}
-                                            ج.م
+                                            $
                                         </p>
                                     </div>
                                     <div>
@@ -1670,7 +1668,7 @@ export default function DeliveryOrders() {
                                                 selectedOrder.total_amount -
                                                 selectedOrder.paid_amount
                                             ).toFixed(2)}{" "}
-                                            ج.م
+                                            $
                                         </p>
                                     </div>
                                 </div>
@@ -1709,7 +1707,7 @@ export default function DeliveryOrders() {
                                                 </td>
                                                 <td className="px-3 py-4 text-sm text-gray-900 truncate">
                                                     {payment.amount.toFixed(2)}{" "}
-                                                    ج.م
+                                                    $
                                                 </td>
                                                 <td className="px-3 py-4 text-sm text-gray-900 truncate">
                                                     {getPaymentMethodText(

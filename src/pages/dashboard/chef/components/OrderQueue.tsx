@@ -239,7 +239,7 @@ const OrderQueue = ({ restaurantId }: OrderQueueProps) => {
 
                             <div className="flex items-center justify-between">
                                 <span className="font-bold text-lg text-gray-900">
-                                    {order.total_amount} ر.س
+                                    {order.total_amount} $
                                 </span>
                                 <div className="flex space-x-2 space-x-reverse">
                                     {order.status === "pending" && (

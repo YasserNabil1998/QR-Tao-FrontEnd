@@ -48,10 +48,10 @@ const Cart = ({
                                             {item.name}
                                         </h3>
                                         <span className="text-gray-600">
-                                            {item.price} ج.م × {item.quantity}
+                                            {item.price} $ × {item.quantity}
                                         </span>
                                         <span className="font-semibold">
-                                            {item.price * item.quantity} ج.م
+                                            {item.price * item.quantity} $
                                         </span>
                                         {item.specialInstructions && (
                                             <p className="text-xs text-gray-600 mt-1">
@@ -110,7 +110,7 @@ const Cart = ({
                                 المجموع الكلي
                             </span>
                             <span className="text-xl font-bold">
-                                {totalAmount} ج.م
+                                {totalAmount} $
                             </span>
                         </div>
 

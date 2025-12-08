@@ -106,7 +106,7 @@ export default function Pricing() {
                                         {plan.price}
                                     </span>
                                     <span className="text-xl text-gray-600 mr-2">
-                                        ر.س
+                                        $
                                     </span>
                                 </div>
                                 <span className="text-gray-500">

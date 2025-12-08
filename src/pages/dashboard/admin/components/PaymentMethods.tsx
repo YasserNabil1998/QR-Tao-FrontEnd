@@ -342,7 +342,7 @@ export default function PaymentMethods() {
                                 إجمالي اليوم
                             </p>
                             <p className="text-2xl font-bold text-gray-900">
-                                {todayReport.total.toLocaleString()} ج.م
+                                {todayReport.total.toLocaleString()} $
                             </p>
                             <p className="text-sm text-gray-500">
                                 {todayReport.totalCount} عملية
@@ -361,7 +361,7 @@ export default function PaymentMethods() {
                                 المدفوعات النقدية
                             </p>
                             <p className="text-2xl font-bold text-gray-900">
-                                {todayReport.cashTotal.toLocaleString()} ج.م
+                                {todayReport.cashTotal.toLocaleString()} $
                             </p>
                             <p className="text-sm text-gray-500">
                                 {todayReport.cashCount} عملية
@@ -380,7 +380,7 @@ export default function PaymentMethods() {
                                 مدفوعات الفيزا
                             </p>
                             <p className="text-2xl font-bold text-gray-900">
-                                {todayReport.visaTotal.toLocaleString()} ج.م
+                                {todayReport.visaTotal.toLocaleString()} $
                             </p>
                             <p className="text-sm text-gray-500">
                                 {todayReport.visaCount} عملية
@@ -498,8 +498,7 @@ export default function PaymentMethods() {
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900">
-                                            {payment.amount.toLocaleString()}{" "}
-                                            ج.م
+                                            {payment.amount.toLocaleString()} $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -786,7 +785,7 @@ export default function PaymentMethods() {
                                                     <div>
                                                         <div className="font-medium text-green-600">
                                                             {report.cash_total.toLocaleString()}{" "}
-                                                            ج.م
+                                                            $
                                                         </div>
                                                         <div className="text-xs text-gray-500">
                                                             {report.cash_count}{" "}
@@ -798,7 +797,7 @@ export default function PaymentMethods() {
                                                     <div>
                                                         <div className="text-sm font-medium text-blue-600">
                                                             {report.visa_total.toLocaleString()}{" "}
-                                                            ج.م
+                                                            $
                                                         </div>
                                                         <div className="text-xs text-gray-500">
                                                             {report.visa_count}{" "}
@@ -809,7 +808,7 @@ export default function PaymentMethods() {
                                                 <td className="px-3 py-4">
                                                     <div className="text-sm font-bold text-gray-900">
                                                         {report.total_amount.toLocaleString()}{" "}
-                                                        ج.م
+                                                        $
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-4">
@@ -859,7 +858,7 @@ export default function PaymentMethods() {
                                                             0
                                                         )
                                                         .toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </div>
                                             </td>
                                             <td className="px-3 py-4">
@@ -872,7 +871,7 @@ export default function PaymentMethods() {
                                                             0
                                                         )
                                                         .toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </div>
                                             </td>
                                             <td className="px-3 py-4">
@@ -885,7 +884,7 @@ export default function PaymentMethods() {
                                                             0
                                                         )
                                                         .toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </div>
                                             </td>
                                             <td className="px-3 py-4">

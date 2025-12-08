@@ -194,20 +194,20 @@ export default function PurchaseManagement() {
             if (item.unit_price <= 0) {
                 showToast("يرجى إدخال سعر صحيح", "error");
                 return;
-        }
+            }
         }
 
         const purchaseNumber = `PO-${new Date().getFullYear()}-${String(
             purchases.length + 1
         ).padStart(3, "0")}`;
-            const subtotal = newPurchase.items.reduce(
-                (sum, item) => sum + item.quantity * item.unit_price,
-                0
-            );
-            const taxAmount = subtotal * 0.15;
-            const totalAmount =
-                subtotal +
-                taxAmount +
+        const subtotal = newPurchase.items.reduce(
+            (sum, item) => sum + item.quantity * item.unit_price,
+            0
+        );
+        const taxAmount = subtotal * 0.15;
+        const totalAmount =
+            subtotal +
+            taxAmount +
             (newPurchase.shipping_cost || 0) +
             (newPurchase.storage_cost || 0);
 
@@ -217,15 +217,15 @@ export default function PurchaseManagement() {
 
         const newPurchaseData: Purchase = {
             id: `purchase-${Date.now()}`,
-                    purchase_number: purchaseNumber,
-                    purchase_date: newPurchase.purchase_date,
+            purchase_number: purchaseNumber,
+            purchase_date: newPurchase.purchase_date,
             expected_delivery_date: newPurchase.expected_delivery_date || "",
             status: "pending",
-                    total_amount: totalAmount,
+            total_amount: totalAmount,
             supplier: { name: selectedSupplier?.name || "" },
             notes: newPurchase.notes,
-                    shipping_cost: newPurchase.shipping_cost,
-                    storage_cost: newPurchase.storage_cost,
+            shipping_cost: newPurchase.shipping_cost,
+            storage_cost: newPurchase.storage_cost,
         };
 
         setPurchases((prev) => [newPurchaseData, ...prev]);
@@ -233,17 +233,17 @@ export default function PurchaseManagement() {
         // Store items for this purchase
         const items = newPurchase.items.map((item, index) => ({
             id: `${newPurchaseData.id}-${index}`,
-                item_name: item.item_name,
-                quantity: item.quantity,
-                unit: item.unit,
-                unit_price: item.unit_price,
-                total_price: item.quantity * item.unit_price,
-            }));
+            item_name: item.item_name,
+            quantity: item.quantity,
+            unit: item.unit,
+            unit_price: item.unit_price,
+            total_price: item.quantity * item.unit_price,
+        }));
         mockPurchaseItems[newPurchaseData.id] = items;
 
         showToast("تم إضافة طلب الشراء بنجاح", "success");
-            setShowAddModal(false);
-            resetNewPurchase();
+        setShowAddModal(false);
+        resetNewPurchase();
     };
 
     const resetNewPurchase = () => {
@@ -277,17 +277,17 @@ export default function PurchaseManagement() {
                         ...purchase,
                         status: status as Purchase["status"],
                     };
-            if (status === "delivered") {
+                    if (status === "delivered") {
                         updated.actual_delivery_date = new Date()
-                    .toISOString()
-                    .split("T")[0];
-            }
-            if (status === "approved") {
+                            .toISOString()
+                            .split("T")[0];
+                    }
+                    if (status === "approved") {
                         updated.approved_by = "المدير المالي";
                         updated.approved_date = new Date()
-                    .toISOString()
-                    .split("T")[0];
-            }
+                            .toISOString()
+                            .split("T")[0];
+                    }
                     return updated;
                 }
                 return purchase;
@@ -330,20 +330,20 @@ export default function PurchaseManagement() {
                 item.id === returnData.item_id
                     ? {
                           ...item,
-                    returned_quantity: returnData.returned_quantity,
-                    return_reason: returnData.return_reason,
+                          returned_quantity: returnData.returned_quantity,
+                          return_reason: returnData.return_reason,
                       }
                     : item
             );
         }
 
         showToast("تم تسجيل الإرجاع بنجاح", "success");
-            setShowReturnModal(false);
-            setReturnData({
-                item_id: "",
-                returned_quantity: 0,
-                return_reason: "",
-            });
+        setShowReturnModal(false);
+        setReturnData({
+            item_id: "",
+            returned_quantity: 0,
+            return_reason: "",
+        });
         if (selectedPurchase) {
             fetchPurchaseItems(selectedPurchase);
         }
@@ -466,13 +466,13 @@ export default function PurchaseManagement() {
                             </p>
                             <p className="text-xl font-bold text-gray-900">
                                 {purchases
-                                .reduce(
-                                    (total, purchase) =>
-                                        total + purchase.total_amount,
-                                    0
-                                )
-                                .toLocaleString()}{" "}
-                            ج.م
+                                    .reduce(
+                                        (total, purchase) =>
+                                            total + purchase.total_amount,
+                                        0
+                                    )
+                                    .toLocaleString()}{" "}
+                                $
                             </p>
                         </div>
                     </div>
@@ -488,14 +488,14 @@ export default function PurchaseManagement() {
                             </p>
                             <p className="text-xl font-bold text-gray-900">
                                 {purchases
-                                .filter((p) => p.status === "pending")
-                                .reduce(
-                                    (total, purchase) =>
-                                        total + purchase.total_amount,
-                                    0
-                                )
-                                .toLocaleString()}{" "}
-                            ج.م
+                                    .filter((p) => p.status === "pending")
+                                    .reduce(
+                                        (total, purchase) =>
+                                            total + purchase.total_amount,
+                                        0
+                                    )
+                                    .toLocaleString()}{" "}
+                                $
                             </p>
                         </div>
                     </div>
@@ -511,14 +511,14 @@ export default function PurchaseManagement() {
                             </p>
                             <p className="text-xl font-bold text-gray-900">
                                 {purchases
-                                .reduce(
-                                    (total, purchase) =>
+                                    .reduce(
+                                        (total, purchase) =>
                                             total +
                                             purchase.total_amount * 0.15,
-                                    0
-                                )
-                                .toLocaleString()}{" "}
-                            ج.م
+                                        0
+                                    )
+                                    .toLocaleString()}{" "}
+                                $
                             </p>
                         </div>
                     </div>
@@ -529,7 +529,7 @@ export default function PurchaseManagement() {
             <div className="flex gap-4 mb-6 items-center">
                 <div className="w-48">
                     <CustomSelect
-                    value={filter}
+                        value={filter}
                         onChange={(value) => setFilter(value)}
                         options={[
                             { value: "all", label: "جميع المشتريات" },
@@ -598,12 +598,12 @@ export default function PurchaseManagement() {
                                 >
                                     <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900 truncate">
-                                        {purchase.purchase_number}
+                                            {purchase.purchase_number}
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900 truncate">
-                                        {purchase.supplier?.name}
+                                            {purchase.supplier?.name}
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -614,14 +614,14 @@ export default function PurchaseManagement() {
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
                                             {formatDate(
-                                                  purchase.expected_delivery_date
+                                                purchase.expected_delivery_date
                                             )}
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900">
                                             {purchase.total_amount.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -953,7 +953,7 @@ export default function PurchaseManagement() {
                                                         item.quantity *
                                                         item.unit_price
                                                     ).toFixed(2)}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                                 {newPurchase.items.length >
                                                     1 && (
@@ -987,7 +987,7 @@ export default function PurchaseManagement() {
                                                     0
                                                 )
                                                 .toFixed(2)}{" "}
-                                            ر.س
+                                            $
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
@@ -1002,7 +1002,7 @@ export default function PurchaseManagement() {
                                                     0
                                                 ) * 0.15
                                             ).toFixed(2)}{" "}
-                                            ر.س
+                                            $
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-lg font-bold border-t pt-2 mt-2">
@@ -1017,7 +1017,7 @@ export default function PurchaseManagement() {
                                                     0
                                                 ) * 1.15
                                             ).toFixed(2)}{" "}
-                                            ر.س
+                                            $
                                         </span>
                                     </div>
                                 </div>
@@ -1097,10 +1097,10 @@ export default function PurchaseManagement() {
                                                 {item.unit}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {item.unit_price} ج.م
+                                                {item.unit_price} $
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {item.total_price} ج.م
+                                                {item.total_price} $
                                             </td>
                                         </tr>
                                     ))}

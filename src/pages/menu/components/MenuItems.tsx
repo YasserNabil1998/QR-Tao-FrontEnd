@@ -144,7 +144,7 @@ const MenuItems = ({ items, onAddToCart }: MenuItemsProps) => {
                                     {item.name}
                                 </h3>
                                 <p className="text-lg font-bold text-orange-600">
-                                    {item.price} ج.م
+                                    {item.price} $
                                 </p>
                             </div>
 

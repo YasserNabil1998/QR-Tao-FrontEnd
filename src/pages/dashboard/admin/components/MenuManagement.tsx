@@ -29,7 +29,7 @@ export default function MenuManagement() {
             image: "https://readdy.ai/api/search-image?query=Classic%20beef%20burger%20with%20lettuce%20tomato%20cheese%2C%20professional%20food%20photography%2C%20appetizing%20presentation%2C%20restaurant%20quality%2C%20clean%20background%2C%20mouth-watering%20burger&width=80&height=80&seq=menu-1&orientation=squarish",
             status: "متاح",
             orders: 156,
-            revenue: "7,020 ر.س",
+            revenue: "7,020 $",
         },
         {
             id: 2,
@@ -40,7 +40,7 @@ export default function MenuManagement() {
             image: "https://readdy.ai/api/search-image?query=Caesar%20salad%20with%20grilled%20chicken%20parmesan%20cheese%20croutons%2C%20fresh%20healthy%20salad%2C%20professional%20food%20photography%2C%20restaurant%20quality%20presentation&width=80&height=80&seq=menu-2&orientation=squarish",
             status: "متاح",
             orders: 89,
-            revenue: "2,848 ر.س",
+            revenue: "2,848 $",
         },
         {
             id: 3,
@@ -52,7 +52,7 @@ export default function MenuManagement() {
             image: "https://readdy.ai/api/search-image?query=Margherita%20pizza%20with%20fresh%20basil%20mozzarella%20tomato%20sauce%2C%20professional%20food%20photography%2C%20Italian%20cuisine%2C%20restaurant%20presentation&width=80&height=80&seq=menu-3&orientation=squarish",
             status: "غير متاح",
             orders: 67,
-            revenue: "3,685 ر.س",
+            revenue: "3,685 $",
         },
         {
             id: 4,
@@ -63,7 +63,7 @@ export default function MenuManagement() {
             image: "https://readdy.ai/api/search-image?query=Creamy%20cheesecake%20with%20blueberry%20sauce%2C%20professional%20dessert%20photography%2C%20elegant%20presentation%2C%20restaurant%20quality%20dessert%2C%20appetizing%20sweet&width=80&height=80&seq=menu-4&orientation=squarish",
             status: "متاح",
             orders: 45,
-            revenue: "1,260 ر.س",
+            revenue: "1,260 $",
         },
         {
             id: 5,
@@ -74,7 +74,7 @@ export default function MenuManagement() {
             image: "https://readdy.ai/api/search-image?query=Fresh%20orange%20juice%20in%20glass%2C%20natural%20fruit%20beverage%2C%20professional%20drink%20photography%2C%20refreshing%20citrus%20drink%2C%20restaurant%20quality%20presentation&width=80&height=80&seq=menu-5&orientation=squarish",
             status: "متاح",
             orders: 123,
-            revenue: "1,845 ر.س",
+            revenue: "1,845 $",
         },
     ];
 
@@ -175,7 +175,7 @@ export default function MenuManagement() {
                     "https://readdy.ai/api/search-image?query=delicious%20restaurant%20food%20dish%20on%20white%20background%2C%20professional%20food%20photography%2C%20appetizing%20presentation%2C%20clean%20minimal%20background&width=80&height=80&seq=menu-item&orientation=squarish",
                 status: formData.status,
                 orders: 0,
-                revenue: "0.00 ر.س",
+                revenue: "0.00 $",
             };
 
             setMenuItems((prev) => [...prev, newItem]);
@@ -367,7 +367,7 @@ export default function MenuManagement() {
                                                         </span>
                                                     </td>
                                                     <td className="py-4 px-4 font-medium text-gray-900">
-                                                        {item.price} ر.س
+                                                        {item.price} $
                                                     </td>
                                                     <td className="py-4 px-4 text-gray-600">
                                                         {item.orders}
@@ -499,7 +499,7 @@ export default function MenuManagement() {
                                     <i className="ri-money-dollar-circle-line text-2xl text-green-500"></i>
                                 </div>
                                 <p className="text-3xl font-bold text-gray-900">
-                                    42.50 ر.س
+                                    42.50 $
                                 </p>
                                 <p className="text-sm text-blue-600">
                                     +5% من الشهر الماضي
@@ -699,7 +699,7 @@ export default function MenuManagement() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            السعر (ر.س) *
+                                            السعر ($) *
                                         </label>
                                         <input
                                             type="number"

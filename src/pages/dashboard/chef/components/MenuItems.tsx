@@ -337,7 +337,7 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                                         {item.name}
                                     </h3>
                                     <span className="font-bold text-orange-600">
-                                        {item.price} ر.س
+                                        {item.price} $
                                     </span>
                                 </div>
 
@@ -543,7 +543,7 @@ const MenuItemModal = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                السعر (ر.س) *
+                                السعر ($) *
                             </label>
                             <input
                                 type="number"

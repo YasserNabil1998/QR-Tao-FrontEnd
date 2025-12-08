@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useToast } from "../../../../hooks/useToast";
 import CustomDatePicker from "../../../../components/common/CustomDatePicker";
+import { formatCurrency } from "../../../../utils/currency";
 
 interface DailyReportProps {
     restaurantId: string;
@@ -204,35 +205,29 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
         const csvRows = [
             ["التقرير اليومي", reportData.date],
             [],
-            ["إجمالي المبيعات", `${reportData.total_sales.toFixed(2)} ج.م`],
+            ["إجمالي المبيعات", `${reportData.total_sales.toFixed(2)} $`],
             ["إجمالي الطلبات", reportData.total_orders.toString()],
             ["الطلبات المكتملة", reportData.completed_orders.toString()],
             ["الطلبات الملغاة", reportData.cancelled_orders.toString()],
             ["الطلبات المعلقة", reportData.pending_orders.toString()],
             [],
-            ["المدفوعات النقدية", `${reportData.cash_payments.toFixed(2)} ج.م`],
-            [
-                "المدفوعات بالبطاقة",
-                `${reportData.card_payments.toFixed(2)} ج.م`,
-            ],
+            ["المدفوعات النقدية", `${reportData.cash_payments.toFixed(2)} $`],
+            ["المدفوعات بالبطاقة", `${reportData.card_payments.toFixed(2)} $`],
             [
                 "المدفوعات الإلكترونية",
-                `${reportData.digital_payments.toFixed(2)} ج.م`,
+                `${reportData.digital_payments.toFixed(2)} $`,
             ],
             [],
-            ["الخصومات", `${reportData.discounts_given.toFixed(2)} ج.م`],
-            ["الضرائب", `${reportData.taxes_collected.toFixed(2)} ج.م`],
-            [
-                "الرصيد الافتتاحي",
-                `${reportData.opening_balance.toFixed(2)} ج.م`,
-            ],
-            ["الرصيد الختامي", `${reportData.closing_balance.toFixed(2)} ج.م`],
+            ["الخصومات", `${reportData.discounts_given.toFixed(2)} $`],
+            ["الضرائب", `${reportData.taxes_collected.toFixed(2)} $`],
+            ["الرصيد الافتتاحي", `${reportData.opening_balance.toFixed(2)} $`],
+            ["الرصيد الختامي", `${reportData.closing_balance.toFixed(2)} $`],
             [],
             ["المبيعات بالساعة"],
             ["الساعة", "المبيعات", "عدد الطلبات"],
             ...reportData.hourly_sales.map((h) => [
                 h.hour,
-                `${h.sales.toFixed(2)} ج.م`,
+                `${h.sales.toFixed(2)} $`,
                 h.orders.toString(),
             ]),
             [],
@@ -241,7 +236,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
             ...reportData.top_items.map((item) => [
                 item.name,
                 item.quantity.toString(),
-                `${item.revenue.toFixed(2)} ج.م`,
+                `${item.revenue.toFixed(2)} $`,
             ]),
         ];
 
@@ -373,9 +368,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                     <div class="summary-grid">
                         <div class="summary-item">
                             <strong>إجمالي المبيعات</strong>
-                            <span>${reportData.total_sales.toFixed(
-                                2
-                            )} ج.م</span>
+                            <span>${reportData.total_sales.toFixed(2)} $</span>
                         </div>
                         <div class="summary-item">
                             <strong>إجمالي الطلبات</strong>
@@ -389,7 +382,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                             <strong>متوسط قيمة الطلب</strong>
                             <span>${reportData.average_order_value.toFixed(
                                 2
-                            )} ج.م</span>
+                            )} $</span>
                         </div>
                     </div>
                 </div>
@@ -411,7 +404,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                     (method) => `
                                 <tr>
                                     <td>${method.method}</td>
-                                    <td>${method.amount.toFixed(2)} ج.م</td>
+                                    <td>${method.amount.toFixed(2)} $</td>
                                     <td>${method.count}</td>
                                     <td>${method.percentage.toFixed(1)}%</td>
                                 </tr>
@@ -438,7 +431,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                     (hour) => `
                                 <tr>
                                     <td>${hour.hour}</td>
-                                    <td>${hour.sales.toFixed(2)} ج.م</td>
+                                    <td>${hour.sales.toFixed(2)} $</td>
                                     <td>${hour.orders}</td>
                                 </tr>
                             `
@@ -465,7 +458,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                 <tr>
                                     <td>${item.name}</td>
                                     <td>${item.quantity}</td>
-                                    <td>${item.revenue.toFixed(2)} ج.م</td>
+                                    <td>${item.revenue.toFixed(2)} $</td>
                                 </tr>
                             `
                                 )
@@ -572,7 +565,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                 إجمالي المبيعات
                             </p>
                             <p className="text-2xl font-semibold text-gray-900">
-                                {reportData.total_sales.toFixed(2)} ج.م
+                                {reportData.total_sales.toFixed(2)} $
                             </p>
                         </div>
                     </div>
@@ -623,7 +616,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                 متوسط قيمة الطلب
                             </p>
                             <p className="text-2xl font-semibold text-gray-900">
-                                {reportData.average_order_value.toFixed(2)} ج.م
+                                {reportData.average_order_value.toFixed(2)} $
                             </p>
                         </div>
                     </div>
@@ -644,7 +637,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                     النقدية
                                 </p>
                                 <p className="text-xl font-semibold text-gray-900">
-                                    {reportData.cash_payments.toFixed(2)} ج.م
+                                    {reportData.cash_payments.toFixed(2)} $
                                 </p>
                             </div>
                         </div>
@@ -677,7 +670,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                     بطاقات
                                 </p>
                                 <p className="text-xl font-semibold text-gray-900">
-                                    {reportData.card_payments.toFixed(2)} ج.م
+                                    {reportData.card_payments.toFixed(2)} $
                                 </p>
                             </div>
                         </div>
@@ -710,7 +703,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                     دفع إلكتروني
                                 </p>
                                 <p className="text-xl font-semibold text-gray-900">
-                                    {reportData.digital_payments.toFixed(2)} ج.م
+                                    {reportData.digital_payments.toFixed(2)} $
                                 </p>
                             </div>
                         </div>
@@ -820,7 +813,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                 الرصيد الافتتاحي:
                             </span>
                             <span className="font-medium">
-                                {reportData.opening_balance.toFixed(2)} ج.م
+                                {reportData.opening_balance.toFixed(2)} $
                             </span>
                         </div>
                         <div className="flex justify-between">
@@ -828,25 +821,25 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                 إجمالي المبيعات:
                             </span>
                             <span className="font-medium">
-                                {reportData.total_sales.toFixed(2)} ج.م
+                                {reportData.total_sales.toFixed(2)} $
                             </span>
                         </div>
                         <div className="flex justify-between">
                             <span className="text-gray-600">الخصومات:</span>
                             <span className="text-red-600 font-medium">
-                                -{reportData.discounts_given.toFixed(2)} ج.م
+                                -{reportData.discounts_given.toFixed(2)} $
                             </span>
                         </div>
                         <div className="flex justify-between">
                             <span className="text-gray-600">الضرائب:</span>
                             <span className="font-medium">
-                                {reportData.taxes_collected.toFixed(2)} ج.م
+                                {reportData.taxes_collected.toFixed(2)} $
                             </span>
                         </div>
                         <div className="flex justify-between font-semibold text-lg border-t pt-2 mt-2">
                             <span>الرصيد الختامي:</span>
                             <span className="text-green-600">
-                                {reportData.closing_balance.toFixed(2)} ج.م
+                                {reportData.closing_balance.toFixed(2)} $
                             </span>
                         </div>
                     </div>
@@ -869,7 +862,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                     {hour.hour}
                                 </span>
                                 <span className="text-sm font-semibold text-blue-600 mb-1">
-                                    {hour.sales.toFixed(2)} ج.م
+                                    {hour.sales.toFixed(2)} $
                                 </span>
                                 <span className="text-xs text-gray-500">
                                     {hour.orders} طلب
@@ -926,7 +919,7 @@ const DailyReport = ({ restaurantId }: DailyReportProps) => {
                                     </td>
                                     <td className="px-4 py-3 whitespace-nowrap">
                                         <span className="text-sm font-semibold text-gray-900">
-                                            {item.revenue.toFixed(2)} ج.م
+                                            {item.revenue.toFixed(2)} $
                                         </span>
                                     </td>
                                 </tr>

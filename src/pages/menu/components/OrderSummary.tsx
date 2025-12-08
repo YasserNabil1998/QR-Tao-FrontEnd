@@ -123,7 +123,7 @@ const OrderSummary = ({
                                             {item.name}
                                         </p>
                                         <span className="text-gray-600">
-                                            {item.price} ج.م × {item.quantity}
+                                            {item.price} $ × {item.quantity}
                                         </span>
                                         {item.specialInstructions && (
                                             <p className="text-xs text-orange-600 mt-1">
@@ -133,20 +133,20 @@ const OrderSummary = ({
                                         )}
                                     </div>
                                     <span className="font-semibold">
-                                        {item.price * item.quantity} ج.م
+                                        {item.price * item.quantity} $
                                     </span>
                                 </div>
                             ))}
                         </div>
                         <div className="flex flex-col pt-3 border-t-2 border-gray-200 space-y-2">
                             <span className="text-lg font-semibold">
-                                {subtotal} ج.م
+                                {subtotal} $
                             </span>
                             <span className="text-lg font-semibold">
-                                {tax} ج.م
+                                {tax} $
                             </span>
                             <span className="text-xl font-bold text-orange-600">
-                                {total} ج.م
+                                {total} $
                             </span>
                         </div>
                     </div>

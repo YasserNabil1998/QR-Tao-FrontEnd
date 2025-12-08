@@ -159,7 +159,7 @@ export default function InvoicesManagement() {
             subtotal: 1500,
             invoice_file_url: undefined,
             payment_method: "نقدي",
-            notes: "دفعة جزئية - متبقي 1225 ج.م",
+            notes: "دفعة جزئية - متبقي 1225 $",
             approved_by: undefined,
             approved_date: undefined,
             payment_date: undefined,
@@ -216,7 +216,7 @@ export default function InvoicesManagement() {
         const invoiceNumber = `INV-${new Date().getFullYear()}-${String(
             invoices.length + 1
         ).padStart(3, "0")}`;
-            const totalAmount = newInvoice.subtotal + newInvoice.tax_amount;
+        const totalAmount = newInvoice.subtotal + newInvoice.tax_amount;
 
         const selectedSupplier = suppliers.find(
             (s) => s.id === newInvoice.supplier_id
@@ -224,23 +224,23 @@ export default function InvoicesManagement() {
 
         const newInvoiceData: Invoice = {
             id: `invoice-${Date.now()}`,
-                invoice_number: invoiceNumber,
-                invoice_date: newInvoice.invoice_date,
-                due_date: newInvoice.due_date,
+            invoice_number: invoiceNumber,
+            invoice_date: newInvoice.invoice_date,
+            due_date: newInvoice.due_date,
             status: "pending",
-                total_amount: totalAmount,
-                paid_amount: 0,
+            total_amount: totalAmount,
+            paid_amount: 0,
             remaining_amount: totalAmount,
             supplier: { name: selectedSupplier?.name || "" },
-                notes: newInvoice.notes,
+            notes: newInvoice.notes,
             tax_amount: newInvoice.tax_amount,
             subtotal: newInvoice.subtotal,
         };
 
         setInvoices((prev) => [newInvoiceData, ...prev]);
         showToast("تم إضافة الفاتورة بنجاح", "success");
-            setShowAddModal(false);
-            resetNewInvoice();
+        setShowAddModal(false);
+        resetNewInvoice();
     };
 
     const resetNewInvoice = () => {
@@ -275,11 +275,11 @@ export default function InvoicesManagement() {
         const newRemainingAmount = selectedInvoice.total_amount - newPaidAmount;
         let newStatus: Invoice["status"] = "pending";
 
-            if (newRemainingAmount <= 0) {
-                newStatus = "paid";
-            } else if (newPaidAmount > 0) {
-                newStatus = "partial";
-            }
+        if (newRemainingAmount <= 0) {
+            newStatus = "paid";
+        } else if (newPaidAmount > 0) {
+            newStatus = "partial";
+        }
 
         // Update invoice
         setInvoices((prev) =>
@@ -287,11 +287,11 @@ export default function InvoicesManagement() {
                 inv.id === selectedInvoice.id
                     ? {
                           ...inv,
-                    paid_amount: newPaidAmount,
-                    remaining_amount: newRemainingAmount,
-                    status: newStatus,
-                    payment_date: paymentData.payment_date,
-                    payment_method: paymentData.payment_method,
+                          paid_amount: newPaidAmount,
+                          remaining_amount: newRemainingAmount,
+                          status: newStatus,
+                          payment_date: paymentData.payment_date,
+                          payment_method: paymentData.payment_method,
                       }
                     : inv
             )
@@ -300,11 +300,11 @@ export default function InvoicesManagement() {
         // Add to payment history
         const newPayment: PaymentHistory = {
             id: `payment-${Date.now()}`,
-                    invoice_id: selectedInvoice.id,
-                    amount: paymentData.amount,
-                    payment_date: paymentData.payment_date,
-                    payment_method: paymentData.payment_method,
-                    notes: paymentData.notes,
+            invoice_id: selectedInvoice.id,
+            amount: paymentData.amount,
+            payment_date: paymentData.payment_date,
+            payment_method: paymentData.payment_method,
+            notes: paymentData.notes,
         };
 
         setPaymentHistoryData((prev) => {
@@ -322,10 +322,10 @@ export default function InvoicesManagement() {
         resetPaymentData();
 
         // Close modal immediately
-            setShowPaymentModal(false);
+        setShowPaymentModal(false);
 
         // Clear selected invoice immediately after closing modal
-            setSelectedInvoice(null);
+        setSelectedInvoice(null);
     };
 
     const resetPaymentData = () => {
@@ -405,9 +405,9 @@ export default function InvoicesManagement() {
         );
 
         showToast("تم رفع الملف بنجاح", "success");
-            setShowFileUploadModal(false);
-            setFileUpload(null);
-            setSelectedInvoice(null);
+        setShowFileUploadModal(false);
+        setFileUpload(null);
+        setSelectedInvoice(null);
     };
 
     const sendPaymentReminder = (invoice: Invoice) => {
@@ -628,7 +628,7 @@ export default function InvoicesManagement() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -645,7 +645,7 @@ export default function InvoicesManagement() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -664,7 +664,7 @@ export default function InvoicesManagement() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -684,7 +684,7 @@ export default function InvoicesManagement() {
                                     0
                                 )
                                 .toLocaleString()}{" "}
-                            ج.م
+                            $
                         </p>
                     </div>
                 </div>
@@ -704,7 +704,7 @@ export default function InvoicesManagement() {
                 </div>
                 <div className="w-48">
                     <CustomSelect
-                    value={filter}
+                        value={filter}
                         onChange={(value) => setFilter(value)}
                         options={[
                             { value: "all", label: "جميع الفواتير" },
@@ -780,18 +780,18 @@ export default function InvoicesManagement() {
                                 >
                                     <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900 truncate">
-                                        {invoice.invoice_number}
-                                        {invoice.invoice_file_url && (
-                                            <i
-                                                className="ri-attachment-line text-blue-500 mr-1"
-                                                title="يحتوي على ملف مرفق"
-                                            ></i>
-                                        )}
+                                            {invoice.invoice_number}
+                                            {invoice.invoice_file_url && (
+                                                <i
+                                                    className="ri-attachment-line text-blue-500 mr-1"
+                                                    title="يحتوي على ملف مرفق"
+                                                ></i>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900 truncate">
-                                        {invoice.supplier?.name}
+                                            {invoice.supplier?.name}
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -816,13 +816,13 @@ export default function InvoicesManagement() {
                                     <td className="px-3 py-4">
                                         <div className="text-sm font-medium text-gray-900">
                                             {invoice.total_amount.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
                                         <div className="text-sm text-gray-900">
                                             {invoice.paid_amount.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -831,7 +831,7 @@ export default function InvoicesManagement() {
                                                 invoice.total_amount -
                                                 invoice.paid_amount
                                             ).toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </div>
                                     </td>
                                     <td className="px-3 py-4">
@@ -1084,7 +1084,7 @@ export default function InvoicesManagement() {
                                         المبلغ الأساسي:
                                     </span>
                                     <span className="font-medium text-gray-900">
-                                        {newInvoice.subtotal.toFixed(2)} ج.م
+                                        {newInvoice.subtotal.toFixed(2)} $
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-sm mb-2">
@@ -1092,7 +1092,7 @@ export default function InvoicesManagement() {
                                         الضريبة:
                                     </span>
                                     <span className="font-medium text-gray-900">
-                                        {newInvoice.tax_amount.toFixed(2)} ج.م
+                                        {newInvoice.tax_amount.toFixed(2)} $
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-lg font-bold border-t border-gray-300 pt-2 mt-2">
@@ -1104,7 +1104,7 @@ export default function InvoicesManagement() {
                                             newInvoice.subtotal +
                                             newInvoice.tax_amount
                                         ).toFixed(2)}{" "}
-                                        ج.م
+                                        $
                                     </span>
                                 </div>
                             </div>
@@ -1156,75 +1156,75 @@ export default function InvoicesManagement() {
                         <div className="space-y-6">
                             {selectedInvoice && (
                                 <>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-lg font-semibold text-gray-900">
-                                    المبلغ الأساسي:{" "}
-                                    {selectedInvoice.subtotal?.toLocaleString()}{" "}
-                                    ج.م
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    الضريبة:{" "}
-                                    {selectedInvoice.tax_amount?.toLocaleString()}{" "}
-                                    ج.م
-                                </p>
-                                <p className="text-xl font-bold text-gray-900 border-t pt-2">
-                                    الإجمالي:{" "}
-                                    {selectedInvoice.total_amount?.toLocaleString()}{" "}
-                                    ج.م
-                                </p>
-                                <p className="text-sm text-green-600">
-                                    المدفوع:{" "}
-                                    {selectedInvoice.paid_amount?.toLocaleString()}{" "}
-                                    ج.م
-                                </p>
-                                <p className="text-sm text-red-600 font-medium">
-                                    المتبقي:{" "}
-                                    {(
-                                        selectedInvoice.total_amount -
-                                        selectedInvoice.paid_amount
-                                    ).toLocaleString()}{" "}
-                                    ج.م
-                                </p>
-                            </div>
+                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                        <p className="text-lg font-semibold text-gray-900">
+                                            المبلغ الأساسي:{" "}
+                                            {selectedInvoice.subtotal?.toLocaleString()}{" "}
+                                            $
+                                        </p>
+                                        <p className="text-sm text-gray-600">
+                                            الضريبة:{" "}
+                                            {selectedInvoice.tax_amount?.toLocaleString()}{" "}
+                                            $
+                                        </p>
+                                        <p className="text-xl font-bold text-gray-900 border-t pt-2">
+                                            الإجمالي:{" "}
+                                            {selectedInvoice.total_amount?.toLocaleString()}{" "}
+                                            $
+                                        </p>
+                                        <p className="text-sm text-green-600">
+                                            المدفوع:{" "}
+                                            {selectedInvoice.paid_amount?.toLocaleString()}{" "}
+                                            $
+                                        </p>
+                                        <p className="text-sm text-red-600 font-medium">
+                                            المتبقي:{" "}
+                                            {(
+                                                selectedInvoice.total_amount -
+                                                selectedInvoice.paid_amount
+                                            ).toLocaleString()}{" "}
+                                            $
+                                        </p>
+                                    </div>
 
-                            <div>
+                                    <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    مبلغ الدفعة
-                                </label>
-                                <input
-                                    type="number"
-                                    value={paymentData.amount}
-                                    onChange={(e) =>
-                                        setPaymentData((prev) => ({
-                                            ...prev,
-                                            amount:
+                                            مبلغ الدفعة
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={paymentData.amount}
+                                            onChange={(e) =>
+                                                setPaymentData((prev) => ({
+                                                    ...prev,
+                                                    amount:
                                                         parseFloat(
                                                             e.target.value
                                                         ) || 0,
-                                        }))
-                                    }
+                                                }))
+                                            }
                                             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                    min="0"
+                                            min="0"
                                             max={
                                                 selectedInvoice.remaining_amount
                                             }
-                                    step="0.01"
-                                    required
-                                />
-                            </div>
+                                            step="0.01"
+                                            required
+                                        />
+                                    </div>
 
-                            <div>
+                                    <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    طريقة الدفع
-                                </label>
+                                            طريقة الدفع
+                                        </label>
                                         <CustomSelect
-                                    value={paymentData.payment_method}
+                                            value={paymentData.payment_method}
                                             onChange={(value) =>
-                                        setPaymentData((prev) => ({
-                                            ...prev,
+                                                setPaymentData((prev) => ({
+                                                    ...prev,
                                                     payment_method: value,
-                                        }))
-                                    }
+                                                }))
+                                            }
                                             options={[
                                                 {
                                                     value: "cash",
@@ -1245,47 +1245,47 @@ export default function InvoicesManagement() {
                                             ]}
                                             placeholder="اختر طريقة الدفع"
                                         />
-                            </div>
+                                    </div>
 
-                            <div>
+                                    <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    تاريخ الدفع
-                                </label>
-                                <input
-                                    type="date"
-                                    value={paymentData.payment_date}
-                                    onChange={(e) =>
-                                        setPaymentData((prev) => ({
-                                            ...prev,
+                                            تاريخ الدفع
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={paymentData.payment_date}
+                                            onChange={(e) =>
+                                                setPaymentData((prev) => ({
+                                                    ...prev,
                                                     payment_date:
                                                         e.target.value,
-                                        }))
-                                    }
+                                                }))
+                                            }
                                             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                    required
-                                />
-                            </div>
+                                            required
+                                        />
+                                    </div>
 
-                            <div>
+                                    <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    ملاحظات
-                                </label>
-                                <textarea
-                                    value={paymentData.notes}
-                                    onChange={(e) =>
-                                        setPaymentData((prev) => ({
-                                            ...prev,
-                                            notes: e.target.value,
-                                        }))
-                                    }
+                                            ملاحظات
+                                        </label>
+                                        <textarea
+                                            value={paymentData.notes}
+                                            onChange={(e) =>
+                                                setPaymentData((prev) => ({
+                                                    ...prev,
+                                                    notes: e.target.value,
+                                                }))
+                                            }
                                             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                    rows={2}
+                                            rows={2}
                                             placeholder="أدخل ملاحظات إضافية..."
-                                />
-                            </div>
+                                        />
+                                    </div>
 
                                     <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-                                <button
+                                        <button
                                             type="button"
                                             onClick={() => {
                                                 setShowPaymentModal(false);
@@ -1293,17 +1293,17 @@ export default function InvoicesManagement() {
                                                 setSelectedInvoice(null);
                                             }}
                                             className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
-                                >
-                                    إلغاء
-                                </button>
-                                <button
+                                        >
+                                            إلغاء
+                                        </button>
+                                        <button
                                             type="button"
-                                    onClick={handlePayment}
+                                            onClick={handlePayment}
                                             className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 whitespace-nowrap cursor-pointer transition-colors"
-                                >
-                                    تسجيل الدفعة
-                                </button>
-                            </div>
+                                        >
+                                            تسجيل الدفعة
+                                        </button>
+                                    </div>
                                 </>
                             )}
                         </div>
@@ -1340,7 +1340,7 @@ export default function InvoicesManagement() {
                                         </p>
                                         <p className="text-lg font-bold">
                                             {selectedInvoice.total_amount.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </p>
                                     </div>
                                     <div>
@@ -1349,7 +1349,7 @@ export default function InvoicesManagement() {
                                         </p>
                                         <p className="text-lg font-bold text-green-600">
                                             {selectedInvoice.paid_amount.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </p>
                                     </div>
                                     <div>
@@ -1358,7 +1358,7 @@ export default function InvoicesManagement() {
                                         </p>
                                         <p className="text-lg font-bold text-red-600">
                                             {selectedInvoice.remaining_amount.toLocaleString()}{" "}
-                                            ج.م
+                                            $
                                         </p>
                                     </div>
                                 </div>
@@ -1398,30 +1398,30 @@ export default function InvoicesManagement() {
                                                     <td className="px-3 py-4">
                                                         <div className="text-sm text-gray-900">
                                                             {formatDate(
-                                                        payment.payment_date
-                                                    )}
+                                                                payment.payment_date
+                                                            )}
                                                         </div>
-                                                </td>
+                                                    </td>
                                                     <td className="px-3 py-4">
                                                         <div className="text-sm font-medium text-gray-900">
                                                             {payment.amount.toLocaleString()}{" "}
-                                                            ج.م
+                                                            $
                                                         </div>
-                                                </td>
+                                                    </td>
                                                     <td className="px-3 py-4">
                                                         <div className="text-sm text-gray-900">
-                                                    {getPaymentMethodText(
-                                                        payment.payment_method
-                                                    )}
+                                                            {getPaymentMethodText(
+                                                                payment.payment_method
+                                                            )}
                                                         </div>
-                                                </td>
+                                                    </td>
                                                     <td className="px-3 py-4">
                                                         <div className="text-sm text-gray-900 truncate">
                                                             {payment.notes ||
                                                                 "-"}
                                                         </div>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                </tr>
                                             ))
                                         ) : (
                                             <tr>
@@ -1560,7 +1560,7 @@ export default function InvoicesManagement() {
                                             المبلغ الإجمالي:{" "}
                                             <span className="font-semibold">
                                                 {invoiceToCancel.total_amount.toLocaleString()}{" "}
-                                                ج.م
+                                                $
                                             </span>
                                         </p>
                                     </div>

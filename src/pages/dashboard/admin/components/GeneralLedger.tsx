@@ -828,7 +828,7 @@ export default function GeneralLedger() {
                                     )
                                     .reduce((sum, acc) => sum + acc.balance, 0)
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -850,7 +850,7 @@ export default function GeneralLedger() {
                                     )
                                     .reduce((sum, acc) => sum + acc.balance, 0)
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -871,7 +871,7 @@ export default function GeneralLedger() {
                                     )
                                     .reduce((sum, acc) => sum + acc.balance, 0)
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -892,7 +892,7 @@ export default function GeneralLedger() {
                                     )
                                     .reduce((sum, acc) => sum + acc.balance, 0)
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -913,7 +913,7 @@ export default function GeneralLedger() {
                                     )
                                     .reduce((sum, acc) => sum + acc.balance, 0)
                                     .toLocaleString()}{" "}
-                                ج.م
+                                $
                             </p>
                         </div>
                     </div>
@@ -1047,7 +1047,7 @@ export default function GeneralLedger() {
                                                             {Math.abs(
                                                                 account.balance
                                                             ).toLocaleString()}{" "}
-                                                            ج.م
+                                                            $
                                                         </span>
                                                     </div>
                                                 </td>
@@ -1230,7 +1230,7 @@ export default function GeneralLedger() {
                                                         <td className="px-3 py-4">
                                                             <div className="text-sm font-medium text-gray-900">
                                                                 {entry.total_amount.toLocaleString()}{" "}
-                                                                ج.م
+                                                                $
                                                             </div>
                                                         </td>
                                                         <td className="px-3 py-4">
@@ -1342,7 +1342,7 @@ export default function GeneralLedger() {
                                                             </span>
                                                             <span className="text-sm text-gray-600">
                                                                 {account.balance.toLocaleString()}{" "}
-                                                                ج.م
+                                                                $
                                                             </span>
                                                         </div>
                                                         {accounts
@@ -1368,7 +1368,7 @@ export default function GeneralLedger() {
                                                                         </span>
                                                                         <span className="text-gray-600">
                                                                             {subAccount.balance.toLocaleString()}{" "}
-                                                                            ج.م
+                                                                            $
                                                                         </span>
                                                                     </div>
                                                                 )
@@ -1803,7 +1803,7 @@ export default function GeneralLedger() {
                                                                 0
                                                             )
                                                             .toFixed(2)}{" "}
-                                                        ج.م
+                                                        $
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-2">
@@ -1816,7 +1816,7 @@ export default function GeneralLedger() {
                                                                 0
                                                             )
                                                             .toFixed(2)}{" "}
-                                                        ج.م
+                                                        $
                                                     </div>
                                                 </td>
                                                 <td></td>
@@ -1925,7 +1925,7 @@ export default function GeneralLedger() {
                                                 <div className="text-sm text-gray-900">
                                                     {account.debit_balance > 0
                                                         ? account.debit_balance.toLocaleString() +
-                                                          " ج.م"
+                                                          " $"
                                                         : "-"}
                                                 </div>
                                             </td>
@@ -1933,7 +1933,7 @@ export default function GeneralLedger() {
                                                 <div className="text-sm text-gray-900">
                                                     {account.credit_balance > 0
                                                         ? account.credit_balance.toLocaleString() +
-                                                          " ج.م"
+                                                          " $"
                                                         : "-"}
                                                 </div>
                                             </td>
@@ -1958,7 +1958,7 @@ export default function GeneralLedger() {
                                                         0
                                                     )
                                                     .toLocaleString()}{" "}
-                                                ج.م
+                                                $
                                             </div>
                                         </td>
                                         <td className="px-3 py-4">
@@ -1971,7 +1971,7 @@ export default function GeneralLedger() {
                                                         0
                                                     )
                                                     .toLocaleString()}{" "}
-                                                ج.م
+                                                $
                                             </div>
                                         </td>
                                     </tr>
@@ -2020,7 +2020,7 @@ export default function GeneralLedger() {
                                                         </span>
                                                         <span>
                                                             {account.balance.toLocaleString()}{" "}
-                                                            ج.م
+                                                            $
                                                         </span>
                                                     </div>
                                                 )
@@ -2029,7 +2029,7 @@ export default function GeneralLedger() {
                                                 <span>إجمالي الإيرادات</span>
                                                 <span>
                                                     {profitLoss.revenue.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                         </div>
@@ -2053,7 +2053,7 @@ export default function GeneralLedger() {
                                                         </span>
                                                         <span>
                                                             {account.balance.toLocaleString()}{" "}
-                                                            ج.م
+                                                            $
                                                         </span>
                                                     </div>
                                                 )
@@ -2062,7 +2062,7 @@ export default function GeneralLedger() {
                                                 <span>إجمالي المصروفات</span>
                                                 <span>
                                                     {profitLoss.expenses.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                         </div>
@@ -2085,7 +2085,7 @@ export default function GeneralLedger() {
                                                 {Math.abs(
                                                     profitLoss.netIncome
                                                 ).toLocaleString()}{" "}
-                                                ج.م
+                                                $
                                             </span>
                                         </div>
                                     </div>
@@ -2125,14 +2125,14 @@ export default function GeneralLedger() {
                                                 <span>صافي الدخل</span>
                                                 <span>
                                                     {cashFlow.operating.netIncome.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="flex justify-between">
                                                 <span>الاستهلاك</span>
                                                 <span>
                                                     {cashFlow.operating.depreciation.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="flex justify-between">
@@ -2147,7 +2147,7 @@ export default function GeneralLedger() {
                                                     }
                                                 >
                                                     {cashFlow.operating.accountsReceivableChange.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="flex justify-between">
@@ -2161,7 +2161,7 @@ export default function GeneralLedger() {
                                                     }
                                                 >
                                                     {cashFlow.operating.inventoryChange.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="flex justify-between">
@@ -2176,7 +2176,7 @@ export default function GeneralLedger() {
                                                     }
                                                 >
                                                     {cashFlow.operating.accountsPayableChange.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="border-t pt-2 font-semibold flex justify-between">
@@ -2192,7 +2192,7 @@ export default function GeneralLedger() {
                                                     }
                                                 >
                                                     {cashFlow.operating.total.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                         </div>
@@ -2207,7 +2207,7 @@ export default function GeneralLedger() {
                                                 <span>شراء معدات</span>
                                                 <span className="text-red-600">
                                                     {cashFlow.investing.equipmentPurchase.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="border-t pt-2 font-semibold flex justify-between">
@@ -2223,7 +2223,7 @@ export default function GeneralLedger() {
                                                     }
                                                 >
                                                     {cashFlow.investing.total.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                         </div>
@@ -2238,14 +2238,14 @@ export default function GeneralLedger() {
                                                 <span>قروض جديدة</span>
                                                 <span className="text-green-600">
                                                     {cashFlow.financing.loanProceeds.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="flex justify-between">
                                                 <span>توزيعات أرباح</span>
                                                 <span className="text-red-600">
                                                     {cashFlow.financing.dividendsPaid.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                             <div className="border-t pt-2 font-semibold flex justify-between">
@@ -2261,7 +2261,7 @@ export default function GeneralLedger() {
                                                     }
                                                 >
                                                     {cashFlow.financing.total.toLocaleString()}{" "}
-                                                    ج.م
+                                                    $
                                                 </span>
                                             </div>
                                         </div>
@@ -2278,21 +2278,21 @@ export default function GeneralLedger() {
                                                 }
                                             >
                                                 {cashFlow.netCashFlow.toLocaleString()}{" "}
-                                                ج.م
+                                                $
                                             </span>
                                         </div>
                                         <div className="flex justify-between text-sm">
                                             <span>النقدية في بداية الفترة</span>
                                             <span>
                                                 {cashFlow.beginningCash.toLocaleString()}{" "}
-                                                ج.م
+                                                $
                                             </span>
                                         </div>
                                         <div className="flex justify-between text-xl font-bold text-blue-600">
                                             <span>النقدية في نهاية الفترة</span>
                                             <span>
                                                 {cashFlow.endingCash.toLocaleString()}{" "}
-                                                ج.م
+                                                $
                                             </span>
                                         </div>
                                     </div>
@@ -2385,7 +2385,7 @@ export default function GeneralLedger() {
                                     </label>
                                     <div className="text-sm font-bold text-gray-900">
                                         {selectedEntry.total_amount.toLocaleString()}{" "}
-                                        ج.م
+                                        $
                                     </div>
                                 </div>
                                 <div>
@@ -2492,7 +2492,7 @@ export default function GeneralLedger() {
                                                                     {line.debit_amount >
                                                                     0
                                                                         ? line.debit_amount.toLocaleString() +
-                                                                          " ج.م"
+                                                                          " $"
                                                                         : "-"}
                                                                 </div>
                                                             </td>
@@ -2501,7 +2501,7 @@ export default function GeneralLedger() {
                                                                     {line.credit_amount >
                                                                     0
                                                                         ? line.credit_amount.toLocaleString() +
-                                                                          " ج.م"
+                                                                          " $"
                                                                         : "-"}
                                                                 </div>
                                                             </td>
@@ -2528,7 +2528,7 @@ export default function GeneralLedger() {
                                                                 0
                                                             )
                                                             .toLocaleString()}{" "}
-                                                        ج.م
+                                                        $
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-2">
@@ -2541,7 +2541,7 @@ export default function GeneralLedger() {
                                                                 0
                                                             )
                                                             .toLocaleString()}{" "}
-                                                        ج.م
+                                                        $
                                                     </div>
                                                 </td>
                                             </tr>
