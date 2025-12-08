@@ -112,33 +112,172 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
         }
     };
 
-    const downloadAllQRCodes = () => {
+    const downloadAllQRCodes = async () => {
         if (tables.length === 0) {
             showToast("لا توجد طاولات للتحميل", "warning");
             return;
         }
 
-        tables.forEach((table: any, index: number) => {
-            setTimeout(() => {
-                try {
-                    const qrUrl = generateQRCode(table.id);
-                    const link = document.createElement("a");
-                    link.href = qrUrl;
-                    link.download = `table-${table.table_number}-qr.png`;
-                    link.target = "_blank";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                } catch (error) {
-                    console.error(
-                        `Error downloading QR code for table ${table.table_number}:`,
-                        error
-                    );
-                }
-            }, index * 200); // Increase delay to avoid browser blocking
-        });
+        try {
+            showToast("جارٍ إنشاء الملف...", "info");
 
-        showToast(`جارٍ تحميل ${tables.length} رمز QR...`, "info");
+            // Create HTML content with all QR codes
+            const restaurantName =
+                restaurant?.name || user?.full_name || "مطعم تجريبي";
+            const currentDate = new Date().toLocaleDateString("ar-SA");
+
+            let htmlContent = `
+                <!DOCTYPE html>
+                <html dir="rtl" lang="ar">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>رموز QR للطاولات - ${restaurantName}</title>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            padding: 20px;
+                            background: #f5f5f5;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                            padding: 20px;
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        }
+                        .header h1 {
+                            color: #ea580c;
+                            font-size: 28px;
+                            margin-bottom: 10px;
+                        }
+                        .header p {
+                            color: #666;
+                            font-size: 14px;
+                        }
+                        .qr-grid {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                            gap: 20px;
+                            margin-bottom: 20px;
+                        }
+                        .qr-card {
+                            background: white;
+                            padding: 20px;
+                            border-radius: 8px;
+                            text-align: center;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            page-break-inside: avoid;
+                        }
+                        .qr-card img {
+                            width: 150px;
+                            height: 150px;
+                            margin: 0 auto 10px;
+                            display: block;
+                        }
+                        .qr-card h3 {
+                            color: #333;
+                            font-size: 18px;
+                            margin-bottom: 5px;
+                        }
+                        .qr-card p {
+                            color: #666;
+                            font-size: 12px;
+                            margin: 2px 0;
+                        }
+                        @media print {
+                            body {
+                                background: white;
+                                padding: 10px;
+                            }
+                            .header {
+                                margin-bottom: 20px;
+                            }
+                            .qr-grid {
+                                gap: 15px;
+                            }
+                            @page {
+                                margin: 1cm;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>${restaurantName}</h1>
+                        <p>رموز QR للطاولات - ${currentDate}</p>
+                        <p>إجمالي الطاولات: ${tables.length}</p>
+                    </div>
+                    <div class="qr-grid">
+            `;
+
+            // Add each QR code to HTML
+            tables.forEach((table: any) => {
+                const qrUrl = generateQRCode(table.id);
+                htmlContent += `
+                    <div class="qr-card">
+                        <img src="${qrUrl}" alt="QR Code for Table ${
+                    table.table_number
+                }" />
+                        <h3>طاولة رقم ${table.table_number}</h3>
+                        ${
+                            table.capacity
+                                ? `<p>السعة: ${table.capacity} أشخاص</p>`
+                                : ""
+                        }
+                        ${table.location ? `<p>${table.location}</p>` : ""}
+                    </div>
+                `;
+            });
+
+            htmlContent += `
+                    </div>
+                </body>
+                </html>
+            `;
+
+            // Create a blob and download it as HTML file
+            const blob = new Blob([htmlContent], {
+                type: "text/html;charset=utf-8",
+            });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `qr-codes-${restaurantName.replace(
+                /\s+/g,
+                "-"
+            )}-${Date.now()}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            // Also open print dialog for PDF
+            setTimeout(() => {
+                const printWindow = window.open("", "_blank");
+                if (printWindow) {
+                    printWindow.document.write(htmlContent);
+                    printWindow.document.close();
+                    printWindow.onload = () => {
+                        printWindow.print();
+                    };
+                }
+            }, 500);
+
+            showToast(
+                `تم إنشاء الملف بنجاح! يمكنك طباعته كـ PDF من نافذة الطباعة`,
+                "success"
+            );
+        } catch (error) {
+            console.error("Error creating QR codes file:", error);
+            showToast("حدث خطأ أثناء إنشاء الملف", "error");
+        }
     };
 
     if (loading) {
