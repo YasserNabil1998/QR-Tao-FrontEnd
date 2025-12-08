@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useToast } from "../../../../hooks/useToast";
+import CustomSelect from "../../../../components/common/CustomSelect";
 
 interface Order {
     id: string;
@@ -13,12 +14,13 @@ interface Order {
     paymentMethod: string;
     paymentStatus: string;
     notes: string;
+    created_at: string;
 }
 
-export default function OrdersList() {
-    const [selectedStatus, setSelectedStatus] = useState("all");
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-    const [orders, setOrders] = useState<Order[]>([
+// بيانات محاكاة للطلبات
+const generateMockOrders = (): Order[] => {
+    const now = new Date();
+    const orders: Order[] = [
         {
             id: "#1234",
             table: "طاولة 5",
@@ -31,10 +33,15 @@ export default function OrdersList() {
             total: 136.0,
             status: "جاري التحضير",
             statusColor: "yellow",
-            time: "10:30 ص",
+            time: now.toLocaleString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            }),
             paymentMethod: "بطاقة ائتمان",
-            paymentStatus: "مدفوع",
+            paymentStatus: "غير مدفوع",
             notes: "بدون بصل في البرجر",
+            created_at: new Date(now.getTime() - 30 * 60 * 1000).toISOString(),
         },
         {
             id: "#1235",
@@ -47,10 +54,15 @@ export default function OrdersList() {
             total: 47.0,
             status: "جاهز للتقديم",
             statusColor: "green",
-            time: "10:25 ص",
+            time: now.toLocaleString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            }),
             paymentMethod: "نقداً",
-            paymentStatus: "مدفوع",
+            paymentStatus: "غير مدفوع",
             notes: "",
+            created_at: new Date(now.getTime() - 25 * 60 * 1000).toISOString(),
         },
         {
             id: "#1236",
@@ -63,10 +75,15 @@ export default function OrdersList() {
             total: 63.0,
             status: "تم التسليم",
             statusColor: "blue",
-            time: "10:20 ص",
+            time: now.toLocaleString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            }),
             paymentMethod: "بطاقة ائتمان",
             paymentStatus: "مدفوع",
             notes: "",
+            created_at: new Date(now.getTime() - 20 * 60 * 1000).toISOString(),
         },
         {
             id: "#1237",
@@ -80,10 +97,15 @@ export default function OrdersList() {
             total: 128.0,
             status: "طلب جديد",
             statusColor: "orange",
-            time: "10:35 ص",
+            time: now.toLocaleString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            }),
             paymentMethod: "في انتظار الدفع",
             paymentStatus: "غير مدفوع",
             notes: "الستيك متوسط النضج",
+            created_at: new Date(now.getTime() - 5 * 60 * 1000).toISOString(),
         },
         {
             id: "#1238",
@@ -96,19 +118,61 @@ export default function OrdersList() {
             total: 80.0,
             status: "ملغي",
             statusColor: "red",
-            time: "10:15 ص",
+            time: now.toLocaleString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            }),
             paymentMethod: "ملغي",
             paymentStatus: "ملغي",
             notes: "طلب العميل الإلغاء",
+            created_at: new Date(now.getTime() - 15 * 60 * 1000).toISOString(),
         },
-    ]);
+        {
+            id: "#1239",
+            table: "طاولة 7",
+            customer: "ليلى حسن",
+            items: [
+                { name: "سوشي مكس", quantity: 1, price: 95.0 },
+                { name: "مشروب ياباني", quantity: 1, price: 18.0 },
+            ],
+            total: 113.0,
+            status: "جاري التحضير",
+            statusColor: "yellow",
+            time: now.toLocaleString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            }),
+            paymentMethod: "دفع إلكتروني",
+            paymentStatus: "غير مدفوع",
+            notes: "",
+            created_at: new Date(now.getTime() - 10 * 60 * 1000).toISOString(),
+        },
+    ];
+
+    return orders;
+};
+
+export default function OrdersList() {
+    const { showToast } = useToast();
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [selectedStatus, setSelectedStatus] = useState("all");
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [expandedOrders, setExpandedOrders] = useState<Set<string>>(
         new Set()
     );
     const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+    const [orderToCancel, setOrderToCancel] = useState<Order | null>(null);
+    const [loading, setLoading] = useState(false);
     const actionsMenuRef = useRef<HTMLDivElement>(null);
-    const { showToast, ToastContainer } = useToast();
+
+    useEffect(() => {
+        fetchOrders();
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -126,33 +190,28 @@ export default function OrdersList() {
         };
     }, []);
 
+    const fetchOrders = async () => {
+        try {
+            setLoading(true);
+            // محاكاة التأخير
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            const mockOrders = generateMockOrders();
+            setOrders(mockOrders);
+        } catch (error) {
+            console.error("خطأ في جلب الطلبات:", error);
+            showToast("حدث خطأ في جلب الطلبات", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const statusOptions = [
-        { value: "all", label: "جميع الطلبات", count: orders.length },
-        {
-            value: "طلب جديد",
-            label: "طلبات جديدة",
-            count: orders.filter((o) => o.status === "طلب جديد").length,
-        },
-        {
-            value: "جاري التحضير",
-            label: "جاري التحضير",
-            count: orders.filter((o) => o.status === "جاري التحضير").length,
-        },
-        {
-            value: "جاهز للتقديم",
-            label: "جاهز للتقديم",
-            count: orders.filter((o) => o.status === "جاهز للتقديم").length,
-        },
-        {
-            value: "تم التسليم",
-            label: "تم التسليم",
-            count: orders.filter((o) => o.status === "تم التسليم").length,
-        },
-        {
-            value: "ملغي",
-            label: "ملغي",
-            count: orders.filter((o) => o.status === "ملغي").length,
-        },
+        { value: "all", label: "جميع الطلبات" },
+        { value: "طلب جديد", label: "طلبات جديدة" },
+        { value: "جاري التحضير", label: "جاري التحضير" },
+        { value: "جاهز للتقديم", label: "جاهز للتقديم" },
+        { value: "تم التسليم", label: "تم التسليم" },
+        { value: "ملغي", label: "ملغي" },
     ];
 
     const filteredOrders = orders.filter((order) => {
@@ -183,53 +242,43 @@ export default function OrdersList() {
         }
     };
 
-    const getStatusButtonConfig = (status: string) => {
-        switch (status) {
-            case "طلب جديد":
+    const getStatusColorClasses = (statusColor: string) => {
+        switch (statusColor) {
+            case "orange":
                 return {
-                    text: "قبول الطلب",
-                    bgColor: "bg-orange-500",
-                    hoverColor: "hover:bg-orange-600",
-                    onClick: (orderId: string) => {
-                        updateOrderStatus(orderId, "جاري التحضير");
-                    },
+                    bg: "bg-orange-100",
+                    text: "text-orange-600",
+                    badge: "bg-orange-100 text-orange-800",
                 };
-            case "جاري التحضير":
+            case "yellow":
                 return {
-                    text: "جاري التحضير",
-                    bgColor: "bg-yellow-500",
-                    hoverColor: "hover:bg-yellow-600",
-                    onClick: null, // Display only, no action
+                    bg: "bg-yellow-100",
+                    text: "text-yellow-600",
+                    badge: "bg-yellow-100 text-yellow-800",
                 };
-            case "جاهز للتقديم":
+            case "green":
                 return {
-                    text: "جاهز للتقديم",
-                    bgColor: "bg-green-500",
-                    hoverColor: "hover:bg-green-600",
-                    onClick: (orderId: string) => {
-                        updateOrderStatus(orderId, "تم التسليم");
-                    },
+                    bg: "bg-green-100",
+                    text: "text-green-600",
+                    badge: "bg-green-100 text-green-800",
                 };
-            case "تم التسليم":
+            case "blue":
                 return {
-                    text: "تم التسليم",
-                    bgColor: "bg-green-500",
-                    hoverColor: "hover:bg-green-600",
-                    onClick: null, // Display only, no action
+                    bg: "bg-blue-100",
+                    text: "text-blue-600",
+                    badge: "bg-blue-100 text-blue-800",
                 };
-            case "ملغي":
+            case "red":
                 return {
-                    text: "ملغي",
-                    bgColor: "bg-red-500",
-                    hoverColor: "hover:bg-red-600",
-                    onClick: null, // Display only, no action
+                    bg: "bg-red-100",
+                    text: "text-red-600",
+                    badge: "bg-red-100 text-red-800",
                 };
             default:
                 return {
-                    text: status,
-                    bgColor: "bg-gray-500",
-                    hoverColor: "hover:bg-gray-600",
-                    onClick: null,
+                    bg: "bg-gray-100",
+                    text: "text-gray-600",
+                    badge: "bg-gray-100 text-gray-800",
                 };
         }
     };
@@ -257,6 +306,7 @@ export default function OrdersList() {
     };
 
     const handleRefresh = () => {
+        fetchOrders();
         showToast("تم تحديث قائمة الطلبات", "success");
     };
 
@@ -272,31 +322,13 @@ export default function OrdersList() {
         });
     };
 
-    const handlePrintInvoice = (order?: Order) => {
-        const orderToPrint = order || selectedOrder;
-        if (orderToPrint) {
-            // Open print dialog
-            setTimeout(() => {
-                window.print();
-            }, 100);
-            showToast("جاري طباعة الفاتورة...", "info");
-            setShowActionsMenu(null);
-        }
-    };
-
-    const handleSendInvoice = (order?: Order) => {
-        const orderToSend = order || selectedOrder;
-        if (orderToSend) {
-            showToast(
-                `تم إرسال الفاتورة للطلب ${orderToSend.id} بنجاح`,
-                "success"
-            );
-            setShowActionsMenu(null);
-        }
-    };
-
     const handleViewDetails = (order: Order) => {
+        if (!order) {
+            showToast("خطأ في عرض تفاصيل الطلب", "error");
+            return;
+        }
         setSelectedOrder(order);
+        setShowDetailsModal(true);
         setShowActionsMenu(null);
     };
 
@@ -312,6 +344,8 @@ export default function OrdersList() {
             newStatus = "جاهز للتقديم";
         } else if (currentStatus === "جاهز للتقديم") {
             newStatus = "تم التسليم";
+        } else if (currentStatus === "طلب جديد") {
+            newStatus = "جاري التحضير";
         }
 
         if (newStatus) {
@@ -320,352 +354,674 @@ export default function OrdersList() {
         }
     };
 
+    const handleCancelOrder = (order: Order) => {
+        setOrderToCancel(order);
+        setShowCancelConfirm(true);
+        setShowActionsMenu(null);
+    };
+
+    const confirmCancelOrder = () => {
+        if (orderToCancel) {
+            updateOrderStatus(orderToCancel.id, "ملغي");
+            setShowCancelConfirm(false);
+            setOrderToCancel(null);
+        }
+    };
+
+    const handlePrintInvoice = (order?: Order) => {
+        const orderToPrint = order || selectedOrder;
+        if (!orderToPrint) {
+            showToast("لا يوجد طلب للطباعة", "error");
+            return;
+        }
+
+        const printWindow = window.open("", "_blank");
+        if (!printWindow) {
+            showToast(
+                "فشل فتح نافذة الطباعة. يرجى التحقق من إعدادات المتصفح",
+                "error"
+            );
+            return;
+        }
+
+        const tax = orderToPrint.total * 0.15;
+        const totalWithTax = orderToPrint.total * 1.15;
+
+        const printContent = `
+            <!DOCTYPE html>
+            <html dir="rtl" lang="ar">
+            <head>
+                <meta charset="UTF-8">
+                <title>فاتورة ${orderToPrint.id}</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        padding: 20px;
+                        color: #333;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 30px;
+                        border-bottom: 2px solid #333;
+                        padding-bottom: 20px;
+                    }
+                    .header h1 {
+                        font-size: 24px;
+                        margin-bottom: 10px;
+                    }
+                    .order-info {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 15px;
+                        margin-bottom: 30px;
+                    }
+                    .info-item {
+                        padding: 10px;
+                        background: #f9f9f9;
+                        border-radius: 5px;
+                    }
+                    .info-item strong {
+                        display: block;
+                        margin-bottom: 5px;
+                        color: #666;
+                        font-size: 12px;
+                    }
+                    .info-item span {
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: #333;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    table th,
+                    table td {
+                        padding: 12px;
+                        text-align: right;
+                        border: 1px solid #ddd;
+                    }
+                    table th {
+                        background: #f5f5f5;
+                        font-weight: bold;
+                    }
+                    .total-section {
+                        margin-top: 20px;
+                        padding-top: 20px;
+                        border-top: 2px solid #333;
+                    }
+                    .total-row {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 8px 0;
+                        font-size: 16px;
+                    }
+                    .total-row.final {
+                        font-size: 20px;
+                        font-weight: bold;
+                        margin-top: 10px;
+                        padding-top: 10px;
+                        border-top: 1px solid #ddd;
+                    }
+                    .footer {
+                        margin-top: 30px;
+                        padding-top: 20px;
+                        border-top: 2px solid #333;
+                        text-align: center;
+                        font-size: 12px;
+                        color: #666;
+                    }
+                    @media print {
+                        body { padding: 0; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>فاتورة الطلب</h1>
+                    <p>${selectedOrder.id}</p>
+                </div>
+
+                <div class="order-info">
+                    <div class="info-item">
+                        <strong>الطاولة</strong>
+                        <span>${selectedOrder.table}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>العميل</strong>
+                        <span>${selectedOrder.customer}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>التاريخ</strong>
+                        <span>${new Date(
+                            selectedOrder.created_at
+                        ).toLocaleString("en-US", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>حالة الطلب</strong>
+                        <span>${selectedOrder.status}</span>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم الصنف</th>
+                            <th>الكمية</th>
+                            <th>السعر</th>
+                            <th>الإجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${orderToPrint.items
+                            .map(
+                                (item) => `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.price.toFixed(2)} ج.م</td>
+                                <td>${(item.price * item.quantity).toFixed(
+                                    2
+                                )} ج.م</td>
+                            </tr>
+                        `
+                            )
+                            .join("")}
+                    </tbody>
+                </table>
+
+                <div class="total-section">
+                    <div class="total-row">
+                        <span>المجموع الفرعي:</span>
+                        <span>${orderToPrint.total.toFixed(2)} ج.م</span>
+                    </div>
+                    <div class="total-row">
+                        <span>الضريبة (15%):</span>
+                        <span>${tax.toFixed(2)} ج.م</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>الإجمالي:</span>
+                        <span>${totalWithTax.toFixed(2)} ج.م</span>
+                    </div>
+                </div>
+
+                ${
+                    orderToPrint.notes
+                        ? `
+                <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+                    <strong>ملاحظات:</strong>
+                    <p>${orderToPrint.notes}</p>
+                </div>
+                `
+                        : ""
+                }
+
+                <div class="footer">
+                    <p>شكراً لزيارتك</p>
+                    <p>تم إنشاء الفاتورة في ${new Date().toLocaleString(
+                        "en-US",
+                        {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        }
+                    )}</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.focus();
+
+        // Wait for content to load before printing
+        setTimeout(() => {
+            try {
+                printWindow.print();
+                showToast("تم فتح نافذة الطباعة", "success");
+            } catch (error) {
+                console.error("خطأ في الطباعة:", error);
+                showToast("حدث خطأ في الطباعة", "error");
+            }
+            // Don't close immediately, let user print first
+            // printWindow.close();
+        }, 500);
+    };
+
+    const handleSendInvoice = (order?: Order) => {
+        const orderToSend = order || selectedOrder;
+        if (!orderToSend) {
+            showToast("لا يوجد طلب للإرسال", "error");
+            return;
+        }
+
+        // محاكاة إرسال الفاتورة
+        // في التطبيق الحقيقي، سيتم إرسال الفاتورة عبر البريد الإلكتروني أو الرسائل النصية
+        showToast(`تم إرسال الفاتورة للطلب ${orderToSend.id} بنجاح`, "success");
+    };
+
+    // تنسيق التاريخ الميلادي
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        });
+    };
+
+    if (loading && orders.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">
-                    إدارة الطلبات
-                </h2>
-                <div className="flex items-center space-x-4">
-                    <div className="relative">
-                        <i className="ri-search-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input
-                            type="text"
-                            placeholder="البحث في الطلبات..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pr-12 pl-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
-                        />
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-900">
+                            إدارة الطلبات
+                        </h2>
+                        <p className="text-sm text-gray-600 mt-1">
+                            إجمالي الطلبات: {orders.length}
+                        </p>
                     </div>
-                    <button
-                        onClick={handleRefresh}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer"
-                    >
-                        <i className="ri-refresh-line ml-1"></i>
-                        تحديث
-                    </button>
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="relative flex-1 min-w-[200px]">
+                            <i className="ri-search-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input
+                                type="text"
+                                placeholder="البحث في الطلبات..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+                            />
+                        </div>
+                        <button
+                            onClick={handleRefresh}
+                            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                            title="تحديث"
+                        >
+                            <i className="ri-refresh-line text-lg"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {/* Status Filter */}
-            <div className="flex flex-wrap gap-2">
-                {statusOptions.map((status) => (
-                    <button
-                        key={status.value}
-                        onClick={() => setSelectedStatus(status.value)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                            selectedStatus === status.value
-                                ? "bg-orange-500 text-white"
-                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
-                    >
-                        {status.label} ({status.count})
-                    </button>
-                ))}
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div className="flex flex-wrap gap-2">
+                    {statusOptions.map((status) => {
+                        const count = orders.filter(
+                            (o) =>
+                                status.value === "all" ||
+                                o.status === status.value
+                        ).length;
+                        return (
+                            <button
+                                key={status.value}
+                                onClick={() => setSelectedStatus(status.value)}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                                    selectedStatus === status.value
+                                        ? "bg-orange-500 text-white"
+                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                }`}
+                            >
+                                {status.label} ({count})
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Orders Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredOrders.map((order) => (
-                    <div
-                        key={order.id}
-                        className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-                    >
-                        {/* Order Header */}
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center">
-                                <div
-                                    className={`w-10 h-10 rounded-full flex items-center justify-center ml-3 flex-shrink-0 ${
-                                        order.statusColor === "orange"
-                                            ? "bg-orange-100"
-                                            : order.statusColor === "yellow"
-                                            ? "bg-yellow-100"
-                                            : order.statusColor === "green"
-                                            ? "bg-green-100"
-                                            : order.statusColor === "blue"
-                                            ? "bg-blue-100"
-                                            : "bg-red-100"
-                                    }`}
-                                >
-                                    <i
-                                        className={`${getStatusIcon(
-                                            order.status
-                                        )} ${
-                                            order.statusColor === "orange"
-                                                ? "text-orange-500"
-                                                : order.statusColor === "yellow"
-                                                ? "text-yellow-500"
-                                                : order.statusColor === "green"
-                                                ? "text-green-500"
-                                                : order.statusColor === "blue"
-                                                ? "text-blue-500"
-                                                : "text-red-500"
-                                        }`}
-                                    ></i>
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <h3 className="font-bold text-gray-900 text-base truncate">
-                                        {order.id}
-                                    </h3>
-                                    <p className="text-sm text-gray-600 truncate">
-                                        {order.table}
-                                    </p>
-                                </div>
-                            </div>
-                            <span className="text-sm text-gray-500 whitespace-nowrap mr-2">
-                                {order.time}
-                            </span>
-                        </div>
-
-                        {/* Customer Info */}
-                        <div className="mb-4 min-h-[60px] flex flex-col justify-between">
-                            <p className="font-medium text-gray-900 mb-2 truncate">
-                                {order.customer}
-                            </p>
-                            <span
-                                className={`inline-block px-3 py-1 rounded-full text-xs font-medium w-fit ${
-                                    order.statusColor === "orange"
-                                        ? "bg-orange-100 text-orange-800"
-                                        : order.statusColor === "yellow"
-                                        ? "bg-yellow-100 text-yellow-800"
-                                        : order.statusColor === "green"
-                                        ? "bg-green-100 text-green-800"
-                                        : order.statusColor === "blue"
-                                        ? "bg-blue-100 text-blue-800"
-                                        : "bg-red-100 text-red-800"
-                                }`}
-                            >
-                                {order.status}
-                            </span>
-                        </div>
-
-                        {/* Order Items */}
-                        <div className="mb-4 min-h-[100px] flex flex-col">
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">
-                                الأصناف:
-                            </h4>
-                            <div className="space-y-1.5 flex-1">
-                                {(expandedOrders.has(order.id)
-                                    ? order.items
-                                    : order.items.slice(0, 2)
-                                ).map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex justify-between items-center text-sm"
-                                    >
-                                        <span className="text-gray-600 truncate flex-1 mr-2">
-                                            {item.quantity}x {item.name}
-                                        </span>
-                                        <span className="text-gray-900 font-medium whitespace-nowrap">
-                                            {(
-                                                item.price * item.quantity
-                                            ).toFixed(2)}{" "}
-                                            ر.س
-                                        </span>
-                                    </div>
-                                ))}
-                                {order.items.length > 2 && (
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            toggleOrderExpansion(order.id);
-                                        }}
-                                        className="text-xs text-orange-500 hover:text-orange-600 font-medium cursor-pointer mt-1"
-                                    >
-                                        {expandedOrders.has(order.id)
-                                            ? "عرض أقل"
-                                            : `+${
-                                                  order.items.length - 2
-                                              } صنف آخر`}
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Total and Payment */}
-                        <div className="border-t border-gray-100 pt-4 mb-4 min-h-[70px] flex flex-col justify-between">
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="font-medium text-gray-900 text-sm">
-                                    الإجمالي:
-                                </span>
-                                <span className="font-bold text-lg text-gray-900">
-                                    {order.total.toFixed(2)} ر.س
-                                </span>
-                            </div>
-                            <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600">الدفع:</span>
-                                <span
-                                    className={`font-medium ${
-                                        order.paymentStatus === "مدفوع"
-                                            ? "text-green-600"
-                                            : order.paymentStatus ===
-                                              "غير مدفوع"
-                                            ? "text-red-600"
-                                            : "text-gray-600"
-                                    }`}
-                                >
-                                    {order.paymentStatus}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Quick Actions */}
-                        <div className="flex gap-2">
-                            {(() => {
-                                const buttonConfig = getStatusButtonConfig(
-                                    order.status
-                                );
-                                return (
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (buttonConfig.onClick) {
-                                                buttonConfig.onClick(order.id);
-                                            }
-                                        }}
-                                        className={`flex-1 ${
-                                            buttonConfig.bgColor
-                                        } ${
-                                            buttonConfig.hoverColor
-                                        } text-white py-2.5 px-4 rounded-lg font-medium transition-colors whitespace-nowrap ${
-                                            buttonConfig.onClick
-                                                ? "cursor-pointer"
-                                                : "cursor-default"
-                                        }`}
-                                    >
-                                        {buttonConfig.text}
-                                    </button>
-                                );
-                            })()}
+            {filteredOrders.length > 0 ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredOrders.map((order) => {
+                        const colorClasses = getStatusColorClasses(
+                            order.statusColor
+                        );
+                        return (
                             <div
-                                className="relative flex-shrink-0"
-                                ref={actionsMenuRef}
+                                key={order.id}
+                                className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                             >
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowActionsMenu(
-                                            showActionsMenu === order.id
-                                                ? null
-                                                : order.id
-                                        );
-                                    }}
-                                    className="w-10 h-10 flex items-center justify-center border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                                >
-                                    <i className="ri-more-line text-lg"></i>
-                                </button>
-                                {showActionsMenu === order.id && (
-                                    <div className="absolute left-0 bottom-full mb-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[180px] z-50">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleViewDetails(order);
-                                            }}
-                                            className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                                {/* Order Header */}
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center">
+                                        <div
+                                            className={`w-10 h-10 rounded-full flex items-center justify-center ml-3 flex-shrink-0 ${colorClasses.bg}`}
                                         >
-                                            <i className="ri-eye-line ml-2"></i>
-                                            عرض التفاصيل
-                                        </button>
+                                            <i
+                                                className={`${getStatusIcon(
+                                                    order.status
+                                                )} ${
+                                                    colorClasses.text
+                                                } text-lg`}
+                                            ></i>
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="font-bold text-gray-900 text-base truncate">
+                                                {order.id}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 truncate">
+                                                {order.table}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span className="text-sm text-gray-500 whitespace-nowrap mr-2">
+                                        {order.time}
+                                    </span>
+                                </div>
 
-                                        {(order.status === "جاري التحضير" ||
-                                            order.status ===
-                                                "جاهز للتقديم") && (
+                                {/* Customer Info */}
+                                <div className="mb-4">
+                                    <p className="font-medium text-gray-900 mb-2 truncate">
+                                        {order.customer}
+                                    </p>
+                                    <span
+                                        className={`inline-block px-3 py-1 rounded-full text-xs font-medium w-fit ${colorClasses.badge}`}
+                                    >
+                                        {order.status}
+                                    </span>
+                                </div>
+
+                                {/* Order Items */}
+                                <div className="mb-4 min-h-[100px]">
+                                    <h4 className="text-sm font-medium text-gray-900 mb-2">
+                                        الأصناف:
+                                    </h4>
+                                    <div className="space-y-1.5">
+                                        {(expandedOrders.has(order.id)
+                                            ? order.items
+                                            : order.items.slice(0, 2)
+                                        ).map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex justify-between items-center text-sm"
+                                            >
+                                                <span className="text-gray-600 truncate flex-1 mr-2">
+                                                    {item.quantity}x {item.name}
+                                                </span>
+                                                <span className="text-gray-900 font-medium whitespace-nowrap">
+                                                    {(
+                                                        item.price *
+                                                        item.quantity
+                                                    ).toFixed(2)}{" "}
+                                                    ج.م
+                                                </span>
+                                            </div>
+                                        ))}
+                                        {order.items.length > 2 && (
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleChangeStatus(
-                                                        order.id,
-                                                        order.status
+                                                    toggleOrderExpansion(
+                                                        order.id
                                                     );
                                                 }}
-                                                className="w-full text-right px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
-                                >
-                                                <i className="ri-arrow-right-line ml-2"></i>
-                                                {order.status === "جاري التحضير"
-                                                    ? "جاهز للتقديم"
-                                                    : "تم التسليم"}
-                                </button>
-                            )}
-
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleCopyOrderId(order.id);
-                                            }}
-                                            className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-                                        >
-                                            <i className="ri-file-copy-line ml-2"></i>
-                                            نسخ رقم الطلب
-                                        </button>
-
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleViewDetails(order);
-                                                // Print after opening modal
-                                                setTimeout(() => {
-                                                    handlePrintInvoice(order);
-                                                }, 300);
-                                            }}
-                                            className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-                                        >
-                                            <i className="ri-printer-line ml-2"></i>
-                                            طباعة الفاتورة
-                                        </button>
-
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleSendInvoice(order);
-                                            }}
-                                            className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-                                        >
-                                            <i className="ri-mail-send-line ml-2"></i>
-                                            إرسال الفاتورة
-                                        </button>
-
-                                        {order.status !== "ملغي" &&
-                                            order.status !== "تم التسليم" && (
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        updateOrderStatus(
-                                            order.id,
-                                                            "ملغي"
-                                        );
-                                    }}
-                                                    className="w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                                >
-                                                    <i className="ri-close-line ml-2"></i>
-                                                    إلغاء الطلب
-                                </button>
-                            )}
+                                                className="text-xs text-orange-500 hover:text-orange-600 font-medium cursor-pointer mt-1"
+                                            >
+                                                {expandedOrders.has(order.id)
+                                                    ? "عرض أقل"
+                                                    : `+${
+                                                          order.items.length - 2
+                                                      } صنف آخر`}
+                                            </button>
+                                        )}
                                     </div>
-                                )}
+                                </div>
+
+                                {/* Total and Payment */}
+                                <div className="border-t border-gray-100 pt-4 mb-4">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="font-medium text-gray-900 text-sm">
+                                            الإجمالي:
+                                        </span>
+                                        <span className="font-bold text-lg text-gray-900">
+                                            {order.total.toFixed(2)} ج.م
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-600">
+                                            الدفع:
+                                        </span>
+                                        <span
+                                            className={`font-medium ${
+                                                order.paymentStatus === "مدفوع"
+                                                    ? "text-green-600"
+                                                    : order.paymentStatus ===
+                                                      "غير مدفوع"
+                                                    ? "text-red-600"
+                                                    : "text-gray-600"
+                                            }`}
+                                        >
+                                            {order.paymentStatus}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Quick Actions */}
+                                <div className="flex gap-2">
+                                    {order.status === "طلب جديد" && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleChangeStatus(
+                                                    order.id,
+                                                    order.status
+                                                );
+                                            }}
+                                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2.5 px-4 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
+                                        >
+                                            قبول الطلب
+                                        </button>
+                                    )}
+                                    {order.status === "جاري التحضير" && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleChangeStatus(
+                                                    order.id,
+                                                    order.status
+                                                );
+                                            }}
+                                            className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2.5 px-4 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
+                                        >
+                                            جاهز للتقديم
+                                        </button>
+                                    )}
+                                    {order.status === "جاهز للتقديم" && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleChangeStatus(
+                                                    order.id,
+                                                    order.status
+                                                );
+                                            }}
+                                            className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 px-4 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
+                                        >
+                                            تم التسليم
+                                        </button>
+                                    )}
+                                    {(order.status === "تم التسليم" ||
+                                        order.status === "ملغي") && (
+                                        <div
+                                            className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-center ${
+                                                order.status === "تم التسليم"
+                                                    ? "bg-green-100 text-green-800"
+                                                    : "bg-red-100 text-red-800"
+                                            }`}
+                                        >
+                                            {order.status}
+                                        </div>
+                                    )}
+                                    <div
+                                        className="relative flex-shrink-0"
+                                        ref={actionsMenuRef}
+                                    >
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setShowActionsMenu(
+                                                    showActionsMenu === order.id
+                                                        ? null
+                                                        : order.id
+                                                );
+                                            }}
+                                            className="w-10 h-10 flex items-center justify-center border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                                        >
+                                            <i className="ri-more-2-fill text-lg"></i>
+                                        </button>
+                                        {showActionsMenu === order.id && (
+                                            <div className="absolute left-0 bottom-full mb-2 bg-white border border-gray-200 rounded-lg shadow-xl py-2 min-w-[180px] z-50">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleViewDetails(
+                                                            order
+                                                        );
+                                                    }}
+                                                    className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-end gap-2"
+                                                >
+                                                    <i className="ri-eye-line"></i>
+                                                    <span>عرض التفاصيل</span>
+                                                </button>
+
+                                                {(order.status ===
+                                                    "جاري التحضير" ||
+                                                    order.status ===
+                                                        "جاهز للتقديم" ||
+                                                    order.status ===
+                                                        "طلب جديد") && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleChangeStatus(
+                                                                order.id,
+                                                                order.status
+                                                            );
+                                                        }}
+                                                        className="w-full text-right px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer flex items-center justify-end gap-2"
+                                                    >
+                                                        <i className="ri-arrow-right-line"></i>
+                                                        <span>
+                                                            {order.status ===
+                                                            "طلب جديد"
+                                                                ? "قبول الطلب"
+                                                                : order.status ===
+                                                                  "جاري التحضير"
+                                                                ? "جاهز للتقديم"
+                                                                : "تم التسليم"}
+                                                        </span>
+                                                    </button>
+                                                )}
+
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleCopyOrderId(
+                                                            order.id
+                                                        );
+                                                    }}
+                                                    className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-end gap-2"
+                                                >
+                                                    <i className="ri-file-copy-line"></i>
+                                                    <span>نسخ رقم الطلب</span>
+                                                </button>
+
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handlePrintInvoice(
+                                                            order
+                                                        );
+                                                    }}
+                                                    className="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-end gap-2"
+                                                >
+                                                    <i className="ri-printer-line"></i>
+                                                    <span>طباعة الفاتورة</span>
+                                                </button>
+
+                                                {order.status !== "ملغي" &&
+                                                    order.status !==
+                                                        "تم التسليم" && (
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleCancelOrder(
+                                                                    order
+                                                                );
+                                                            }}
+                                                            className="w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer flex items-center justify-end gap-2"
+                                                        >
+                                                            <i className="ri-close-line"></i>
+                                                            <span>
+                                                                إلغاء الطلب
+                                                            </span>
+                                                        </button>
+                                                    )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                        );
+                    })}
+                </div>
+            ) : (
+                <div className="bg-white rounded-xl shadow-sm p-12 border border-gray-100 text-center">
+                    <i className="ri-file-list-line text-6xl text-gray-300 mb-4"></i>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        لا توجد طلبات
+                    </h3>
+                    <p className="text-gray-600">
+                        لا توجد طلبات تطابق الفلتر المحدد
+                    </p>
+                </div>
+            )}
 
             {/* Order Details Modal */}
-            {selectedOrder && (
+            {showDetailsModal && selectedOrder && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-gray-900">
                                 تفاصيل الطلب {selectedOrder.id}
                             </h3>
                             <button
-                                onClick={() => setSelectedOrder(null)}
+                                onClick={() => {
+                                    setShowDetailsModal(false);
+                                    setSelectedOrder(null);
+                                }}
                                 className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                             >
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {/* Order Info */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
@@ -697,7 +1053,7 @@ export default function OrdersList() {
                                         الوقت
                                     </label>
                                     <p className="text-gray-900">
-                                        {selectedOrder.time}
+                                        {formatDate(selectedOrder.created_at)}
                                     </p>
                                 </div>
                             </div>
@@ -727,10 +1083,10 @@ export default function OrdersList() {
                                                         item.price *
                                                         item.quantity
                                                     ).toFixed(2)}{" "}
-                                                    ر.س
+                                                    ج.م
                                                 </p>
                                                 <p className="text-sm text-gray-600">
-                                                    {item.price.toFixed(2)} ر.س
+                                                    {item.price.toFixed(2)} ج.م
                                                     للقطعة
                                                 </p>
                                             </div>
@@ -746,7 +1102,7 @@ export default function OrdersList() {
                                         المجموع الفرعي:
                                     </span>
                                     <span className="text-gray-900">
-                                        {selectedOrder.total.toFixed(2)} ر.س
+                                        {selectedOrder.total.toFixed(2)} ج.م
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
@@ -757,16 +1113,16 @@ export default function OrdersList() {
                                         {(selectedOrder.total * 0.15).toFixed(
                                             2
                                         )}{" "}
-                                        ر.س
+                                        ج.م
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2">
+                                <div className="flex justify-between items-center text-lg font-bold border-t border-gray-200 pt-2 mt-2">
                                     <span>الإجمالي:</span>
                                     <span>
                                         {(selectedOrder.total * 1.15).toFixed(
                                             2
                                         )}{" "}
-                                        ر.س
+                                        ج.م
                                     </span>
                                 </div>
                             </div>
@@ -814,18 +1170,33 @@ export default function OrdersList() {
                             )}
 
                             {/* Actions */}
-                            <div className="flex space-x-4">
+                            <div className="flex gap-3 pt-4 border-t border-gray-200">
                                 <button
-                                    onClick={handlePrintInvoice}
-                                    className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
+                                    onClick={() => {
+                                        handlePrintInvoice(selectedOrder);
+                                    }}
+                                    className="flex-1 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 whitespace-nowrap cursor-pointer transition-colors flex items-center justify-center gap-2"
                                 >
-                                    طباعة الفاتورة
+                                    <i className="ri-printer-line"></i>
+                                    <span>طباعة الفاتورة</span>
                                 </button>
                                 <button
-                                    onClick={handleSendInvoice}
-                                    className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                    onClick={() => {
+                                        handleSendInvoice();
+                                    }}
+                                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 whitespace-nowrap cursor-pointer transition-colors flex items-center justify-center gap-2"
                                 >
-                                    إرسال الفاتورة
+                                    <i className="ri-mail-send-line"></i>
+                                    <span>إرسال الفاتورة</span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowDetailsModal(false);
+                                        setSelectedOrder(null);
+                                    }}
+                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
+                                >
+                                    إغلاق
                                 </button>
                             </div>
                         </div>
@@ -833,20 +1204,47 @@ export default function OrdersList() {
                 </div>
             )}
 
-            {/* Empty State */}
-            {filteredOrders.length === 0 && (
-                <div className="text-center py-12">
-                    <i className="ri-file-list-line text-6xl text-gray-300 mb-4"></i>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                        لا توجد طلبات
-                    </h3>
-                    <p className="text-gray-600">
-                        لا توجد طلبات تطابق الفلتر المحدد
-                    </p>
+            {/* Cancel Confirmation Modal */}
+            {showCancelConfirm && orderToCancel && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-gray-900">
+                                تأكيد الإلغاء
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    setShowCancelConfirm(false);
+                                    setOrderToCancel(null);
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                            >
+                                <i className="ri-close-line text-xl"></i>
+                            </button>
+                        </div>
+                        <p className="text-gray-700 mb-6">
+                            هل أنت متأكد من إلغاء الطلب {orderToCancel.id}؟
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setShowCancelConfirm(false);
+                                    setOrderToCancel(null);
+                                }}
+                                className="flex-1 px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
+                            >
+                                إلغاء
+                            </button>
+                            <button
+                                onClick={confirmCancelOrder}
+                                className="flex-1 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 whitespace-nowrap cursor-pointer transition-colors"
+                            >
+                                تأكيد الإلغاء
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
-
-            <ToastContainer />
         </div>
     );
 }

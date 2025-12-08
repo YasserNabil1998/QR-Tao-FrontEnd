@@ -81,8 +81,16 @@ export default function CustomDatePicker({
         return `${day} ${month} ${year}`;
     };
 
+    // تحويل التاريخ إلى YYYY-MM-DD باستخدام التاريخ المحلي (وليس UTC)
+    const formatDateToLocalString = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    };
+
     const handleDateSelect = (date: Date) => {
-        const dateString = date.toISOString().split("T")[0];
+        const dateString = formatDateToLocalString(date);
         setSelectedDate(dateString);
         onChange(dateString);
         setIsOpen(false);
@@ -126,7 +134,7 @@ export default function CustomDatePicker({
         } else {
             currentDate.setMonth(currentDate.getMonth() + 1);
         }
-        setSelectedDate(currentDate.toISOString().split("T")[0]);
+        setSelectedDate(formatDateToLocalString(currentDate));
     };
 
     const getMonthName = (dateString: string) => {
