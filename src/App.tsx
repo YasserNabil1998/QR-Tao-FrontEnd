@@ -2,6 +2,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Suspense, useState } from "react";
 import { AppRoutes } from "./router/index";
 import { AuthProvider } from "./components/auth/AuthProvider";
+import { DirectionProvider } from "./context/DirectionContext";
 import Loader from "./components/common/Loader";
 import SplashScreen from "./components/common/SplashScreen";
 
@@ -17,20 +18,22 @@ function App() {
                 />
             )}
             <BrowserRouter basename={__BASE_PATH__}>
-                <AuthProvider>
-                    <Suspense
-                        fallback={
-                            <Loader
-                                fullScreen
-                                size="xl"
-                                variant="spinner"
-                                text="جاري التحميل..."
-                            />
-                        }
-                    >
-                        <AppRoutes />
-                    </Suspense>
-                </AuthProvider>
+                <DirectionProvider>
+                    <AuthProvider>
+                        <Suspense
+                            fallback={
+                                <Loader
+                                    fullScreen
+                                    size="xl"
+                                    variant="spinner"
+                                    text="جاري التحميل..."
+                                />
+                            }
+                        >
+                            <AppRoutes />
+                        </Suspense>
+                    </AuthProvider>
+                </DirectionProvider>
             </BrowserRouter>
         </>
     );

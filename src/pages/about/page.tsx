@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useDirection } from "../../context/DirectionContext";
 
 export default function AboutPage() {
+    const { direction, toggleDirection } = useDirection();
+
     return (
         <div className="min-h-screen bg-white font-arabic">
             {/* Header */}
@@ -15,13 +18,29 @@ export default function AboutPage() {
                             />
                         </Link>
 
-                        <Link
-                            to="/"
-                            className="text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
-                        >
-                            <i className="ri-home-line text-xl ml-2"></i>
-                            العودة للرئيسية
-                        </Link>
+                        <div className="flex items-center space-x-4 space-x-reverse">
+                            <button
+                                onClick={toggleDirection}
+                                className="flex items-center space-x-2 space-x-reverse px-3 py-2 text-gray-700 hover:text-orange-500 transition-colors rounded-lg hover:bg-gray-100 border border-gray-200 font-medium"
+                                title={
+                                    direction === "rtl"
+                                        ? "Switch to English"
+                                        : "التبديل إلى العربية"
+                                }
+                            >
+                                <i className="ri-global-line text-lg"></i>
+                                <span className="font-semibold text-sm">
+                                    {direction === "rtl" ? "ع" : "en"}
+                                </span>
+                            </button>
+                            <Link
+                                to="/"
+                                className="text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
+                            >
+                                <i className="ri-home-line text-xl ml-2"></i>
+                                العودة للرئيسية
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </header>

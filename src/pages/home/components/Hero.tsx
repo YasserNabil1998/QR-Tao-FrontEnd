@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
+import { useDirection } from "../../../context/DirectionContext";
 
 interface HeroProps {
     onNavigateToSection?: (section: string) => void;
@@ -7,6 +8,7 @@ interface HeroProps {
 
 export default function Hero({ onNavigateToSection }: HeroProps) {
     const { user, signOut } = useAuth();
+    const { direction, toggleDirection } = useDirection();
 
     const handleSignOut = async () => {
         await signOut();
@@ -74,6 +76,22 @@ export default function Hero({ onNavigateToSection }: HeroProps) {
                         </div>
                     </div>
                     <div className="flex items-center space-x-4 space-x-reverse">
+                        {/* Language Toggle Button */}
+                        <button
+                            onClick={toggleDirection}
+                            className="flex items-center space-x-2 space-x-reverse px-4 py-2 text-white hover:text-orange-400 transition-colors rounded-lg hover:bg-white/10 border border-white/20"
+                            title={
+                                direction === "rtl"
+                                    ? "Switch to English"
+                                    : "التبديل إلى العربية"
+                            }
+                        >
+                            <i className="ri-global-line text-lg"></i>
+                            <span className="font-semibold text-sm">
+                                {direction === "rtl" ? "ع" : "en"}
+                            </span>
+                        </button>
+
                         {user ? (
                             <div className="flex items-center space-x-4 space-x-reverse">
                                 <Link
