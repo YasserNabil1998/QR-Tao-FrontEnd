@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
+import { TablesProvider } from "../../../context/TablesContext";
 import AdminSidebar from "./components/AdminSidebar";
 import DashboardStats from "./components/DashboardStats";
 import MenuManagement from "./components/MenuManagement";
@@ -42,45 +43,58 @@ export default function AdminDashboard() {
 
     // Allow access even without login for demo purposes
     return (
-        <div className="dashboard-container">
-            <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <TablesProvider>
+            <div className="dashboard-container">
+                <AdminSidebar
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                />
 
-            <div className="dashboard-content">
-                <div className="dashboard-main">
-                    <div className="dashboard-wrapper">
-                        {activeTab === "dashboard" && <DashboardStats />}
-                        {activeTab === "menu" && <MenuManagement />}
-                        {activeTab === "orders" && <DeliveryOrders />}
-                        {activeTab === "tables" && <TablesManagement />}
-                        {activeTab === "staff" && (
-                            <StaffManagement restaurantId={restaurantId} />
-                        )}
-                        {activeTab === "inventory" && (
-                            <InventoryManagement restaurantId={restaurantId} />
-                        )}
-                        {activeTab === "suppliers" && <SuppliersManagement />}
-                        {activeTab === "purchases" && <PurchaseManagement />}
-                        {activeTab === "purchase-products" && (
-                            <PurchaseProductsManagement />
-                        )}
-                        {activeTab === "invoices" && <InvoicesManagement />}
-                        {activeTab === "payments" && <PaymentMethods />}
-                        {activeTab === "ledger" && <GeneralLedger />}
-                        {activeTab === "analytics" && (
-                            <AdvancedAnalytics restaurantId={restaurantId} />
-                        )}
-                        {activeTab === "qr-codes" && (
-                            <QRCodeGenerator restaurant={user || {}} />
-                        )}
-                        {activeTab === "settings" && (
-                            <RestaurantSettings
-                                restaurant={user || {}}
-                                onUpdate={() => {}}
-                            />
-                        )}
+                <div className="dashboard-content">
+                    <div className="dashboard-main">
+                        <div className="dashboard-wrapper">
+                            {activeTab === "dashboard" && <DashboardStats />}
+                            {activeTab === "menu" && <MenuManagement />}
+                            {activeTab === "orders" && <DeliveryOrders />}
+                            {activeTab === "tables" && <TablesManagement />}
+                            {activeTab === "staff" && (
+                                <StaffManagement restaurantId={restaurantId} />
+                            )}
+                            {activeTab === "inventory" && (
+                                <InventoryManagement
+                                    restaurantId={restaurantId}
+                                />
+                            )}
+                            {activeTab === "suppliers" && (
+                                <SuppliersManagement />
+                            )}
+                            {activeTab === "purchases" && (
+                                <PurchaseManagement />
+                            )}
+                            {activeTab === "purchase-products" && (
+                                <PurchaseProductsManagement />
+                            )}
+                            {activeTab === "invoices" && <InvoicesManagement />}
+                            {activeTab === "payments" && <PaymentMethods />}
+                            {activeTab === "ledger" && <GeneralLedger />}
+                            {activeTab === "analytics" && (
+                                <AdvancedAnalytics
+                                    restaurantId={restaurantId}
+                                />
+                            )}
+                            {activeTab === "qr-generator" && (
+                                <QRCodeGenerator restaurant={user || {}} />
+                            )}
+                            {activeTab === "settings" && (
+                                <RestaurantSettings
+                                    restaurant={user || {}}
+                                    onUpdate={() => {}}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </TablesProvider>
     );
 }

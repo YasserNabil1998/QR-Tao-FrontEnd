@@ -2,94 +2,146 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useTablesContext } from "../../../../context/TablesContext";
 import { useToast } from "../../../../hooks/useToast";
+import { supabase } from "../../../../lib/supabase";
 
 interface QRCodeGeneratorProps {
     restaurant: any;
 }
 
-const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
+const QRCodeGeneratorBackup = ({ restaurant }: QRCodeGeneratorProps) => {
     const { user, loading: authLoading } = useAuth();
-    const { showToast, ToastContainer } = useToast();
     const [loading, setLoading] = useState(true);
     const [restaurantId, setRestaurantId] = useState<string | null>(null);
+    const [restaurantData, setRestaurantData] = useState<any>(null);
+    const [tables, setTables] = useState<any[]>([]);
+    const { showToast, ToastContainer } = useToast();
 
-    // Initialize local state for tables (fallback if context not available)
-    const [localTables] = useState<any[]>([
-        {
-            id: "table-1",
-            table_number: "1",
-            capacity: 4,
-            location: "الطابق الأول، بجانب النافذة",
-            status: "available",
-            restaurant_id: "demo-restaurant",
-            qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-                `${window.location.origin}/menu/demo-restaurant?table=table-1`
-            )}`,
-        },
-        {
-            id: "table-2",
-            table_number: "2",
-            capacity: 6,
-            location: "الطابق الأول، وسط القاعة",
-            status: "occupied",
-            restaurant_id: "demo-restaurant",
-            qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-                `${window.location.origin}/menu/demo-restaurant?table=table-2`
-            )}`,
-        },
-        {
-            id: "table-3",
-            table_number: "3",
-            capacity: 2,
-            location: "الطابق الثاني، ركن هادئ",
-            status: "available",
-            restaurant_id: "demo-restaurant",
-            qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-                `${window.location.origin}/menu/demo-restaurant?table=table-3`
-            )}`,
-        },
-    ]);
-
-    // Try to get tables from context, or use local state
-    let tablesContext: any = null;
+    // Safely get tables from context
+    let tablesContext;
     try {
         tablesContext = useTablesContext();
+        if (tablesContext?.tables) {
+            if (
+                tables.length === 0 ||
+                tables.length !== tablesContext.tables.length
+            ) {
+                setTables(tablesContext.tables);
+            }
+        }
     } catch (error) {
-        // Context not available, will use local state
+        // Context not available, use empty array
+        console.warn("TablesContext not available, using empty tables array");
     }
 
-    // Use context if available, otherwise use local state
-    const tables = tablesContext?.tables || localTables;
-
     useEffect(() => {
-        if (authLoading) {
-            setLoading(true);
-            return;
-        }
+        const fetchRestaurantData = async () => {
+            if (authLoading) {
+                setLoading(true);
+                return;
+            }
 
-        // Get restaurant ID from user or restaurant prop
-        const userRestaurantId = user?.restaurant_id;
-        const restaurantIdFromProp =
-            restaurant?.id || restaurant?.restaurant_id;
-        const finalRestaurantId =
-            restaurantIdFromProp || userRestaurantId || "demo-restaurant";
+            try {
+                // Get restaurant ID from user or restaurant prop
+                const userRestaurantId = user?.restaurant_id;
+                const restaurantIdFromProp =
+                    restaurant?.id || restaurant?.restaurant_id;
+                const finalRestaurantId =
+                    restaurantIdFromProp ||
+                    userRestaurantId ||
+                    "demo-restaurant";
 
-        setRestaurantId(finalRestaurantId);
+                setRestaurantId(finalRestaurantId);
 
-        // Simulate loading delay
-        setTimeout(() => {
-            setLoading(false);
-        }, 300);
-    }, [authLoading, user, restaurant]);
+                // If we have a restaurant ID (not demo), try to fetch restaurant data
+                if (
+                    finalRestaurantId &&
+                    finalRestaurantId !== "demo-restaurant"
+                ) {
+                    try {
+                        const { data, error } = await supabase
+                            .from("restaurants")
+                            .select("*")
+                            .eq("id", finalRestaurantId)
+                            .single();
+
+                        if (!error && data) {
+                            setRestaurantData(data);
+                        } else {
+                            // Use fallback if fetch fails
+                            setRestaurantData({
+                                id: finalRestaurantId,
+                                name:
+                                    user?.full_name ||
+                                    restaurant?.name ||
+                                    "مطعم تجريبي",
+                                slug: restaurant?.slug || finalRestaurantId,
+                                email:
+                                    user?.email ||
+                                    restaurant?.email ||
+                                    "demo@restaurant.com",
+                                phone: restaurant?.phone || null,
+                            });
+                        }
+                    } catch (dbError) {
+                        console.error("Database error:", dbError);
+                        // Use fallback data
+                        setRestaurantData({
+                            id: finalRestaurantId,
+                            name:
+                                user?.full_name ||
+                                restaurant?.name ||
+                                "مطعم تجريبي",
+                            slug: restaurant?.slug || finalRestaurantId,
+                            email:
+                                user?.email ||
+                                restaurant?.email ||
+                                "demo@restaurant.com",
+                            phone: restaurant?.phone || null,
+                        });
+                    }
+                } else {
+                    // Use restaurant prop or user data as fallback
+                    setRestaurantData(
+                        restaurant || {
+                            id: "demo-restaurant",
+                            name: user?.full_name || "مطعم تجريبي",
+                            slug: "demo-restaurant",
+                            email: user?.email || "demo@restaurant.com",
+                            phone: null,
+                        }
+                    );
+                }
+            } catch (error) {
+                console.error("Error fetching restaurant data:", error);
+                // Use fallback data
+                setRestaurantData(
+                    restaurant || {
+                        id: "demo-restaurant",
+                        name: user?.full_name || "مطعم تجريبي",
+                        slug: "demo-restaurant",
+                        email: user?.email || "demo@restaurant.com",
+                        phone: null,
+                    }
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRestaurantData();
+    }, [user, authLoading, restaurant]);
 
     const generateQRCode = (tableId: string) => {
+        const baseUrl = window.location.origin;
         const restaurantIdToUse =
+            restaurantData?.id ||
+            restaurant?.id ||
             restaurantId ||
             user?.restaurant_id ||
-            restaurant?.id ||
-            restaurant?.restaurant_id ||
+            restaurantData?.slug ||
+            restaurant?.slug ||
             "demo-restaurant";
-        const menuUrl = `${window.location.origin}/menu/${restaurantIdToUse}?table=${tableId}`;
+        const menuUrl = `${baseUrl}/menu/${restaurantIdToUse}?table=${tableId}`;
         return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
             menuUrl
         )}`;
@@ -118,7 +170,7 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
             return;
         }
 
-        tables.forEach((table: any, index: number) => {
+        tables.forEach((table, index) => {
             setTimeout(() => {
                 try {
                     const qrUrl = generateQRCode(table.id);
@@ -179,7 +231,8 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                     اسم المطعم:
                                 </span>
                                 <span className="mr-2 text-gray-600">
-                                    {restaurant?.name ||
+                                    {restaurantData?.name ||
+                                        restaurant?.name ||
                                         user?.full_name ||
                                         "مطعم تجريبي"}
                                 </span>
@@ -189,8 +242,9 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                     الرابط المختصر:
                                 </span>
                                 <span className="mr-2 text-gray-600">
-                                    {restaurantId ||
-                                        user?.restaurant_id ||
+                                    {restaurantData?.slug ||
+                                        restaurant?.slug ||
+                                        restaurantId ||
                                         "demo-restaurant"}
                                 </span>
                             </div>
@@ -199,7 +253,8 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                     البريد الإلكتروني:
                                 </span>
                                 <span className="mr-2 text-gray-600">
-                                    {restaurant?.email ||
+                                    {restaurantData?.email ||
+                                        restaurant?.email ||
                                         user?.email ||
                                         "demo@restaurant.com"}
                                 </span>
@@ -209,7 +264,9 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                     الهاتف:
                                 </span>
                                 <span className="mr-2 text-gray-600">
-                                    {restaurant?.phone || "0501234567"}
+                                    {restaurantData?.phone ||
+                                        restaurant?.phone ||
+                                        "0501234567"}
                                 </span>
                             </div>
                         </div>
@@ -243,7 +300,7 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                                {tables.map((table: any) => (
+                                {tables.map((table) => (
                                     <div
                                         key={table.id}
                                         className="bg-gray-50 rounded-lg p-4 border border-gray-200"
@@ -261,17 +318,6 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                                     طاولة رقم{" "}
                                                     {table.table_number}
                                                 </p>
-                                                {table.capacity && (
-                                                    <p className="text-xs text-gray-500 mt-1">
-                                                        السعة: {table.capacity}{" "}
-                                                        أشخاص
-                                                    </p>
-                                                )}
-                                                {table.location && (
-                                                    <p className="text-xs text-gray-500 mt-1">
-                                                        {table.location}
-                                                    </p>
-                                                )}
                                                 <button
                                                     onClick={() =>
                                                         downloadQRCode(
@@ -388,4 +434,4 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
     );
 };
 
-export default QRCodeGenerator;
+export default QRCodeGeneratorBackup;
