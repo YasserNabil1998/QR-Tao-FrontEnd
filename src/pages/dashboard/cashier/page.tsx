@@ -4,6 +4,7 @@ import CashierSidebar from "./components/CashierSidebar";
 import OrdersList from "./components/OrdersList";
 import PaymentManagement from "./components/PaymentManagement";
 import DailyReport from "./components/DailyReport";
+import Loader from "../../../components/common/Loader";
 
 export default function CashierDashboard() {
     const [activeTab, setActiveTab] = useState("orders");
@@ -12,18 +13,12 @@ export default function CashierDashboard() {
 
     if (loading) {
         return (
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                    fontSize: "1.5rem",
-                    color: "#4F46E5",
-                }}
-            >
-                Loading...
-            </div>
+            <Loader
+                fullScreen
+                size="xl"
+                variant="spinner"
+                text="جاري التحميل..."
+            />
         );
     }
 

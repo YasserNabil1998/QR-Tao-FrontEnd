@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
+import Spinner from "../../components/common/Spinner";
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -456,7 +457,11 @@ export default function RegisterPage() {
                                     >
                                         {loading ? (
                                             <>
-                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                                                <Spinner
+                                                    size="sm"
+                                                    color="white"
+                                                    className="ml-2"
+                                                />
                                                 جاري إنشاء الحساب...
                                             </>
                                         ) : (

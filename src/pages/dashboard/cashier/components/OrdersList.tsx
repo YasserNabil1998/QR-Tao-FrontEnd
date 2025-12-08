@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useToast } from "../../../../hooks/useToast";
 import CustomSelect from "../../../../components/common/CustomSelect";
 import { formatCurrency } from "../../../../utils/currency";
+import Loader from "../../../../components/common/Loader";
 
 interface Order {
     id: string;
@@ -628,9 +629,7 @@ export default function OrdersList() {
 
     if (loading && orders.length === 0) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-            </div>
+            <Loader size="lg" variant="spinner" text="جاري تحميل الطلبات..." />
         );
     }
 

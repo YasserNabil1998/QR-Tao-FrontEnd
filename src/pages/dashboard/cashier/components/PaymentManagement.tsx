@@ -3,6 +3,7 @@ import { useToast } from "../../../../hooks/useToast";
 import CustomSelect from "../../../../components/common/CustomSelect";
 import CustomDatePicker from "../../../../components/common/CustomDatePicker";
 import { formatCurrency } from "../../../../utils/currency";
+import Loader from "../../../../components/common/Loader";
 
 interface PaymentManagementProps {
     restaurantId: string;
@@ -102,7 +103,7 @@ const generateMockPayments = (filter: string): Payment[] => {
                 id: "#1234",
                 total_amount: 125.5,
                 tables: { table_number: "5" },
-                customer_name: "أحمد محمد",
+            customer_name: "أحمد محمد",
             },
         },
         {
@@ -119,7 +120,7 @@ const generateMockPayments = (filter: string): Payment[] => {
                 id: "#1235",
                 total_amount: 89.75,
                 tables: { table_number: "12" },
-                customer_name: "فاطمة علي",
+            customer_name: "فاطمة علي",
             },
         },
         {
@@ -136,7 +137,7 @@ const generateMockPayments = (filter: string): Payment[] => {
                 id: "#1236",
                 total_amount: 67.25,
                 tables: { table_number: "3" },
-                customer_name: "محمد حسن",
+            customer_name: "محمد حسن",
             },
         },
         {
@@ -557,7 +558,7 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                         <body>
                             <div class="header">
                                 <h1>إيصال دفع</h1>
-                            </div>
+            </div>
                             <div class="details">
                                 <div class="detail-row">
                                     <span>رقم المعاملة:</span>
@@ -861,10 +862,12 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
-            </div>
+    return (
+            <Loader
+                size="lg"
+                variant="spinner"
+                text="جاري تحميل المدفوعات..."
+            />
         );
     }
 
@@ -875,13 +878,13 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                 <h2 className="text-2xl font-bold text-gray-900">
                     إدارة المدفوعات
                 </h2>
-                <button
+                        <button
                     onClick={() => setShowAddModal(true)}
                     className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer transition-colors"
                 >
                     <i className="ri-add-line"></i>
                     إضافة مدفوعة
-                </button>
+                        </button>
             </div>
 
             {/* إحصائيات المدفوعات */}
@@ -898,9 +901,9 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                         </div>
                         <div className="p-3 rounded-full bg-green-100">
                             <i className="ri-money-dollar-circle-line text-2xl text-green-600"></i>
-                        </div>
                     </div>
                 </div>
+                        </div>
 
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
@@ -917,9 +920,9 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                         </div>
                         <div className="p-3 rounded-full bg-blue-100">
                             <i className="ri-check-double-line text-2xl text-blue-600"></i>
-                        </div>
                     </div>
                 </div>
+                        </div>
 
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
@@ -933,9 +936,9 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                         </div>
                         <div className="p-3 rounded-full bg-purple-100">
                             <i className="ri-calculator-line text-2xl text-purple-600"></i>
-                        </div>
                     </div>
                 </div>
+            </div>
 
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
@@ -946,7 +949,7 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                             <p className="text-2xl font-bold text-gray-900">
                                 {filteredPayments.length}
                             </p>
-                        </div>
+                </div>
                         <div className="p-3 rounded-full bg-orange-100">
                             <i className="ri-file-list-line text-2xl text-orange-600"></i>
                         </div>
@@ -1104,36 +1107,36 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                                         className="hover:bg-gray-50 transition-colors"
                                     >
                                         <td className="px-2 py-4 text-sm font-semibold text-gray-900 truncate">
-                                            #{payment.id.slice(-8)}
-                                        </td>
+                                        #{payment.id.slice(-8)}
+                                    </td>
                                         <td className="px-2 py-4 text-sm text-gray-900 truncate">
                                             {payment.orders?.id || "غير محدد"}
-                                        </td>
+                                    </td>
                                         <td className="px-2 py-4 text-sm text-gray-600 truncate">
                                             {payment.orders?.tables
                                                 ?.table_number
                                                 ? `طاولة ${payment.orders.tables.table_number}`
                                                 : "غير محدد"}
-                                        </td>
+                                    </td>
                                         <td className="px-2 py-4 text-sm font-semibold text-gray-900 truncate">
                                             {payment.amount.toFixed(2)} $
                                         </td>
                                         <td className="px-2 py-4 text-sm text-gray-600 truncate">
-                                            {getPaymentMethodText(
-                                                payment.payment_method
-                                            )}
-                                        </td>
+                                        {getPaymentMethodText(
+                                            payment.payment_method
+                                        )}
+                                    </td>
                                         <td className="px-2 py-4">
-                                            <span
+                                        <span
                                                 className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPaymentStatusColor(
-                                                    payment.payment_status
-                                                )}`}
-                                            >
-                                                {getPaymentStatusText(
-                                                    payment.payment_status
-                                                )}
-                                            </span>
-                                        </td>
+                                                payment.payment_status
+                                            )}`}
+                                        >
+                                            {getPaymentStatusText(
+                                                payment.payment_status
+                                            )}
+                                        </span>
+                                    </td>
                                         <td className="px-2 py-4 text-sm text-gray-600 truncate">
                                             {formatDate(payment.created_at)}
                                         </td>
@@ -1180,8 +1183,8 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                                                     <i className="ri-delete-bin-line text-lg"></i>
                                                 </button>
                                             </div>
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                 ))
                             ) : (
                                 <tr>
@@ -1212,7 +1215,7 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">
                                 تفاصيل المعاملة
-                            </h3>
+                    </h3>
                             <button
                                 onClick={() => {
                                     setShowDetailsModal(false);
@@ -1232,8 +1235,8 @@ const PaymentManagement = ({ restaurantId }: PaymentManagementProps) => {
                                     </label>
                                     <p className="text-gray-900">
                                         #{selectedPayment.id.slice(-8)}
-                                    </p>
-                                </div>
+                    </p>
+                </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         رقم الطلب

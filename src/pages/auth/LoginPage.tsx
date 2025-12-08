@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
+import Spinner from "../../components/common/Spinner";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -172,7 +173,11 @@ export default function LoginPage() {
                         >
                             {loading ? (
                                 <>
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                                    <Spinner
+                                        size="sm"
+                                        color="white"
+                                        className="ml-2"
+                                    />
                                     جاري تسجيل الدخول...
                                 </>
                             ) : (

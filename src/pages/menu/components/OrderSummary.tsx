@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../../lib/supabase";
+import Spinner from "../../../components/common/Spinner";
 
 interface OrderSummaryProps {
     restaurant: any;
@@ -209,7 +210,11 @@ const OrderSummary = ({
                     >
                         {isSubmitting ? (
                             <>
-                                <i className="ri-loader-4-line animate-spin ml-2"></i>
+                                <Spinner
+                                    size="sm"
+                                    color="white"
+                                    className="ml-2"
+                                />
                                 جاري الإرسال...
                             </>
                         ) : (

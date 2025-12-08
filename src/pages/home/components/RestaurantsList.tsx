@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { SkeletonCard } from "../../../components/common/Skeleton";
 
 interface Restaurant {
     id: string;
@@ -444,17 +445,7 @@ const RestaurantsList = () => {
                 {loading && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div
-                                key={i}
-                                className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
-                            >
-                                <div className="h-48 bg-gray-200"></div>
-                                <div className="p-6">
-                                    <div className="h-4 bg-gray-200 rounded mb-3"></div>
-                                    <div className="h-3 bg-gray-200 rounded mb-2"></div>
-                                    <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                                </div>
-                            </div>
+                            <SkeletonCard key={i} />
                         ))}
                     </div>
                 )}

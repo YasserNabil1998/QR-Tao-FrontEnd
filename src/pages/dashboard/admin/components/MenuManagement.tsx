@@ -275,11 +275,11 @@ export default function MenuManagement() {
                                     </h3>
                                     <div className="flex items-center space-x-4">
                                         <div className="relative">
-                                            <i className="ri-search-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                            <i className="ri-search-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                                             <input
                                                 type="text"
                                                 placeholder="البحث في الأصناف..."
-                                                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+                                                className="pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                                             />
                                         </div>
                                         <CustomSelect

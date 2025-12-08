@@ -17,6 +17,7 @@ import DeliveryOrders from "./components/DeliveryOrders";
 import QRCodeGenerator from "./components/QRCodeGenerator";
 import RestaurantSettings from "./components/RestaurantSettings";
 import AdvancedAnalytics from "./components/AdvancedAnalytics";
+import Loader from "../../../components/common/Loader";
 
 export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState("dashboard");
@@ -26,18 +27,12 @@ export default function AdminDashboard() {
     // Show loading state only while checking auth
     if (loading) {
         return (
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                    fontSize: "1.5rem",
-                    color: "#4F46E5",
-                }}
-            >
-                Loading...
-            </div>
+            <Loader
+                fullScreen
+                size="xl"
+                variant="spinner"
+                text="جاري التحميل..."
+            />
         );
     }
 

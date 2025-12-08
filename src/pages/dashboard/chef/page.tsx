@@ -4,6 +4,7 @@ import ChefSidebar from "./components/ChefSidebar";
 import KitchenOrders from "./components/KitchenOrders";
 import OrderQueue from "./components/OrderQueue";
 import MenuItems from "./components/MenuItems";
+import Loader from "../../../components/common/Loader";
 
 export default function ChefDashboard() {
     const [activeTab, setActiveTab] = useState("orders");
@@ -12,18 +13,12 @@ export default function ChefDashboard() {
 
     if (loading) {
         return (
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                    fontSize: "1.5rem",
-                    color: "#4F46E5",
-                }}
-            >
-                Loading...
-            </div>
+            <Loader
+                fullScreen
+                size="xl"
+                variant="spinner"
+                text="جاري التحميل..."
+            />
         );
     }
 
