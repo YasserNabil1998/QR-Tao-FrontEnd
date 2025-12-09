@@ -307,7 +307,10 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                         <h3 className="text-lg font-semibold text-gray-900">
                             الطلبات الأخيرة
                         </h3>
-                        <button className="text-orange-500 hover:text-orange-600 text-sm font-medium cursor-pointer">
+                        <button
+                            onClick={() => setActiveTab?.("orders")}
+                            className="text-orange-500 hover:text-orange-600 text-sm font-medium cursor-pointer"
+                        >
                             عرض الكل
                         </button>
                     </div>
@@ -363,7 +366,10 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                         <h3 className="text-lg font-semibold text-gray-900">
                             الأطباق الأكثر طلباً
                         </h3>
-                        <button className="text-orange-500 hover:text-orange-600 text-sm font-medium cursor-pointer">
+                        <button
+                            onClick={() => setActiveTab?.("analytics")}
+                            className="text-orange-500 hover:text-orange-600 text-sm font-medium cursor-pointer"
+                        >
                             عرض التقرير
                         </button>
                     </div>

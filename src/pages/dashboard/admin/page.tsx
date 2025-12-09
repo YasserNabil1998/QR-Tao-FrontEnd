@@ -48,7 +48,9 @@ export default function AdminDashboard() {
                 <div className="dashboard-content">
                     <div className="dashboard-main">
                         <div className="dashboard-wrapper">
-                            {activeTab === "dashboard" && <DashboardStats />}
+                            {activeTab === "dashboard" && (
+                                <DashboardStats setActiveTab={setActiveTab} />
+                            )}
                             {activeTab === "menu" && <MenuManagement />}
                             {activeTab === "orders" && <DeliveryOrders />}
                             {activeTab === "tables" && <TablesManagement />}

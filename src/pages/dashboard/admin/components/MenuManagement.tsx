@@ -1,6 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useToast } from "../../../../hooks/useToast";
 import CustomSelect from "../../../../components/common/CustomSelect";
+
+interface Category {
+    id: string;
+    name: string;
+    isActive: boolean;
+}
 
 export default function MenuManagement() {
     const [activeTab, setActiveTab] = useState("items");
@@ -10,14 +16,43 @@ export default function MenuManagement() {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { showToast, ToastContainer } = useToast();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortBy, setSortBy] = useState("");
+    const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
-    const categories = [
-        { id: "all", name: "جميع الفئات", count: 45 },
-        { id: "appetizers", name: "المقبلات", count: 8 },
-        { id: "main", name: "الأطباق الرئيسية", count: 15 },
-        { id: "desserts", name: "الحلويات", count: 10 },
-        { id: "beverages", name: "المشروبات", count: 12 },
-    ];
+    // دالة لمعالجة أخطاء الصور
+    const handleImageError = (itemId: number) => {
+        setImageErrors((prev) => new Set(prev).add(itemId));
+    };
+
+    // دالة للحصول على صورة بديلة
+    const getImageUrl = (item: typeof initialMenuItems[0]) => {
+        if (imageErrors.has(item.id) || !item.image) {
+            // استخدام Unsplash كصورة بديلة
+            const foodImages = {
+                main: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop&q=80",
+                appetizers: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop&q=80",
+                desserts: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200&h=200&fit=crop&q=80",
+                beverages: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200&h=200&fit=crop&q=80",
+            };
+            return foodImages[item.category as keyof typeof foodImages] || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop&q=80";
+        }
+        return item.image;
+    };
+
+    const [categories, setCategories] = useState<Category[]>([
+        { id: "appetizers", name: "المقبلات", isActive: true },
+        { id: "main", name: "الأطباق الرئيسية", isActive: true },
+        { id: "desserts", name: "الحلويات", isActive: true },
+        { id: "beverages", name: "المشروبات", isActive: true },
+    ]);
+
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+    const [categoryFormData, setCategoryFormData] = useState({
+        name: "",
+        isActive: true,
+    });
 
     const initialMenuItems = [
         {
@@ -26,7 +61,7 @@ export default function MenuManagement() {
             category: "main",
             price: "45.00",
             description: "برجر لحم بقري مع الخس والطماطم والجبن",
-            image: "https://readdy.ai/api/search-image?query=Classic%20beef%20burger%20with%20lettuce%20tomato%20cheese%2C%20professional%20food%20photography%2C%20appetizing%20presentation%2C%20restaurant%20quality%2C%20clean%20background%2C%20mouth-watering%20burger&width=80&height=80&seq=menu-1&orientation=squarish",
+            image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop&q=80",
             status: "متاح",
             orders: 156,
             revenue: "7,020 $",
@@ -37,7 +72,7 @@ export default function MenuManagement() {
             category: "appetizers",
             price: "32.00",
             description: "سلطة خضراء مع الدجاج المشوي وجبن البارميزان",
-            image: "https://readdy.ai/api/search-image?query=Caesar%20salad%20with%20grilled%20chicken%20parmesan%20cheese%20croutons%2C%20fresh%20healthy%20salad%2C%20professional%20food%20photography%2C%20restaurant%20quality%20presentation&width=80&height=80&seq=menu-2&orientation=squarish",
+            image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=200&h=200&fit=crop&q=80",
             status: "متاح",
             orders: 89,
             revenue: "2,848 $",
@@ -49,7 +84,7 @@ export default function MenuManagement() {
             price: "55.00",
             description:
                 "بيتزا إيطالية كلاسيكية مع الطماطم والموزاريلا والريحان",
-            image: "https://readdy.ai/api/search-image?query=Margherita%20pizza%20with%20fresh%20basil%20mozzarella%20tomato%20sauce%2C%20professional%20food%20photography%2C%20Italian%20cuisine%2C%20restaurant%20presentation&width=80&height=80&seq=menu-3&orientation=squarish",
+            image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=200&h=200&fit=crop&q=80",
             status: "غير متاح",
             orders: 67,
             revenue: "3,685 $",
@@ -60,7 +95,7 @@ export default function MenuManagement() {
             category: "desserts",
             price: "28.00",
             description: "تشيز كيك كريمي مع صوص التوت الأزرق",
-            image: "https://readdy.ai/api/search-image?query=Creamy%20cheesecake%20with%20blueberry%20sauce%2C%20professional%20dessert%20photography%2C%20elegant%20presentation%2C%20restaurant%20quality%20dessert%2C%20appetizing%20sweet&width=80&height=80&seq=menu-4&orientation=squarish",
+            image: "https://images.unsplash.com/photo-1524351199678-941a58a3df50?w=200&h=200&fit=crop&q=80",
             status: "متاح",
             orders: 45,
             revenue: "1,260 $",
@@ -71,7 +106,7 @@ export default function MenuManagement() {
             category: "beverages",
             price: "15.00",
             description: "عصير برتقال طبيعي 100% بدون إضافات",
-            image: "https://readdy.ai/api/search-image?query=Fresh%20orange%20juice%20in%20glass%2C%20natural%20fruit%20beverage%2C%20professional%20drink%20photography%2C%20refreshing%20citrus%20drink%2C%20restaurant%20quality%20presentation&width=80&height=80&seq=menu-5&orientation=squarish",
+            image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200&h=200&fit=crop&q=80",
             status: "متاح",
             orders: 123,
             revenue: "1,845 $",
@@ -80,10 +115,48 @@ export default function MenuManagement() {
 
     const [menuItems, setMenuItems] = useState(initialMenuItems);
 
-    const filteredItems =
-        selectedCategory === "all"
-            ? menuItems
-            : menuItems.filter((item) => item.category === selectedCategory);
+    // حساب عدد الأصناف لكل فئة ديناميكياً
+    const categoriesWithCount = useMemo(() => {
+        const allCount = menuItems.length;
+        const categoryCounts = categories.map((cat) => ({
+            ...cat,
+            count: menuItems.filter((item) => item.category === cat.id).length,
+        }));
+        return [
+            { id: "all", name: "جميع الفئات", count: allCount, isActive: true },
+            ...categoryCounts,
+        ];
+    }, [menuItems, categories]);
+
+    // فلترة وترتيب الأصناف
+    const filteredItems = useMemo(() => {
+        let filtered = menuItems;
+
+        // فلترة حسب الفئة
+        if (selectedCategory !== "all") {
+            filtered = filtered.filter((item) => item.category === selectedCategory);
+        }
+
+        // فلترة حسب البحث
+        if (searchTerm) {
+            filtered = filtered.filter(
+                (item) =>
+                    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // ترتيب
+        if (sortBy === "popular") {
+            filtered = [...filtered].sort((a, b) => b.orders - a.orders);
+        } else if (sortBy === "price-high") {
+            filtered = [...filtered].sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        } else if (sortBy === "price-low") {
+            filtered = [...filtered].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        }
+
+        return filtered;
+    }, [menuItems, selectedCategory, searchTerm, sortBy]);
 
     const tabs = [
         { id: "items", name: "الأصناف", icon: "ri-restaurant-line" },
@@ -111,7 +184,9 @@ export default function MenuManagement() {
             description: item.description,
             status: item.status,
         });
-        setSelectedImage(item.image);
+        // استخدام الصورة الصحيحة مع معالجة الأخطاء
+        const imageUrl = getImageUrl(item);
+        setSelectedImage(imageUrl);
         setShowAddModal(true);
     };
 
@@ -135,6 +210,117 @@ export default function MenuManagement() {
         setShowDeleteModal(false);
         setItemToDelete(null);
     };
+
+    // وظائف إدارة الفئات
+    const handleAddCategory = () => {
+        setEditingCategoryId(null);
+        setCategoryFormData({ name: "", isActive: true });
+        setShowCategoryModal(true);
+    };
+
+    const handleEditCategory = (category: Category) => {
+        setEditingCategoryId(category.id);
+        setCategoryFormData({ name: category.name, isActive: category.isActive });
+        setShowCategoryModal(true);
+    };
+
+    const handleDeleteCategory = (categoryId: string) => {
+        const itemsInCategory = menuItems.filter((item) => item.category === categoryId);
+        if (itemsInCategory.length > 0) {
+            showToast("لا يمكن حذف الفئة لأنها تحتوي على أصناف", "error");
+            return;
+        }
+        setCategories((prev) => prev.filter((cat) => cat.id !== categoryId));
+        showToast("تم حذف الفئة بنجاح", "success");
+    };
+
+    const handleToggleCategoryStatus = (categoryId: string) => {
+        setCategories((prev) =>
+            prev.map((cat) =>
+                cat.id === categoryId ? { ...cat, isActive: !cat.isActive } : cat
+            )
+        );
+        showToast("تم تحديث حالة الفئة بنجاح", "success");
+    };
+
+    const handleCategorySubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!categoryFormData.name.trim()) {
+            showToast("يرجى إدخال اسم الفئة", "error");
+            return;
+        }
+
+        if (editingCategoryId) {
+            // تحديث فئة موجودة
+            setCategories((prev) =>
+                prev.map((cat) =>
+                    cat.id === editingCategoryId
+                        ? { ...cat, name: categoryFormData.name, isActive: categoryFormData.isActive }
+                        : cat
+                )
+            );
+            // تحديث أصناف هذه الفئة
+            setMenuItems((prev) =>
+                prev.map((item) =>
+                    item.category === editingCategoryId
+                        ? { ...item, category: editingCategoryId }
+                        : item
+                )
+            );
+            showToast("تم تحديث الفئة بنجاح", "success");
+        } else {
+            // إضافة فئة جديدة
+            const newCategoryId = categoryFormData.name.toLowerCase().replace(/\s+/g, "-");
+            if (categories.find((cat) => cat.id === newCategoryId)) {
+                showToast("هذه الفئة موجودة بالفعل", "error");
+                return;
+            }
+            setCategories((prev) => [
+                ...prev,
+                {
+                    id: newCategoryId,
+                    name: categoryFormData.name,
+                    isActive: categoryFormData.isActive,
+                },
+            ]);
+            showToast("تم إضافة الفئة بنجاح", "success");
+        }
+        setShowCategoryModal(false);
+        setCategoryFormData({ name: "", isActive: true });
+        setEditingCategoryId(null);
+    };
+
+    // حساب بيانات التحليلات ديناميكياً
+    const analyticsData = useMemo(() => {
+        const totalItems = menuItems.length;
+        const totalPrice = menuItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
+        const avgPrice = totalItems > 0 ? totalPrice / totalItems : 0;
+        const mostOrdered = menuItems.reduce(
+            (max, item) => (item.orders > max.orders ? item : max),
+            menuItems[0] || { name: "لا يوجد", orders: 0 }
+        );
+        const categoryStats = categories.map((cat) => {
+            const itemsInCategory = menuItems.filter((item) => item.category === cat.id);
+            const totalOrders = itemsInCategory.reduce((sum, item) => sum + item.orders, 0);
+            const totalRevenue = itemsInCategory.reduce(
+                (sum, item) => sum + parseFloat(item.revenue.replace(/[^0-9.]/g, "")),
+                0
+            );
+            return {
+                ...cat,
+                count: itemsInCategory.length,
+                totalOrders,
+                totalRevenue,
+            };
+        });
+
+        return {
+            totalItems,
+            avgPrice,
+            mostOrdered,
+            categoryStats,
+        };
+    }, [menuItems, categories]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -172,7 +358,7 @@ export default function MenuManagement() {
                 description: formData.description,
                 image:
                     selectedImage ||
-                    "https://readdy.ai/api/search-image?query=delicious%20restaurant%20food%20dish%20on%20white%20background%2C%20professional%20food%20photography%2C%20appetizing%20presentation%2C%20clean%20minimal%20background&width=80&height=80&seq=menu-item&orientation=squarish",
+                    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop&q=80",
                 status: formData.status,
                 orders: 0,
                 revenue: "0.00 $",
@@ -249,7 +435,7 @@ export default function MenuManagement() {
                     <div className="space-y-6">
                         {/* Category Filter */}
                         <div className="flex flex-wrap gap-2">
-                            {categories.map((category) => (
+                            {categoriesWithCount.map((category) => (
                                 <button
                                     key={category.id}
                                     onClick={() =>
@@ -279,6 +465,8 @@ export default function MenuManagement() {
                                             <input
                                                 type="text"
                                                 placeholder="البحث في الأصناف..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
                                                 className="pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                                             />
                                         </div>
@@ -297,6 +485,8 @@ export default function MenuManagement() {
                                                     label: "الأقل سعراً",
                                                 },
                                             ]}
+                                            value={sortBy}
+                                            onChange={(value) => setSortBy(value)}
                                             placeholder="ترتيب حسب"
                                             className="w-48"
                                         />
@@ -338,11 +528,19 @@ export default function MenuManagement() {
                                                 >
                                                     <td className="py-4 px-4">
                                                         <div className="flex items-center">
-                                                            <img
-                                                                src={item.image}
-                                                                alt={item.name}
-                                                                className="w-12 h-12 rounded-lg object-cover object-top ml-3"
-                                                            />
+                                                            <div className="relative w-12 h-12 ml-3 flex-shrink-0">
+                                                                <img
+                                                                    src={getImageUrl(item)}
+                                                                    alt={item.name}
+                                                                    onError={() => handleImageError(item.id)}
+                                                                    className="w-12 h-12 rounded-lg object-cover"
+                                                                />
+                                                                {imageErrors.has(item.id) && (
+                                                                    <div className="absolute inset-0 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                                        <i className="ri-image-line text-gray-400 text-lg"></i>
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                             <div>
                                                                 <h4 className="font-medium text-gray-900">
                                                                     {item.name}
@@ -362,7 +560,7 @@ export default function MenuManagement() {
                                                                     (c) =>
                                                                         c.id ===
                                                                         item.category
-                                                                )?.name
+                                                                )?.name || item.category
                                                             }
                                                         </span>
                                                     </td>
@@ -429,16 +627,21 @@ export default function MenuManagement() {
                             <h3 className="text-lg font-semibold text-gray-900">
                                 إدارة الفئات
                             </h3>
-                            <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer">
+                            <button
+                                onClick={handleAddCategory}
+                                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer"
+                            >
                                 <i className="ri-add-line ml-1"></i>
                                 إضافة فئة
                             </button>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {categories
-                                .filter((c) => c.id !== "all")
-                                .map((category) => (
+                            {categories.map((category) => {
+                                const categoryCount = menuItems.filter(
+                                    (item) => item.category === category.id
+                                ).length;
+                                return (
                                     <div
                                         key={category.id}
                                         className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
@@ -448,27 +651,49 @@ export default function MenuManagement() {
                                                 {category.name}
                                             </h4>
                                             <div className="flex items-center space-x-2">
-                                                <button className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors cursor-pointer">
+                                                <button
+                                                    onClick={() => handleEditCategory(category)}
+                                                    className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors cursor-pointer"
+                                                    title="تعديل"
+                                                >
                                                     <i className="ri-edit-line"></i>
                                                 </button>
-                                                <button className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+                                                <button
+                                                    onClick={() => handleDeleteCategory(category.id)}
+                                                    className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                                                    title="حذف"
+                                                >
                                                     <i className="ri-delete-bin-line"></i>
                                                 </button>
                                             </div>
                                         </div>
                                         <p className="text-sm text-gray-600">
-                                            {category.count} صنف
+                                            {categoryCount} صنف
                                         </p>
                                         <div className="mt-3 flex items-center justify-between">
                                             <span className="text-xs text-gray-500">
-                                                نشط
+                                                {category.isActive ? "نشط" : "غير نشط"}
                                             </span>
-                                            <div className="w-8 h-4 bg-green-100 rounded-full flex items-center">
-                                                <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
-                                            </div>
+                                            <button
+                                                onClick={() => handleToggleCategoryStatus(category.id)}
+                                                className={`w-10 h-5 rounded-full flex items-center transition-colors cursor-pointer ${
+                                                    category.isActive
+                                                        ? "bg-green-500"
+                                                        : "bg-gray-300"
+                                                }`}
+                                            >
+                                                <div
+                                                    className={`w-4 h-4 bg-white rounded-full transition-transform ${
+                                                        category.isActive
+                                                            ? "transform translate-x-5"
+                                                            : "transform translate-x-0.5"
+                                                    }`}
+                                                ></div>
+                                            </button>
                                         </div>
                                     </div>
-                                ))}
+                                );
+                            })}
                         </div>
                     </div>
                 )}
@@ -484,10 +709,10 @@ export default function MenuManagement() {
                                     <i className="ri-restaurant-line text-2xl text-orange-500"></i>
                                 </div>
                                 <p className="text-3xl font-bold text-gray-900">
-                                    45
+                                    {analyticsData.totalItems}
                                 </p>
-                                <p className="text-sm text-green-600">
-                                    +3 هذا الشهر
+                                <p className="text-sm text-gray-600">
+                                    {menuItems.filter((item) => item.status === "متاح").length} متاح
                                 </p>
                             </div>
 
@@ -499,10 +724,10 @@ export default function MenuManagement() {
                                     <i className="ri-money-dollar-circle-line text-2xl text-green-500"></i>
                                 </div>
                                 <p className="text-3xl font-bold text-gray-900">
-                                    42.50 $
+                                    {analyticsData.avgPrice.toFixed(2)} $
                                 </p>
-                                <p className="text-sm text-blue-600">
-                                    +5% من الشهر الماضي
+                                <p className="text-sm text-gray-600">
+                                    من {analyticsData.totalItems} صنف
                                 </p>
                             </div>
 
@@ -514,71 +739,196 @@ export default function MenuManagement() {
                                     <i className="ri-fire-line text-2xl text-red-500"></i>
                                 </div>
                                 <p className="text-lg font-bold text-gray-900">
-                                    برجر كلاسيك
+                                    {analyticsData.mostOrdered.name}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    156 طلب هذا الشهر
+                                    {analyticsData.mostOrdered.orders} طلب
                                 </p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                                    أداء الفئات
+                                </h3>
+                                <div className="space-y-4">
+                                    {analyticsData.categoryStats.map((category, index) => {
+                                        const maxCount = Math.max(
+                                            ...analyticsData.categoryStats.map((c) => c.count),
+                                            1
+                                        );
+                                        const colors = ["#f97316", "#3b82f6", "#10b981", "#8b5cf6", "#ec4899"];
+                                        return (
+                                            <div
+                                                key={category.id}
+                                                className="flex items-center justify-between"
+                                            >
+                                                <div className="flex items-center flex-1">
+                                                    <div
+                                                        className="w-4 h-4 rounded-full ml-3"
+                                                        style={{
+                                                            backgroundColor: colors[index % colors.length],
+                                                        }}
+                                                    ></div>
+                                                    <span className="font-medium text-gray-900">
+                                                        {category.name}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center space-x-4 flex-1 justify-end">
+                                                    <span className="text-sm text-gray-600">
+                                                        {category.count} صنف
+                                                    </span>
+                                                    <div className="w-32 bg-gray-200 rounded-full h-2">
+                                                        <div
+                                                            className="h-2 rounded-full"
+                                                            style={{
+                                                                width: `${(category.count / maxCount) * 100}%`,
+                                                                backgroundColor: colors[index % colors.length],
+                                                            }}
+                                                        ></div>
+                                                    </div>
+                                                    <span className="text-sm font-medium text-gray-900 w-12 text-left">
+                                                        {analyticsData.totalItems > 0
+                                                            ? Math.round(
+                                                                  (category.count / analyticsData.totalItems) *
+                                                                      100
+                                                              )
+                                                            : 0}
+                                                        %
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                                    إحصائيات الفئات
+                                </h3>
+                                <div className="space-y-4">
+                                    {analyticsData.categoryStats.map((category, index) => {
+                                        const colors = ["#f97316", "#3b82f6", "#10b981", "#8b5cf6", "#ec4899"];
+                                        return (
+                                            <div
+                                                key={category.id}
+                                                className="border border-gray-200 rounded-lg p-4"
+                                            >
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <div className="flex items-center">
+                                                        <div
+                                                            className="w-3 h-3 rounded-full ml-2"
+                                                            style={{
+                                                                backgroundColor: colors[index % colors.length],
+                                                            }}
+                                                        ></div>
+                                                        <span className="font-medium text-gray-900">
+                                                            {category.name}
+                                                        </span>
+                                                    </div>
+                                                    <span
+                                                        className={`text-xs px-2 py-1 rounded-full ${
+                                                            category.isActive
+                                                                ? "bg-green-100 text-green-800"
+                                                                : "bg-gray-100 text-gray-800"
+                                                        }`}
+                                                    >
+                                                        {category.isActive ? "نشط" : "غير نشط"}
+                                                    </span>
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-2 mt-3 text-sm">
+                                                    <div>
+                                                        <p className="text-gray-500">الأصناف</p>
+                                                        <p className="font-semibold text-gray-900">
+                                                            {category.count}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-500">الطلبات</p>
+                                                        <p className="font-semibold text-gray-900">
+                                                            {category.totalOrders}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-500">الإيرادات</p>
+                                                        <p className="font-semibold text-gray-900">
+                                                            {category.totalRevenue.toFixed(0)} $
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
 
                         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                             <h3 className="text-lg font-semibold text-gray-900 mb-6">
-                                أداء الفئات
+                                الأصناف الأكثر مبيعاً
                             </h3>
-                            <div className="space-y-4">
-                                {categories
-                                    .filter((c) => c.id !== "all")
-                                    .map((category, index) => (
+                            <div className="space-y-3">
+                                {[...menuItems]
+                                    .sort((a, b) => b.orders - a.orders)
+                                    .slice(0, 5)
+                                    .map((item, index) => (
                                         <div
-                                            key={category.id}
-                                            className="flex items-center justify-between"
+                                            key={item.id}
+                                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                                         >
-                                            <div className="flex items-center">
-                                                <div
-                                                    className="w-4 h-4 bg-orange-500 rounded-full ml-3"
-                                                    style={{
-                                                        backgroundColor: [
-                                                            "#f97316",
-                                                            "#3b82f6",
-                                                            "#10b981",
-                                                            "#8b5cf6",
-                                                        ][index],
-                                                    }}
-                                                ></div>
-                                                <span className="font-medium text-gray-900">
-                                                    {category.name}
+                                            <div className="flex items-center flex-1">
+                                                <span className="text-lg font-bold text-orange-500 ml-3 w-6">
+                                                    {index + 1}
                                                 </span>
+                                                <div className="relative w-10 h-10 ml-3 flex-shrink-0">
+                                                    <img
+                                                        src={getImageUrl(item)}
+                                                        alt={item.name}
+                                                        onError={() => handleImageError(item.id)}
+                                                        className="w-10 h-10 rounded-lg object-cover"
+                                                    />
+                                                    {imageErrors.has(item.id) && (
+                                                        <div className="absolute inset-0 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                            <i className="ri-image-line text-gray-400 text-xs"></i>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-medium text-gray-900">
+                                                        {item.name}
+                                                    </h4>
+                                                    <p className="text-xs text-gray-500">
+                                                        {
+                                                            categories.find(
+                                                                (c) => c.id === item.category
+                                                            )?.name
+                                                        }
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center space-x-4">
-                                                <span className="text-sm text-gray-600">
-                                                    {category.count} صنف
-                                                </span>
-                                                <div className="w-32 bg-gray-200 rounded-full h-2">
+                                            <div className="flex items-center space-x-6">
+                                                <div className="text-right">
+                                                    <p className="text-sm font-semibold text-gray-900">
+                                                        {item.orders} طلب
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {item.revenue}
+                                                    </p>
+                                                </div>
+                                                <div className="w-24 bg-gray-200 rounded-full h-2">
                                                     <div
-                                                        className="h-2 rounded-full"
+                                                        className="bg-orange-500 h-2 rounded-full"
                                                         style={{
                                                             width: `${
-                                                                (category.count /
-                                                                    15) *
+                                                                (item.orders /
+                                                                    analyticsData.mostOrdered.orders) *
                                                                 100
                                                             }%`,
-                                                            backgroundColor: [
-                                                                "#f97316",
-                                                                "#3b82f6",
-                                                                "#10b981",
-                                                                "#8b5cf6",
-                                                            ][index],
                                                         }}
                                                     ></div>
                                                 </div>
-                                                <span className="text-sm font-medium text-gray-900">
-                                                    {Math.round(
-                                                        (category.count / 45) *
-                                                            100
-                                                    )}
-                                                    %
-                                                </span>
                                             </div>
                                         </div>
                                     ))}
@@ -628,24 +978,12 @@ export default function MenuManagement() {
                                             الفئة *
                                         </label>
                                         <CustomSelect
-                                            options={[
-                                                {
-                                                    value: "appetizers",
-                                                    label: "المقبلات",
-                                                },
-                                                {
-                                                    value: "main",
-                                                    label: "الأطباق الرئيسية",
-                                                },
-                                                {
-                                                    value: "desserts",
-                                                    label: "الحلويات",
-                                                },
-                                                {
-                                                    value: "beverages",
-                                                    label: "المشروبات",
-                                                },
-                                            ]}
+                                            options={categories
+                                                .filter((cat) => cat.isActive)
+                                                .map((cat) => ({
+                                                    value: cat.id,
+                                                    label: cat.name,
+                                                }))}
                                             value={formData.category}
                                             onChange={(value) =>
                                                 setFormData({
@@ -800,11 +1138,26 @@ export default function MenuManagement() {
                                     >
                                         {selectedImage ? (
                                             <div className="space-y-3">
-                                                <img
-                                                    src={selectedImage}
-                                                    alt="Preview"
-                                                    className="w-full h-48 object-cover rounded-lg mx-auto"
-                                                />
+                                                <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                                                    <img
+                                                        src={selectedImage}
+                                                        alt="Preview"
+                                                        onError={(e) => {
+                                                            // صورة بديلة حسب الفئة المختارة
+                                                            const fallbackImages: Record<string, string> = {
+                                                                main: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop&q=80",
+                                                                appetizers: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&q=80",
+                                                                desserts: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop&q=80",
+                                                                beverages: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop&q=80",
+                                                            };
+                                                            const fallback = fallbackImages[formData.category] || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&q=80";
+                                                            e.currentTarget.src = fallback;
+                                                            e.currentTarget.onerror = null; // منع التكرار
+                                                        }}
+                                                        className="w-full h-full object-cover rounded-lg"
+                                                        style={{ maxHeight: '192px' }}
+                                                    />
+                                                </div>
                                                 <button
                                                     type="button"
                                                     onClick={(e) => {
@@ -906,6 +1259,88 @@ export default function MenuManagement() {
                                         className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
                                     >
                                         إضافة الصنف
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {/* Category Modal */}
+                {showCategoryModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-xl font-bold text-gray-900">
+                                    {editingCategoryId ? "تعديل الفئة" : "إضافة فئة جديدة"}
+                                </h3>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowCategoryModal(false);
+                                        setCategoryFormData({ name: "", isActive: true });
+                                        setEditingCategoryId(null);
+                                    }}
+                                    className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                                >
+                                    <i className="ri-close-line text-xl"></i>
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleCategorySubmit} className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        اسم الفئة *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={categoryFormData.name}
+                                        onChange={(e) =>
+                                            setCategoryFormData({
+                                                ...categoryFormData,
+                                                name: e.target.value,
+                                            })
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        placeholder="أدخل اسم الفئة"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={categoryFormData.isActive}
+                                            onChange={(e) =>
+                                                setCategoryFormData({
+                                                    ...categoryFormData,
+                                                    isActive: e.target.checked,
+                                                })
+                                            }
+                                            className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500 ml-2"
+                                        />
+                                        <span className="text-sm text-gray-700">فئة نشطة</span>
+                                    </label>
+                                </div>
+
+                                <div className="flex justify-end space-x-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowCategoryModal(false);
+                                            setCategoryFormData({ name: "", isActive: true });
+                                            setEditingCategoryId(null);
+                                        }}
+                                        className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                    >
+                                        إلغاء
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                    >
+                                        {editingCategoryId ? "تحديث" : "إضافة"}
                                     </button>
                                 </div>
                             </form>
