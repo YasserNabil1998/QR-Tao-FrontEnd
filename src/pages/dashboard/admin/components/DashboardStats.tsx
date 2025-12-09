@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDirection } from "../../../../context/DirectionContext";
 
 interface DashboardStatsProps {
     setActiveTab?: (tab: string) => void;
@@ -6,6 +7,7 @@ interface DashboardStatsProps {
 
 export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
     const [selectedPeriod, setSelectedPeriod] = useState("today");
+    const { direction } = useDirection();
 
     // Mock data based on period
     const getStatsByPeriod = (period: string) => {
@@ -337,7 +339,7 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                                         {order.items}
                                     </p>
                                 </div>
-                                <div className="text-right mr-3">
+                                <div className={`${direction === 'rtl' ? 'text-right mr-3' : 'text-left ml-3'}`}>
                                     <p className="font-semibold text-gray-900 mb-1">
                                         {order.amount}
                                     </p>
@@ -384,7 +386,7 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                                     <img
                                         src={dish.image}
                                         alt={dish.name}
-                                        className="w-10 h-10 rounded-lg object-cover object-top ml-3"
+                                        className={`w-10 h-10 rounded-lg object-cover object-top ${direction === 'rtl' ? 'ml-3' : 'mr-3'}`}
                                     />
                                     <div>
                                         <h4 className="font-medium text-gray-900">
@@ -395,12 +397,12 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="text-right">
+                                <div className={direction === 'rtl' ? 'text-right' : 'text-left'}>
                                     <p className="font-semibold text-gray-900">
                                         {dish.revenue}
                                     </p>
                                     <div className="flex items-center">
-                                        <div className="w-12 bg-gray-200 rounded-full h-2 ml-2">
+                                        <div className={`w-12 bg-gray-200 rounded-full h-2 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}>
                                             <div
                                                 className="bg-orange-500 h-2 rounded-full"
                                                 style={{

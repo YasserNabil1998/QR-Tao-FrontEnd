@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDirection } from "../../../context/DirectionContext";
 import { SkeletonCard } from "../../../components/common/Skeleton";
 
 interface Restaurant {
@@ -18,6 +19,7 @@ interface Restaurant {
 }
 
 const RestaurantsList = () => {
+    const { direction } = useDirection();
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("all");
@@ -434,7 +436,7 @@ const RestaurantsList = () => {
                             }`}
                         >
                             <i
-                                className={`${category.icon} ml-2 w-5 h-5 flex items-center justify-center`}
+                                className={`${category.icon} ${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-5 h-5 flex items-center justify-center`}
                             ></i>
                             {category.name}
                         </button>
@@ -497,10 +499,10 @@ const RestaurantsList = () => {
                                     </p>
 
                                     <div className="flex items-center mb-3 min-h-[1.5rem]">
-                                        <div className="flex items-center space-x-1 space-x-reverse">
+                                        <div className={`flex items-center ${direction === 'rtl' ? 'space-x-1 space-x-reverse' : 'space-x-1'}`}>
                                             {renderStars(restaurant.rating)}
                                         </div>
-                                        <span className="text-gray-600 text-sm mr-2">
+                                        <span className={`text-gray-600 text-sm ${direction === 'rtl' ? 'mr-2' : 'ml-2'}`}>
                                             {restaurant.rating} (
                                             {restaurant.total_reviews} تقييم)
                                         </span>
@@ -508,24 +510,24 @@ const RestaurantsList = () => {
 
                                     <div className="space-y-2 mb-4 flex-grow">
                                         <div className="flex items-center text-gray-600 text-sm min-h-[1.5rem]">
-                                            <i className="ri-map-pin-line ml-2 w-4 h-4 flex items-center justify-center flex-shrink-0"></i>
+                                            <i className={`ri-map-pin-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-4 h-4 flex items-center justify-center flex-shrink-0`}></i>
                                             <span className="truncate">
                                                 {restaurant.location}
                                             </span>
                                         </div>
                                         <div className="flex items-center text-gray-600 text-sm min-h-[1.5rem]">
-                                            <i className="ri-time-line ml-2 w-4 h-4 flex items-center justify-center flex-shrink-0"></i>
+                                            <i className={`ri-time-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-4 h-4 flex items-center justify-center flex-shrink-0`}></i>
                                             <span>
                                                 {restaurant.opening_hours}
                                             </span>
                                         </div>
                                         <div className="flex items-center text-gray-600 text-sm min-h-[1.5rem]">
-                                            <i className="ri-phone-line ml-2 w-4 h-4 flex items-center justify-center flex-shrink-0"></i>
+                                            <i className={`ri-phone-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-4 h-4 flex items-center justify-center flex-shrink-0`}></i>
                                             <span>{restaurant.phone}</span>
                                         </div>
                                     </div>
 
-                                    <div className="flex space-x-3 space-x-reverse mt-auto pt-4">
+                                    <div className={`flex ${direction === 'rtl' ? 'space-x-3 space-x-reverse' : 'space-x-3'} mt-auto pt-4`}>
                                         {restaurant.cuisine_type === "مطعم" ||
                                         restaurant.cuisine_type === "مقهى" ||
                                         restaurant.cuisine_type ===
@@ -540,12 +542,12 @@ const RestaurantsList = () => {
                                                 to={`/menu?restaurant=${restaurant.id}&table=1`}
                                                 className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-center py-3 px-4 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center justify-center"
                                             >
-                                                <i className="ri-restaurant-line ml-1"></i>
+                                                <i className={`ri-restaurant-line ${direction === 'rtl' ? 'ml-1' : 'mr-1'}`}></i>
                                                 عرض المنيو
                                             </Link>
                                         ) : (
                                             <button className="flex-1 bg-green-500 hover:bg-green-600 text-white text-center py-3 px-4 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center">
-                                                <i className="ri-shopping-cart-line ml-1"></i>
+                                                <i className={`ri-shopping-cart-line ${direction === 'rtl' ? 'ml-1' : 'mr-1'}`}></i>
                                                 تسوق الآن
                                             </button>
                                         )}
@@ -586,7 +588,7 @@ const RestaurantsList = () => {
                             to="/register"
                             className="inline-flex items-center bg-white text-orange-600 font-semibold px-8 py-3 rounded-lg hover:bg-orange-50 transition-colors whitespace-nowrap"
                         >
-                            <i className="ri-add-line ml-2"></i>
+                            <i className={`ri-add-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                             سجل نشاطك الآن
                         </Link>
                     </div>

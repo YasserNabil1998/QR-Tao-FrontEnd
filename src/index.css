@@ -280,14 +280,26 @@
         @apply flex min-h-screen bg-gray-50;
     }
 
-    .dashboard-sidebar {
+    /* RTL Layout */
+    [dir="rtl"] .dashboard-sidebar {
         @apply fixed right-0 top-0 h-full w-72 bg-white border-l border-gray-200 shadow-sm z-30 flex flex-col;
     }
 
-    .dashboard-content {
+    [dir="rtl"] .dashboard-content {
         @apply flex-1 flex flex-col;
         margin-right: 18rem; /* 288px = w-72 */
         padding-right: 1.25rem; /* 20px مسافة متوسطة ومتناظرة */
+    }
+
+    /* LTR Layout */
+    [dir="ltr"] .dashboard-sidebar {
+        @apply fixed left-0 top-0 h-full w-72 bg-white border-r border-gray-200 shadow-sm z-30 flex flex-col;
+    }
+
+    [dir="ltr"] .dashboard-content {
+        @apply flex-1 flex flex-col;
+        margin-left: 18rem; /* 288px = w-72 */
+        padding-left: 1.25rem; /* 20px مسافة متوسطة ومتناظرة */
     }
 
     .dashboard-main {
@@ -300,9 +312,14 @@
 
     /* تحسينات للشاشات المتوسطة */
     @media (max-width: 1024px) {
-        .dashboard-content {
+        [dir="rtl"] .dashboard-content {
             margin-right: 16rem; /* تقليل المسافة قليلاً */
             padding-right: 1rem;
+        }
+
+        [dir="ltr"] .dashboard-content {
+            margin-left: 16rem;
+            padding-left: 1rem;
         }
 
         .dashboard-sidebar {
@@ -312,13 +329,22 @@
 
     /* تحسينات للشاشات الصغيرة */
     @media (max-width: 768px) {
-        .dashboard-content {
+        [dir="rtl"] .dashboard-content {
             margin-right: 0;
             padding-right: 0;
         }
 
-        .dashboard-sidebar {
+        [dir="ltr"] .dashboard-content {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        [dir="rtl"] .dashboard-sidebar {
             @apply -translate-x-full transition-transform duration-300;
+        }
+
+        [dir="ltr"] .dashboard-sidebar {
+            @apply translate-x-full transition-transform duration-300;
         }
 
         .dashboard-sidebar.open {
@@ -334,6 +360,55 @@
         --border-radius: 0.5rem;
         --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.1);
     }
+
+    /* اتجاه النصوص في المحتوى */
+    [dir="rtl"] .dashboard-content {
+        direction: rtl;
+    }
+
+    [dir="ltr"] .dashboard-content {
+        direction: ltr;
+    }
+
+    /* اتجاه الصفحة الرئيسية */
+    [dir="rtl"] body {
+        direction: rtl;
+    }
+
+    [dir="ltr"] body {
+        direction: ltr;
+    }
+
+    /* محاذاة النصوص الديناميكية - تطبيق تلقائي */
+    [dir="rtl"] .dashboard-content .text-right {
+        text-align: right;
+    }
+
+    [dir="ltr"] .dashboard-content .text-right {
+        text-align: left;
+    }
+
+    [dir="rtl"] .dashboard-content .text-left {
+        text-align: left;
+    }
+
+    [dir="ltr"] .dashboard-content .text-left {
+        text-align: right;
+    }
+
+    /* فئات مساعدة للاتجاه الديناميكي */
+    [dir="rtl"] .dashboard-content .dir-ml-1 { margin-right: 0.25rem; margin-left: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-ml-1 { margin-left: 0.25rem; margin-right: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-ml-2 { margin-right: 0.5rem; margin-left: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-ml-2 { margin-left: 0.5rem; margin-right: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-ml-3 { margin-right: 0.75rem; margin-left: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-ml-3 { margin-left: 0.75rem; margin-right: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-mr-1 { margin-left: 0.25rem; margin-right: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-mr-1 { margin-right: 0.25rem; margin-left: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-mr-2 { margin-left: 0.5rem; margin-right: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-mr-2 { margin-right: 0.5rem; margin-left: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-mr-3 { margin-left: 0.75rem; margin-right: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-mr-3 { margin-right: 0.75rem; margin-left: 0 !important; }
 }
 
 /* تحسينات إضافية للنص العربي */

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useToast } from "../../../../hooks/useToast";
+import { useDirection } from "../../../../context/DirectionContext";
 import CustomSelect from "../../../../components/common/CustomSelect";
 import Loader from "../../../../components/common/Loader";
 import { formatCurrency } from "../../../../utils/currency";
@@ -248,6 +249,7 @@ const generateMockKitchenOrders = (): KitchenOrder[] => {
 
 export default function KitchenOrders() {
     const { showToast, ToastContainer } = useToast();
+    const { direction } = useDirection();
     const [orders, setOrders] = useState<KitchenOrder[]>([]);
     const [selectedOrder, setSelectedOrder] = useState<KitchenOrder | null>(
         null
@@ -650,7 +652,7 @@ export default function KitchenOrders() {
                         }`}
                     >
                         <i
-                            className={`ri-refresh-line ml-2 ${
+                            className={`ri-refresh-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'} ${
                                 isRefreshing ? "animate-spin" : ""
                             }`}
                         ></i>
@@ -751,7 +753,7 @@ export default function KitchenOrders() {
                             {/* Order Header */}
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center flex-1 min-w-0">
-                                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center ml-3 flex-shrink-0">
+                                    <div className={`w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center ${direction === 'rtl' ? 'ml-3' : 'mr-3'} flex-shrink-0`}>
                                         <i className="ri-restaurant-line text-orange-500"></i>
                                     </div>
                                     <div className="min-w-0 flex-1">
@@ -763,7 +765,7 @@ export default function KitchenOrders() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="text-right flex-shrink-0 mr-2 flex flex-col items-end">
+                                <div className={`${direction === 'rtl' ? 'text-right mr-2' : 'text-left ml-2'} flex-shrink-0 flex flex-col ${direction === 'rtl' ? 'items-end' : 'items-start'}`}>
                                     <span
                                         className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-1 ${getPriorityColor(
                                             order.priority
@@ -786,7 +788,7 @@ export default function KitchenOrders() {
                                 >
                                     {order.status}
                                 </span>
-                                <div className="text-right flex-shrink-0">
+                                <div className={`${direction === 'rtl' ? 'text-right' : 'text-left'} flex-shrink-0`}>
                                     <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
                                         {order.estimatedTime} دقيقة
                                     </p>
@@ -804,7 +806,7 @@ export default function KitchenOrders() {
                                         className="bg-gray-50 rounded-lg p-3"
                                     >
                                         <div className="flex items-center justify-between mb-2">
-                                            <div className="min-w-0 flex-1 mr-2">
+                                            <div className={`min-w-0 flex-1 ${direction === 'rtl' ? 'mr-2' : 'ml-2'}`}>
                                                 <h4 className="font-medium text-gray-900 truncate">
                                                     {item.name}
                                                 </h4>
@@ -833,7 +835,7 @@ export default function KitchenOrders() {
                                         {item.notes && (
                                             <div className="mt-2 p-2 bg-yellow-50 rounded border-r-4 border-yellow-400">
                                                 <p className="text-sm text-yellow-800 truncate">
-                                                    <i className="ri-information-line ml-1"></i>
+                                                    <i className={`ri-information-line ${direction === 'rtl' ? 'ml-1' : 'mr-1'}`}></i>
                                                     {item.notes}
                                                 </p>
                                             </div>
@@ -1087,7 +1089,7 @@ export default function KitchenOrders() {
                                             {item.notes && (
                                                 <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
                                                     <p className="text-sm text-yellow-800">
-                                                        <i className="ri-information-line ml-1"></i>
+                                                        <i className={`ri-information-line ${direction === 'rtl' ? 'ml-1' : 'mr-1'}`}></i>
                                                         <strong>
                                                             ملاحظات:
                                                         </strong>{" "}
@@ -1117,14 +1119,14 @@ export default function KitchenOrders() {
                                     onClick={handlePrintKitchenTicket}
                                     className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
                                 >
-                                    <i className="ri-printer-line ml-2"></i>
+                                    <i className={`ri-printer-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                     طباعة تذكرة المطبخ
                                 </button>
                                 <button
                                     onClick={handleAddNote}
                                     className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
                                 >
-                                    <i className="ri-file-add-line ml-2"></i>
+                                    <i className={`ri-file-add-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                     إضافة ملاحظة
                                 </button>
                             </div>

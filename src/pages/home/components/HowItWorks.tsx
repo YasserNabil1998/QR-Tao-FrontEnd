@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useDirection } from "../../../context/DirectionContext";
 
 export default function HowItWorks() {
+    const { direction } = useDirection();
     const [activeDemo, setActiveDemo] = useState<number | null>(null);
 
     const steps = [
@@ -96,7 +98,7 @@ export default function HowItWorks() {
                                 </div>
                             </div>
 
-                            <div className="flex-1 text-center lg:text-right">
+                            <div className={`flex-1 text-center ${direction === 'rtl' ? 'lg:text-right' : 'lg:text-left'}`}>
                                 <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-[#1B6EF3] to-[#3EB5EA] rounded-full text-white text-2xl font-bold mb-6">
                                     {step.number}
                                 </div>
@@ -112,7 +114,7 @@ export default function HowItWorks() {
                                 {/* Demo Features */}
                                 <div className="bg-white rounded-xl p-6 shadow-md mb-8">
                                     <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                                        <i className="ri-star-line text-orange-500 ml-2"></i>
+                                        <i className={`ri-star-line text-orange-500 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                         ميزات هذه الخطوة:
                                     </h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -122,7 +124,7 @@ export default function HowItWorks() {
                                                     key={featureIndex}
                                                     className="flex items-center text-gray-700"
                                                 >
-                                                    <i className="ri-check-line text-green-500 ml-2"></i>
+                                                    <i className={`ri-check-line text-green-500 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                                     <span className="text-sm">
                                                         {feature}
                                                     </span>
@@ -141,7 +143,7 @@ export default function HowItWorks() {
                     <div className="mt-16 bg-white rounded-2xl p-8 shadow-xl border-2 border-orange-200">
                         <div className="text-center mb-8">
                             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                                <i className="ri-smartphone-line text-orange-500 ml-2"></i>
+                                <i className={`ri-smartphone-line text-orange-500 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                 مرحباً بك في العرض التوضيحي لـ QTap
                             </h3>
                             <p className="text-gray-600">
@@ -154,7 +156,7 @@ export default function HowItWorks() {
                             {/* Demo Steps */}
                             <div className="space-y-4">
                                 <h4 className="text-xl font-semibold text-gray-900 mb-4">
-                                    <i className="ri-guide-line text-orange-500 ml-2"></i>
+                                    <i className={`ri-guide-line text-orange-500 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                     خطوات تجربة QTap:
                                 </h4>
                                 {steps.map((step, index) => (
@@ -169,7 +171,7 @@ export default function HowItWorks() {
                                     >
                                         <div className="flex items-center">
                                             <div
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center ml-3 ${
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center ${direction === 'rtl' ? 'ml-3' : 'mr-3'} ${
                                                     activeDemo === index
                                                         ? "bg-orange-500 text-white"
                                                         : "bg-gray-200 text-gray-600"
@@ -215,7 +217,7 @@ export default function HowItWorks() {
                                                     key={index}
                                                     className="flex items-center p-2 bg-gray-50 rounded"
                                                 >
-                                                    <i className="ri-check-line text-green-500 ml-2"></i>
+                                                    <i className={`ri-check-line text-green-500 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                                     <span className="text-sm text-gray-700">
                                                         {feature}
                                                     </span>
@@ -226,7 +228,7 @@ export default function HowItWorks() {
 
                                     <div className="mt-4 pt-4 border-t border-gray-200">
                                         <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition-colors cursor-pointer">
-                                            <i className="ri-arrow-left-line ml-2"></i>
+                                            <i className={`ri-arrow-left-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                             التالي في QTap:{" "}
                                             {
                                                 steps[
@@ -243,7 +245,7 @@ export default function HowItWorks() {
                         <div className="mt-8 text-center">
                             <div className="bg-orange-50 rounded-lg p-4 mb-4">
                                 <p className="text-orange-700 font-semibold">
-                                    <i className="ri-information-line ml-2"></i>
+                                    <i className={`ri-information-line ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}></i>
                                     هذا عرض توضيحي لنظام QTap - جرب الآن وشاهد
                                     الفرق!
                                 </p>
@@ -252,7 +254,7 @@ export default function HowItWorks() {
                                 onClick={() => setActiveDemo(null)}
                                 className="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
                             >
-                                <i className="ri-close-line ml-1"></i>
+                                <i className={`ri-close-line ${direction === 'rtl' ? 'ml-1' : 'mr-1'}`}></i>
                                 إغلاق العرض التوضيحي
                             </button>
                         </div>
