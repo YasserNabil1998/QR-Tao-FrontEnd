@@ -1,204 +1,449 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.animate-slide-down {
+    animation: slide-down 0.3s ease-out;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite;
+}
+
+@keyframes wave {
+    0%,
+    100% {
+        transform: scaleY(0.4);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+.animate-wave {
+    animation: wave 1s ease-in-out infinite;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.animate-ripple {
+    animation: ripple 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes gradient-x {
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.animate-gradient-x {
+    animation: gradient-x 3s ease infinite;
+}
+
+@keyframes cube-rotate {
+    0% {
+        transform: rotateX(0deg) rotateY(0deg);
+    }
+    100% {
+        transform: rotateX(360deg) rotateY(360deg);
+    }
+}
+
+.animate-cube-rotate {
+    animation: cube-rotate 3s linear infinite;
+    transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.cube-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.cube-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+@keyframes fade-in-up {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out;
+}
+
+/* Splash Screen Animations - Updated for modern design */
+@keyframes splash-logo {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.animate-splash-logo {
+    animation: splash-logo 0.8s ease-out;
+}
+
+@keyframes shimmer-slide {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.animate-shimmer-slide {
+    animation: shimmer-slide 2s ease-in-out infinite;
+}
+
 @layer base {
-  body {
-    @apply bg-white text-gray-900;
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    direction: rtl;
-  }
+    body {
+        @apply bg-white text-gray-900;
+        font-family: "Tajawal", "Cairo", sans-serif;
+        direction: rtl;
+    }
 
-  /* تطبيق خط Cairo للعناوين */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-    font-weight: 600;
-  }
+    /* تطبيق خط Cairo للعناوين */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Cairo", "Tajawal", sans-serif;
+        font-weight: 600;
+    }
 
-  /* تحسين العناوين الكبيرة */
-  h1 {
-    font-weight: 700;
-  }
+    /* تحسين العناوين الكبيرة */
+    h1 {
+        font-weight: 700;
+    }
 
-  h2 {
-    font-weight: 600;
-  }
+    h2 {
+        font-weight: 600;
+    }
 
-  /* تطبيق Tajawal للنصوص العادية */
-  p, span, div, a, button, input, textarea, label {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تطبيق Tajawal للنصوص العادية */
+    p,
+    span,
+    div,
+    a,
+    button,
+    input,
+    textarea,
+    label {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين الأزرار */
-  button {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 500;
-  }
+    /* تحسين الأزرار */
+    button {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 500;
+    }
 
-  /* تحسين النماذج */
-  input, textarea, select {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تحسين النماذج */
+    input,
+    textarea,
+    select {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين القوائم */
-  ul, ol, li {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تحسين القوائم */
+    ul,
+    ol,
+    li {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين الجداول */
-  table, th, td {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
+    /* تحسين الجداول */
+    table,
+    th,
+    td {
+        font-family: "Tajawal", "Cairo", sans-serif;
+    }
 
-  /* تحسين الروابط */
-  a {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 500;
-  }
+    /* تحسين الروابط */
+    a {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 500;
+    }
 }
 
 @layer components {
-  /* فئات مخصصة للخطوط */
-  .font-cairo {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-  }
-
-  .font-tajawal {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-  }
-
-  /* عناوين احترافية */
-  .heading-primary {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  .heading-secondary {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  /* نصوص احترافية */
-  .text-body {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 400;
-    line-height: 1.6;
-  }
-
-  .text-emphasis {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 600;
-  }
-
-  /* أزرار احترافية */
-  .btn-primary {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-  }
-
-  .btn-secondary {
-    font-family: 'Tajawal', 'Cairo', sans-serif;
-    font-weight: 500;
-  }
-
-  /* تخطيط لوحة التحكم المحسن */
-  .dashboard-container {
-    @apply flex min-h-screen bg-gray-50;
-  }
-
-  .dashboard-sidebar {
-    @apply fixed right-0 top-0 h-full w-72 bg-white border-l border-gray-200 shadow-sm z-30 flex flex-col;
-  }
-
-  .dashboard-content {
-    @apply flex-1 flex flex-col;
-    margin-right: 18rem; /* 288px = w-72 */
-    padding-right: 1.25rem; /* 20px مسافة متوسطة ومتناظرة */
-  }
-
-  .dashboard-main {
-    @apply flex-1 overflow-auto;
-  }
-
-  .dashboard-wrapper {
-    @apply p-6 max-w-7xl mx-auto;
-  }
-
-  /* تحسينات للشاشات المتوسطة */
-  @media (max-width: 1024px) {
-    .dashboard-content {
-      margin-right: 16rem; /* تقليل المسافة قليلاً */
-      padding-right: 1rem;
+    /* فئات مخصصة للخطوط */
+    .font-cairo {
+        font-family: "Cairo", "Tajawal", sans-serif;
     }
-    
-    .dashboard-sidebar {
-      @apply w-64;
-    }
-  }
 
-  /* تحسينات للشاشات الصغيرة */
-  @media (max-width: 768px) {
-    .dashboard-content {
-      margin-right: 0;
-      padding-right: 0;
+    .font-tajawal {
+        font-family: "Tajawal", "Cairo", sans-serif;
     }
-    
-    .dashboard-sidebar {
-      @apply -translate-x-full transition-transform duration-300;
-    }
-    
-    .dashboard-sidebar.open {
-      @apply translate-x-0;
-    }
-  }
 
-  /* متغيرات التصميم الموحدة */
-  :root {
-    --sidebar-width: 18rem;
-    --sidebar-gap: 1.25rem;
-    --content-padding: 1.5rem;
-    --border-radius: 0.5rem;
-    --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-  }
+    /* عناوين احترافية */
+    .heading-primary {
+        font-family: "Cairo", "Tajawal", sans-serif;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .heading-secondary {
+        font-family: "Cairo", "Tajawal", sans-serif;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    /* نصوص احترافية */
+    .text-body {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    .text-emphasis {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 600;
+    }
+
+    /* أزرار احترافية */
+    .btn-primary {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+    }
+
+    .btn-secondary {
+        font-family: "Tajawal", "Cairo", sans-serif;
+        font-weight: 500;
+    }
+
+    /* تخطيط لوحة التحكم المحسن */
+    .dashboard-container {
+        @apply flex min-h-screen bg-gray-50;
+    }
+
+    /* RTL Layout */
+    [dir="rtl"] .dashboard-sidebar {
+        @apply fixed right-0 top-0 h-full w-72 bg-white border-l border-gray-200 shadow-sm z-30 flex flex-col;
+    }
+
+    [dir="rtl"] .dashboard-content {
+        @apply flex-1 flex flex-col;
+        margin-right: 18rem; /* 288px = w-72 */
+        padding-right: 1.25rem; /* 20px مسافة متوسطة ومتناظرة */
+    }
+
+    /* LTR Layout */
+    [dir="ltr"] .dashboard-sidebar {
+        @apply fixed left-0 top-0 h-full w-72 bg-white border-r border-gray-200 shadow-sm z-30 flex flex-col;
+    }
+
+    [dir="ltr"] .dashboard-content {
+        @apply flex-1 flex flex-col;
+        margin-left: 18rem; /* 288px = w-72 */
+        padding-left: 1.25rem; /* 20px مسافة متوسطة ومتناظرة */
+    }
+
+    .dashboard-main {
+        @apply flex-1 overflow-auto;
+    }
+
+    .dashboard-wrapper {
+        @apply p-6 max-w-7xl mx-auto;
+    }
+
+    /* تحسينات للشاشات المتوسطة */
+    @media (max-width: 1024px) {
+        [dir="rtl"] .dashboard-content {
+            margin-right: 16rem; /* تقليل المسافة قليلاً */
+            padding-right: 1rem;
+        }
+
+        [dir="ltr"] .dashboard-content {
+            margin-left: 16rem;
+            padding-left: 1rem;
+        }
+
+        .dashboard-sidebar {
+            @apply w-64;
+        }
+    }
+
+    /* تحسينات للشاشات الصغيرة */
+    @media (max-width: 768px) {
+        [dir="rtl"] .dashboard-content {
+            margin-right: 0;
+            padding-right: 0;
+        }
+
+        [dir="ltr"] .dashboard-content {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        [dir="rtl"] .dashboard-sidebar {
+            @apply -translate-x-full transition-transform duration-300;
+        }
+
+        [dir="ltr"] .dashboard-sidebar {
+            @apply translate-x-full transition-transform duration-300;
+        }
+
+        .dashboard-sidebar.open {
+            @apply translate-x-0;
+        }
+    }
+
+    /* متغيرات التصميم الموحدة */
+    :root {
+        --sidebar-width: 18rem;
+        --sidebar-gap: 1.25rem;
+        --content-padding: 1.5rem;
+        --border-radius: 0.5rem;
+        --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    }
+
+    /* اتجاه النصوص في المحتوى */
+    [dir="rtl"] .dashboard-content {
+        direction: rtl;
+    }
+
+    [dir="ltr"] .dashboard-content {
+        direction: ltr;
+    }
+
+    /* اتجاه الصفحة الرئيسية */
+    [dir="rtl"] body {
+        direction: rtl;
+    }
+
+    [dir="ltr"] body {
+        direction: ltr;
+    }
+
+    /* محاذاة النصوص الديناميكية - تطبيق تلقائي */
+    [dir="rtl"] .dashboard-content .text-right {
+        text-align: right;
+    }
+
+    [dir="ltr"] .dashboard-content .text-right {
+        text-align: left;
+    }
+
+    [dir="rtl"] .dashboard-content .text-left {
+        text-align: left;
+    }
+
+    [dir="ltr"] .dashboard-content .text-left {
+        text-align: right;
+    }
+
+    /* فئات مساعدة للاتجاه الديناميكي */
+    [dir="rtl"] .dashboard-content .dir-ml-1 { margin-right: 0.25rem; margin-left: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-ml-1 { margin-left: 0.25rem; margin-right: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-ml-2 { margin-right: 0.5rem; margin-left: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-ml-2 { margin-left: 0.5rem; margin-right: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-ml-3 { margin-right: 0.75rem; margin-left: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-ml-3 { margin-left: 0.75rem; margin-right: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-mr-1 { margin-left: 0.25rem; margin-right: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-mr-1 { margin-right: 0.25rem; margin-left: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-mr-2 { margin-left: 0.5rem; margin-right: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-mr-2 { margin-right: 0.5rem; margin-left: 0 !important; }
+    [dir="rtl"] .dashboard-content .dir-mr-3 { margin-left: 0.75rem; margin-right: 0 !important; }
+    [dir="ltr"] .dashboard-content .dir-mr-3 { margin-right: 0.75rem; margin-left: 0 !important; }
 }
 
 /* تحسينات إضافية للنص العربي */
 @layer utilities {
-  .text-smooth {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+    .text-smooth {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 
-  .letter-spacing-arabic {
-    letter-spacing: 0.025em;
-  }
+    .letter-spacing-arabic {
+        letter-spacing: 0.025em;
+    }
 
-  /* تحسين المسافات للنص العربي */
-  .line-height-relaxed-ar {
-    line-height: 1.75;
-  }
+    /* تحسين المسافات للنص العربي */
+    .line-height-relaxed-ar {
+        line-height: 1.75;
+    }
 
-  .line-height-loose-ar {
-    line-height: 2;
-  }
+    .line-height-loose-ar {
+        line-height: 2;
+    }
 
-  /* فئات مساعدة للمسافات المتناسقة */
-  .spacing-consistent {
-    gap: var(--sidebar-gap);
-  }
+    /* فئات مساعدة للمسافات المتناسقة */
+    .spacing-consistent {
+        gap: var(--sidebar-gap);
+    }
 
-  .padding-consistent {
-    padding: var(--content-padding);
-  }
+    .padding-consistent {
+        padding: var(--content-padding);
+    }
 }
 
 /* تحسينات خاصة بالاتجاه العربي */
 html[dir="rtl"] {
-  font-family: 'Tajawal', 'Cairo', sans-serif;
+    font-family: "Tajawal", "Cairo", sans-serif;
 }
 
 html[dir="rtl"] h1,
@@ -207,10 +452,39 @@ html[dir="rtl"] h3,
 html[dir="rtl"] h4,
 html[dir="rtl"] h5,
 html[dir="rtl"] h6 {
-  font-family: 'Cairo', 'Tajawal', sans-serif;
+    font-family: "Cairo", "Tajawal", sans-serif;
 }
 
 /* تحسين الأداء */
 .font-display-swap {
-  font-display: swap;
+    font-display: swap;
+}
+
+/* تخصيص مكان السكرول */
+.custom-scrollbar-left {
+    direction: ltr;
+    text-align: right;
+}
+
+.custom-scrollbar-left > * {
+    direction: rtl;
+    text-align: right;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+.custom-scrollbar-left::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
 }

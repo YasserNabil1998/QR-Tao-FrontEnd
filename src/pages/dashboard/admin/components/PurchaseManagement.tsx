@@ -1,833 +1,1234 @@
-
-import { useState, useEffect } from 'react';
-import { supabase } from '../../../../lib/supabase';
+import { useState, useEffect } from "react";
+import { useToast } from "../../../../hooks/useToast";
+import CustomSelect from "../../../../components/common/CustomSelect";
+import Loader from "../../../../components/common/Loader";
 
 interface Purchase {
-  id: string;
-  purchase_number: string;
-  purchase_date: string;
-  expected_delivery_date: string;
-  actual_delivery_date?: string;
-  status: 'pending' | 'approved' | 'ordered' | 'delivered' | 'rejected' | 'returned';
-  total_amount: number;
-  supplier: {
-    name: string;
-  };
-  notes?: string;
-  approved_by?: string;
-  approved_date?: string;
-  shipping_cost?: number;
-  storage_cost?: number;
+    id: string;
+    purchase_number: string;
+    purchase_date: string;
+    expected_delivery_date: string;
+    actual_delivery_date?: string;
+    status:
+        | "pending"
+        | "approved"
+        | "ordered"
+        | "delivered"
+        | "rejected"
+        | "returned";
+    total_amount: number;
+    supplier: {
+        name: string;
+    };
+    notes?: string;
+    approved_by?: string;
+    approved_date?: string;
+    shipping_cost?: number;
+    storage_cost?: number;
 }
 
 interface PurchaseItem {
-  id: string;
-  item_name: string;
-  quantity: number;
-  unit: string;
-  unit_price: number;
-  total_price: number;
-  returned_quantity?: number;
-  return_reason?: string;
+    id: string;
+    item_name: string;
+    quantity: number;
+    unit: string;
+    unit_price: number;
+    total_price: number;
+    returned_quantity?: number;
+    return_reason?: string;
 }
 
 interface QuoteComparison {
-  supplier_id: string;
-  supplier_name: string;
-  quoted_price: number;
-  delivery_time: number;
-  notes: string;
+    supplier_id: string;
+    supplier_name: string;
+    quoted_price: number;
+    delivery_time: number;
+    notes: string;
 }
 
 // Mock data for display purposes
 const mockPurchases: Purchase[] = [
-  {
-    id: '1',
-    purchase_number: 'PO-2024-001',
-    purchase_date: '2024-01-15',
-    expected_delivery_date: '2024-01-18',
-    status: 'pending',
-    total_amount: 2500,
-    supplier: { name: 'مزارع الخليج' },
-    notes: 'طلب عاجل للمخزون',
-    shipping_cost: 50,
-    storage_cost: 0,
-    approved_by: undefined,
-    approved_date: undefined
-  },
-  {
-    id: '2',
-    purchase_number: 'PO-2024-002',
-    purchase_date: '2024-01-14',
-    expected_delivery_date: '2024-01-17',
-    status: 'approved',
-    total_amount: 1800,
-    supplier: { name: 'شركة الحبوب المتحدة' },
-    notes: 'طلب شهري للحبوب',
-    shipping_cost: 30,
-    storage_cost: 0,
-    approved_by: 'أحمد محمد',
-    approved_date: undefined
-  }
+    {
+        id: "1",
+        purchase_number: "PO-2024-001",
+        purchase_date: "2024-01-15",
+        expected_delivery_date: "2024-01-18",
+        status: "pending",
+        total_amount: 2500,
+        supplier: { name: "مزارع الخليج" },
+        notes: "طلب عاجل للمخزون",
+        shipping_cost: 50,
+        storage_cost: 0,
+        approved_by: undefined,
+        approved_date: undefined,
+    },
+    {
+        id: "2",
+        purchase_number: "PO-2024-002",
+        purchase_date: "2024-01-14",
+        expected_delivery_date: "2024-01-17",
+        status: "approved",
+        total_amount: 1800,
+        supplier: { name: "شركة الحبوب المتحدة" },
+        notes: "طلب شهري للحبوب",
+        shipping_cost: 30,
+        storage_cost: 0,
+        approved_by: "أحمد محمد",
+        approved_date: undefined,
+    },
 ];
 
+const mockSuppliers = [
+    { id: "1", name: "مزارع الخليج" },
+    { id: "2", name: "شركة الحبوب المتحدة" },
+];
+
+const mockPurchaseItems: { [key: string]: PurchaseItem[] } = {
+    "1": [
+        {
+            id: "1-1",
+            item_name: "لحم بقري",
+            quantity: 50,
+            unit: "كيلو",
+            unit_price: 120,
+            total_price: 6000,
+        },
+        {
+            id: "1-2",
+            item_name: "دجاج",
+            quantity: 30,
+            unit: "كيلو",
+            unit_price: 45,
+            total_price: 1350,
+        },
+    ],
+    "2": [
+        {
+            id: "2-1",
+            item_name: "أرز",
+            quantity: 100,
+            unit: "كيلو",
+            unit_price: 12,
+            total_price: 1200,
+        },
+        {
+            id: "2-2",
+            item_name: "عدس",
+            quantity: 50,
+            unit: "كيلو",
+            unit_price: 8,
+            total_price: 400,
+        },
+    ],
+};
+
 export default function PurchaseManagement() {
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [suppliers, setSuppliers] = useState<any[]>([]);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showItemsModal, setShowItemsModal] = useState(false);
-  const [showQuotesModal, setShowQuotesModal] = useState(false);
-  const [showReturnModal, setShowReturnModal] = useState(false);
-  const [selectedPurchase, setSelectedPurchase] = useState<string | null>(null);
-  const [purchaseItems, setPurchaseItems] = useState<PurchaseItem[]>([]);
-  const [quotes, setQuotes] = useState<QuoteComparison[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('');
-
-  const [newPurchase, setNewPurchase] = useState({
-    supplier_id: '',
-    purchase_date: new Date().toISOString().split('T')[0],
-    expected_delivery_date: '',
-    notes: '',
-    shipping_cost: 0,
-    storage_cost: 0,
-    items: [{ item_name: '', quantity: 1, unit: 'كيلو', unit_price: 0 }]
-  });
-
-  const [returnData, setReturnData] = useState({
-    item_id: '',
-    returned_quantity: 0,
-    return_reason: ''
-  });
-
-  useEffect(() => {
-    fetchPurchases();
-    fetchSuppliers();
-  }, []);
-
-  const fetchPurchases = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('purchases')
-        .select(`
-          *,
-          supplier:suppliers(name)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setPurchases(data || []);
-    } catch (error) {
-      console.error('خطأ في جلب المشتريات:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSuppliers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('suppliers')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
-
-      if (error) throw error;
-      setSuppliers(data || []);
-    } catch (error) {
-      console.error('خطأ في جلب الموردين:', error);
-    }
-  };
-
-  const fetchPurchaseItems = async (purchaseId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('purchase_items')
-        .select('*')
-        .eq('purchase_id', purchaseId);
-
-      if (error) throw error;
-      setPurchaseItems(data || []);
-    } catch (error) {
-      console.error('خطأ في جلب عناصر المشتريات:', error);
-    }
-  };
-
-  const handleAddPurchase = async () => {
-    try {
-      const purchaseNumber = `PUR-${Date.now()}`;
-      const subtotal = newPurchase.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-      const taxAmount = subtotal * 0.15;
-      const totalAmount = subtotal + taxAmount + newPurchase.shipping_cost + newPurchase.storage_cost;
-
-      const { data: purchaseData, error: purchaseError } = await supabase
-        .from('purchases')
-        .insert({
-          purchase_number: purchaseNumber,
-          supplier_id: newPurchase.supplier_id,
-          purchase_date: newPurchase.purchase_date,
-          expected_delivery_date: newPurchase.expected_delivery_date,
-          subtotal,
-          tax_amount: taxAmount,
-          total_amount: totalAmount,
-          shipping_cost: newPurchase.shipping_cost,
-          storage_cost: newPurchase.storage_cost,
-          notes: newPurchase.notes,
-          status: 'pending',
-          restaurant_id: '00000000-0000-0000-0000-000000000000'
-        })
-        .select()
-        .single();
-
-      if (purchaseError) throw purchaseError;
-
-      const itemsToInsert = newPurchase.items.map(item => ({
-        purchase_id: purchaseData.id,
-        item_name: item.item_name,
-        quantity: item.quantity,
-        unit: item.unit,
-        unit_price: item.unit_price,
-        total_price: item.quantity * item.unit_price
-      }));
-
-      const { error: itemsError } = await supabase
-        .from('purchase_items')
-        .insert(itemsToInsert);
-
-      if (itemsError) throw itemsError;
-
-      setShowAddModal(false);
-      resetNewPurchase();
-      fetchPurchases();
-    } catch (error) {
-      console.error('خطأ في إضافة المشتريات:', error);
-    }
-  };
-
-  const resetNewPurchase = () => {
-    setNewPurchase({
-      supplier_id: '',
-      purchase_date: new Date().toISOString().split('T')[0],
-      expected_delivery_date: '',
-      notes: '',
-      shipping_cost: 0,
-      storage_cost: 0,
-      items: [{ item_name: '', quantity: 1, unit: 'كيلو', unit_price: 0 }]
-    });
-  };
-
-  const updatePurchaseStatus = async (id: string, status: string) => {
-    try {
-      const updateData: any = { status };
-      if (status === 'delivered') {
-        updateData.actual_delivery_date = new Date().toISOString().split('T')[0];
-      }
-      if (status === 'approved') {
-        updateData.approved_by = 'المدير المالي';
-        updateData.approved_date = new Date().toISOString().split('T')[0];
-      }
-
-      const { error } = await supabase
-        .from('purchases')
-        .update(updateData)
-        .eq('id', id);
-
-      if (error) throw error;
-      fetchPurchases();
-    } catch (error) {
-      console.error('خطأ في تحديث حالة المشتريات:', error);
-    }
-  };
-
-  const handleReturn = async () => {
-    try {
-      const { error } = await supabase
-        .from('purchase_items')
-        .update({
-          returned_quantity: returnData.returned_quantity,
-          return_reason: returnData.return_reason
-        })
-        .eq('id', returnData.item_id);
-
-      if (error) throw error;
-
-      setShowReturnModal(false);
-      setReturnData({ item_id: '', returned_quantity: 0, return_reason: '' });
-      fetchPurchaseItems(selectedPurchase!);
-    } catch (error) {
-      console.error('خطأ في تسجيل المرتجعات:', error);
-    }
-  };
-
-  const addPurchaseItem = () => {
-    setNewPurchase(prev => ({
-      ...prev,
-      items: [...prev.items, { item_name: '', quantity: 1, unit: 'كيلو', unit_price: 0 }]
-    }));
-  };
-
-  const removePurchaseItem = (index: number) => {
-    setNewPurchase(prev => ({
-      ...prev,
-      items: prev.items.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updatePurchaseItem = (index: number, field: string, value: any) => {
-    setNewPurchase(prev => ({
-      ...prev,
-      items: prev.items.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
-      )
-    }));
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'approved': return 'bg-blue-100 text-blue-800';
-      case 'ordered': return 'bg-purple-100 text-purple-800';
-      case 'delivered': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      case 'returned': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending': return 'في الانتظار';
-      case 'approved': return 'معتمد';
-      case 'ordered': return 'تم الطلب';
-      case 'delivered': return 'تم التسليم';
-      case 'rejected': return 'مرفوض';
-      case 'returned': return 'مرتجع';
-      default: return status;
-    }
-  };
-
-  const filteredPurchases = purchases.filter(purchase => {
-    const matchesStatus = filter === 'all' || purchase.status === filter;
-    const matchesDate = !dateFilter || purchase.purchase_date.includes(dateFilter);
-    return matchesStatus && matchesDate;
-  });
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
+    const [purchases, setPurchases] = useState<Purchase[]>([]);
+    const [suppliers, setSuppliers] = useState<any[]>([]);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showItemsModal, setShowItemsModal] = useState(false);
+    const [_showQuotesModal, _setShowQuotesModal] = useState(false);
+    const [showReturnModal, setShowReturnModal] = useState(false);
+    const [selectedPurchase, setSelectedPurchase] = useState<string | null>(
+        null
     );
-  }
+    const [purchaseItems, setPurchaseItems] = useState<PurchaseItem[]>([]);
+    const [_quotes, _setQuotes] = useState<QuoteComparison[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState("all");
+    const [dateFilter, setDateFilter] = useState("");
+    const { showToast, ToastContainer } = useToast();
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">إدارة المشتريات</h2>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
-        >
-          <i className="ri-add-line"></i>
-          إضافة طلب شراء جديد
-        </button>
-      </div>
+    const [newPurchase, setNewPurchase] = useState({
+        supplier_id: "",
+        purchase_date: new Date().toISOString().split("T")[0],
+        expected_delivery_date: "",
+        notes: "",
+        shipping_cost: 0,
+        storage_cost: 0,
+        items: [{ item_name: "", quantity: 1, unit: "كيلو", unit_price: 0 }],
+    });
 
-      {/* إحصائيات المشتريات باستخدام بيانات mock */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium text-gray-600">إجمالي المشتريات</div>
-            <div className="text-xl font-bold text-gray-900">
-              {mockPurchases.reduce((total, purchase) => total + purchase.total_amount, 0).toLocaleString()} ج.م
-            </div>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium text-gray-600">قيمة المشتريات المنتظرة</div>
-            <div className="text-xl font-bold text-gray-900">
-              {mockPurchases.filter(p => p.status === 'pending').reduce((total, purchase) => total + purchase.total_amount, 0).toLocaleString()} ج.م
-            </div>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium text-gray-600">إجمالي الضريبة</div>
-            <div className="text-xl font-bold text-gray-900">
-              {mockPurchases.reduce((total, purchase) => total + purchase.tax_amount, 0).toLocaleString()} ج.م
-            </div>
-          </div>
-        </div>
-      </div>
+    const [returnData, setReturnData] = useState({
+        item_id: "",
+        returned_quantity: 0,
+        return_reason: "",
+    });
 
-      {/* فلاتر */}
-      <div className="flex gap-4 mb-6">
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 pr-8"
-        >
-          <option value="all">جميع المشتريات</option>
-          <option value="pending">في الانتظار</option>
-          <option value="approved">معتمد</option>
-          <option value="ordered">تم الطلب</option>
-          <option value="delivered">تم التسليم</option>
-          <option value="rejected">مرفوض</option>
-          <option value="returned">مرتجع</option>
-        </select>
-        <input
-          type="month"
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2"
-          placeholder="فلترة حسب الشهر"
-        />
-      </div>
+    useEffect(() => {
+        // Simulate loading
+        setTimeout(() => {
+            setPurchases(mockPurchases);
+            setSuppliers(mockSuppliers);
+            setLoading(false);
+        }, 300);
+    }, []);
 
-      {/* جدول المشتريات */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  رقم المشتريات
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  المورد
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  تاريخ الطلب
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  تاريخ التسليم المتوقع
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  المبلغ الإجمالي
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  الحالة
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  الإجراءات
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredPurchases.map((purchase) => (
-                <tr key={purchase.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {purchase.purchase_number}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {purchase.supplier?.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {new Date(purchase.purchase_date).toLocaleDateString('ar-SA')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {purchase.expected_delivery_date ?
-                      new Date(purchase.expected_delivery_date).toLocaleDateString('ar-SA') :
-                      'غير محدد'
-                    }
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {purchase.total_amount.toLocaleString()} ج.م
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(purchase.status)}`}>
-                      {getStatusText(purchase.status)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          setSelectedPurchase(purchase.id);
-                          fetchPurchaseItems(purchase.id);
-                          setShowItemsModal(true);
-                        }}
-                        className="text-blue-600 hover:text-blue-900 cursor-pointer"
-                        title="عرض التفاصيل"
-                      >
-                        <i className="ri-eye-line"></i>
-                      </button>
-                      {purchase.status === 'pending' && (
-                        <>
-                          <button
-                            onClick={() => updatePurchaseStatus(purchase.id, 'approved')}
-                            className="text-green-600 hover:text-green-900 cursor-pointer"
-                            title="اعتماد الطلب"
-                          >
-                            <i className="ri-check-line"></i>
-                          </button>
-                          <button
-                            onClick={() => updatePurchaseStatus(purchase.id, 'rejected')}
-                            className="text-red-600 hover:text-red-900 cursor-pointer"
-                            title="رفض الطلب"
-                          >
-                            <i className="ri-close-line"></i>
-                          </button>
-                        </>
-                      )}
-                      {purchase.status === 'approved' && (
-                        <button
-                          onClick={() => updatePurchaseStatus(purchase.id, 'ordered')}
-                          className="text-purple-600 hover:text-purple-900 cursor-pointer"
-                          title="تأكيد الطلب"
-                        >
-                          <i className="ri-shopping-bag-line"></i>
-                        </button>
-                      )}
-                      {purchase.status === 'ordered' && (
-                        <button
-                          onClick={() => updatePurchaseStatus(purchase.id, 'delivered')}
-                          className="text-green-600 hover:text-green-900 cursor-pointer"
-                          title="تأكيد الاستلام"
-                        >
-                          <i className="ri-truck-line"></i>
-                        </button>
-                      )}
-                      {purchase.status === 'delivered' && (
-                        <button
-                          onClick={() => {
-                            setSelectedPurchase(purchase.id);
-                            fetchPurchaseItems(purchase.id);
-                            setShowReturnModal(true);
-                          }}
-                          className="text-orange-600 hover:text-orange-900 cursor-pointer"
-                          title="إدارة المرتجعات"
-                        >
-                          <i className="ri-arrow-go-back-line"></i>
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+    const fetchPurchaseItems = (purchaseId: string) => {
+        const items = mockPurchaseItems[purchaseId] || [];
+        setPurchaseItems(items);
+    };
 
-      {/* مودال إضافة مشتريات */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">إضافة مشتريات جديدة</h3>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <i className="ri-close-line text-xl"></i>
-              </button>
-            </div>
+    const handleAddPurchase = () => {
+        // Validation
+        if (!newPurchase.supplier_id) {
+            showToast("يرجى اختيار المورد", "error");
+            return;
+        }
+        if (!newPurchase.purchase_date) {
+            showToast("يرجى إدخال تاريخ الطلب", "error");
+            return;
+        }
+        if (newPurchase.items.length === 0) {
+            showToast("يرجى إضافة عنصر واحد على الأقل", "error");
+            return;
+        }
+        for (const item of newPurchase.items) {
+            if (!item.item_name.trim()) {
+                showToast("يرجى إدخال اسم العنصر", "error");
+                return;
+            }
+            if (item.quantity <= 0) {
+                showToast("يرجى إدخال كمية صحيحة", "error");
+                return;
+            }
+            if (item.unit_price <= 0) {
+                showToast("يرجى إدخال سعر صحيح", "error");
+                return;
+        }
+        }
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">المورد</label>
-                  <select
-                    value={newPurchase.supplier_id}
-                    onChange={(e) => setNewPurchase(prev => ({ ...prev, supplier_id: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                    required
-                  >
-                    <option value="">اختر المورد</option>
-                    {suppliers.map(supplier => (
-                      <option key={supplier.id} value={supplier.id}>{supplier.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ الطلب</label>
-                  <input
-                    type="date"
-                    value={newPurchase.purchase_date}
-                    onChange={(e) => setNewPurchase(prev => ({ ...prev, purchase_date: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ التسليم المتوقع</label>
-                  <input
-                    type="date"
-                    value={newPurchase.expected_delivery_date}
-                    onChange={(e) => setNewPurchase(prev => ({ ...prev, expected_delivery_date: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-              </div>
+        const purchaseNumber = `PO-${new Date().getFullYear()}-${String(
+            purchases.length + 1
+        ).padStart(3, "0")}`;
+            const subtotal = newPurchase.items.reduce(
+                (sum, item) => sum + item.quantity * item.unit_price,
+                0
+            );
+            const taxAmount = subtotal * 0.15;
+            const totalAmount =
+                subtotal +
+                taxAmount +
+            (newPurchase.shipping_cost || 0) +
+            (newPurchase.storage_cost || 0);
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">ملاحظات</label>
-                <textarea
-                  value={newPurchase.notes}
-                  onChange={(e) => setNewPurchase(prev => ({ ...prev, notes: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                  rows={3}
-                />
-              </div>
+        const selectedSupplier = suppliers.find(
+            (s) => s.id === newPurchase.supplier_id
+        );
 
-              {/* عناصر المشتريات */}
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="text-md font-medium">عناصر المشتريات</h4>
-                  <button
-                    onClick={addPurchaseItem}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap cursor-pointer"
-                  >
-                    <i className="ri-add-line"></i> إضافة عنصر
-                  </button>
-                </div>
+        const newPurchaseData: Purchase = {
+            id: `purchase-${Date.now()}`,
+                    purchase_number: purchaseNumber,
+                    purchase_date: newPurchase.purchase_date,
+            expected_delivery_date: newPurchase.expected_delivery_date || "",
+            status: "pending",
+                    total_amount: totalAmount,
+            supplier: { name: selectedSupplier?.name || "" },
+            notes: newPurchase.notes,
+                    shipping_cost: newPurchase.shipping_cost,
+                    storage_cost: newPurchase.storage_cost,
+        };
 
-                <div className="space-y-3">
-                  {newPurchase.items.map((item, index) => (
-                    <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-3 p-3 border border-gray-200 rounded-lg">
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="اسم العنصر"
-                          value={item.item_name}
-                          onChange={(e) => updatePurchaseItem(index, 'item_name', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <input
-                          type="number"
-                          placeholder="الكمية"
-                          value={item.quantity}
-                          onChange={(e) => updatePurchaseItem(index, 'quantity', parseFloat(e.target.value) || 0)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-                          min="0"
-                          step="0.01"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <select
-                          value={item.unit}
-                          onChange={(e) => updatePurchaseItem(index, 'unit', e.target.value)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm pr-8"
-                        >
-                          <option value="كيلو">كيلو</option>
-                          <option value="جرام">جرام</option>
-                          <option value="لتر">لتر</option>
-                          <option value="قطعة">قطعة</option>
-                          <option value="علبة">علبة</option>
-                          <option value="كيس">كيس</option>
-                        </select>
-                      </div>
-                      <div>
-                        <input
-                          type="number"
-                          placeholder="السعر للوحدة"
-                          value={item.unit_price}
-                          onChange={(e) => updatePurchaseItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-                          min="0"
-                          step="0.01"
-                          required
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">
-                          {(item.quantity * item.unit_price).toFixed(2)} ر.س
-                        </span>
-                        {newPurchase.items.length > 1 && (
-                          <button
-                            onClick={() => removePurchaseItem(index)}
-                            className="text-red-600 hover:text-red-800 cursor-pointer"
-                          >
-                            <i className="ri-delete-bin-line"></i>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+        setPurchases((prev) => [newPurchaseData, ...prev]);
 
-                {/* إجمالي المبلغ */}
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <div className="flex justify-between text-sm">
-                    <span>المجموع الفرعي:</span>
-                    <span>{newPurchase.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0).toFixed(2)} ر.س</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>الضريبة (15%):</span>
-                    <span>{(newPurchase.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0) * 0.15).toFixed(2)} ر.س</span>
-                  </div>
-                  <div className="flex justify-between text-lg font-bold border-t pt-2 mt-2">
-                    <span>الإجمالي:</span>
-                    <span>{(newPurchase.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0) * 1.15).toFixed(2)} ر.س</span>
-                  </div>
-                </div>
-              </div>
+        // Store items for this purchase
+        const items = newPurchase.items.map((item, index) => ({
+            id: `${newPurchaseData.id}-${index}`,
+                item_name: item.item_name,
+                quantity: item.quantity,
+                unit: item.unit,
+                unit_price: item.unit_price,
+                total_price: item.quantity * item.unit_price,
+            }));
+        mockPurchaseItems[newPurchaseData.id] = items;
 
-              <div className="flex justify-end gap-3 pt-4">
+        showToast("تم إضافة طلب الشراء بنجاح", "success");
+            setShowAddModal(false);
+            resetNewPurchase();
+    };
+
+    const resetNewPurchase = () => {
+        setNewPurchase({
+            supplier_id: "",
+            purchase_date: new Date().toISOString().split("T")[0],
+            expected_delivery_date: "",
+            notes: "",
+            shipping_cost: 0,
+            storage_cost: 0,
+            items: [
+                { item_name: "", quantity: 1, unit: "كيلو", unit_price: 0 },
+            ],
+        });
+    };
+
+    const updatePurchaseStatus = (
+        id: string,
+        status:
+            | "pending"
+            | "approved"
+            | "ordered"
+            | "delivered"
+            | "rejected"
+            | "returned"
+    ) => {
+        setPurchases((prev) =>
+            prev.map((purchase) => {
+                if (purchase.id === id) {
+                    const updated: Purchase = {
+                        ...purchase,
+                        status: status as Purchase["status"],
+                    };
+            if (status === "delivered") {
+                        updated.actual_delivery_date = new Date()
+                    .toISOString()
+                    .split("T")[0];
+            }
+            if (status === "approved") {
+                        updated.approved_by = "المدير المالي";
+                        updated.approved_date = new Date()
+                    .toISOString()
+                    .split("T")[0];
+            }
+                    return updated;
+                }
+                return purchase;
+            })
+        );
+        showToast(
+            `تم تحديث حالة الطلب إلى "${getStatusText(status)}" بنجاح`,
+            "success"
+        );
+    };
+
+    const handleReturn = () => {
+        if (!returnData.item_id) {
+            showToast("يرجى اختيار العنصر", "error");
+            return;
+        }
+        if (returnData.returned_quantity <= 0) {
+            showToast("يرجى إدخال كمية مرتجعة صحيحة", "error");
+            return;
+        }
+        if (!returnData.return_reason.trim()) {
+            showToast("يرجى إدخال سبب الإرجاع", "error");
+            return;
+        }
+
+        setPurchaseItems((prev) =>
+            prev.map((item) =>
+                item.id === returnData.item_id
+                    ? {
+                          ...item,
+                          returned_quantity: returnData.returned_quantity,
+                          return_reason: returnData.return_reason,
+                      }
+                    : item
+            )
+        );
+
+        if (selectedPurchase) {
+            mockPurchaseItems[selectedPurchase] = purchaseItems.map((item) =>
+                item.id === returnData.item_id
+                    ? {
+                          ...item,
+                    returned_quantity: returnData.returned_quantity,
+                    return_reason: returnData.return_reason,
+                      }
+                    : item
+            );
+        }
+
+        showToast("تم تسجيل الإرجاع بنجاح", "success");
+            setShowReturnModal(false);
+            setReturnData({
+                item_id: "",
+                returned_quantity: 0,
+                return_reason: "",
+            });
+        if (selectedPurchase) {
+            fetchPurchaseItems(selectedPurchase);
+        }
+    };
+
+    const addPurchaseItem = () => {
+        setNewPurchase((prev) => ({
+            ...prev,
+            items: [
+                ...prev.items,
+                { item_name: "", quantity: 1, unit: "كيلو", unit_price: 0 },
+            ],
+        }));
+    };
+
+    const removePurchaseItem = (index: number) => {
+        setNewPurchase((prev) => ({
+            ...prev,
+            items: prev.items.filter((_, i) => i !== index),
+        }));
+    };
+
+    const updatePurchaseItem = (index: number, field: string, value: any) => {
+        setNewPurchase((prev) => ({
+            ...prev,
+            items: prev.items.map((item, i) =>
+                i === index ? { ...item, [field]: value } : item
+            ),
+        }));
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "pending":
+                return "bg-yellow-100 text-yellow-800";
+            case "approved":
+                return "bg-blue-100 text-blue-800";
+            case "ordered":
+                return "bg-purple-100 text-purple-800";
+            case "delivered":
+                return "bg-green-100 text-green-800";
+            case "rejected":
+                return "bg-red-100 text-red-800";
+            case "returned":
+                return "bg-orange-100 text-orange-800";
+            default:
+                return "bg-gray-100 text-gray-800";
+        }
+    };
+
+    const getStatusText = (status: string) => {
+        switch (status) {
+            case "pending":
+                return "في الانتظار";
+            case "approved":
+                return "معتمد";
+            case "ordered":
+                return "تم الطلب";
+            case "delivered":
+                return "تم التسليم";
+            case "rejected":
+                return "مرفوض";
+            case "returned":
+                return "مرتجع";
+            default:
+                return status;
+        }
+    };
+
+    // دالة لتنسيق التاريخ بالميلادي
+    const formatDate = (dateString: string): string => {
+        if (!dateString) return "غير محدد";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    const filteredPurchases = purchases.filter((purchase) => {
+        const matchesStatus = filter === "all" || purchase.status === filter;
+        const matchesDate =
+            !dateFilter || purchase.purchase_date.includes(dateFilter);
+        return matchesStatus && matchesDate;
+    });
+
+    if (loading) {
+        return (
+            <Loader size="lg" variant="spinner" text="جاري تحميل البيانات..." />
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900">
+                    إدارة المشتريات
+                </h2>
                 <button
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                    onClick={() => setShowAddModal(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
                 >
-                  إلغاء
+                    <i className="ri-add-line"></i>
+                    إضافة طلب شراء جديد
                 </button>
-                <button
-                  onClick={handleAddPurchase}
-                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
-                >
-                  إضافة المشتريات
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* مودال عرض عناصر المشتريات */}
-      {showItemsModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">عناصر المشتريات</h3>
-              <button
-                onClick={() => setShowItemsModal(false)}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <i className="ri-close-line text-xl"></i>
-              </button>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      اسم العنصر
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      الكمية
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      الوحدة
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      سعر الوحدة
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      الإجمالي
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {purchaseItems.map((item) => (
-                    <tr key={item.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.item_name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.quantity}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.unit}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.unit_price} ج.م
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {item.total_price} ج.م
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            {/* إحصائيات المشتريات */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <div className="flex items-center">
+                        <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+                            <i className="ri-shopping-cart-line text-lg"></i>
+                        </div>
+                        <div className="mr-3">
+                            <p className="text-sm font-medium text-gray-600">
+                                إجمالي المشتريات
+                            </p>
+                            <p className="text-xl font-bold text-gray-900">
+                                {purchases
+                                .reduce(
+                                    (total, purchase) =>
+                                        total + purchase.total_amount,
+                                    0
+                                )
+                                .toLocaleString()}{" "}
+                                $
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <div className="flex items-center">
+                        <div className="p-2 rounded-full bg-yellow-100 text-yellow-600">
+                            <i className="ri-time-line text-lg"></i>
+                        </div>
+                        <div className="mr-3">
+                            <p className="text-sm font-medium text-gray-600">
+                                قيمة المشتريات المنتظرة
+                            </p>
+                            <p className="text-xl font-bold text-gray-900">
+                                {purchases
+                                .filter((p) => p.status === "pending")
+                                .reduce(
+                                    (total, purchase) =>
+                                        total + purchase.total_amount,
+                                    0
+                                )
+                                .toLocaleString()}{" "}
+                                $
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <div className="flex items-center">
+                        <div className="p-2 rounded-full bg-purple-100 text-purple-600">
+                            <i className="ri-file-list-3-line text-lg"></i>
+                        </div>
+                        <div className="mr-3">
+                            <p className="text-sm font-medium text-gray-600">
+                                إجمالي الضريبة
+                            </p>
+                            <p className="text-xl font-bold text-gray-900">
+                                {purchases
+                                .reduce(
+                                    (total, purchase) =>
+                                            total +
+                                            purchase.total_amount * 0.15,
+                                    0
+                                )
+                                .toLocaleString()}{" "}
+                                $
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* مودال إدارة المرتجعات */}
-      {showReturnModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">إدارة المرتجعات</h3>
-              <button
-                onClick={() => setShowReturnModal(false)}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <i className="ri-close-line text-xl"></i>
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">العنصر</label>
-                <select
-                  value={returnData.item_id}
-                  onChange={(e) => setReturnData(prev => ({ ...prev, item_id: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8"
-                  required
-                >
-                  <option value="">اختر العنصر</option>
-                  {purchaseItems.map(item => (
-                    <option key={item.id} value={item.id}>
-                      {item.item_name} - الكمية: {item.quantity} {item.unit}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">الكمية المرتجعة</label>
+            {/* فلاتر */}
+            <div className="flex gap-4 mb-6 items-center">
+                <div className="w-48">
+                    <CustomSelect
+                    value={filter}
+                        onChange={(value) => setFilter(value)}
+                        options={[
+                            { value: "all", label: "جميع المشتريات" },
+                            { value: "pending", label: "في الانتظار" },
+                            { value: "approved", label: "معتمد" },
+                            { value: "ordered", label: "تم الطلب" },
+                            { value: "delivered", label: "تم التسليم" },
+                            { value: "rejected", label: "مرفوض" },
+                            { value: "returned", label: "مرتجع" },
+                        ]}
+                        placeholder="اختر الحالة"
+                    />
+                </div>
                 <input
-                  type="number"
-                  value={returnData.returned_quantity}
-                  onChange={(e) => setReturnData(prev => ({ ...prev, returned_quantity: parseFloat(e.target.value) || 0 }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                  min="0"
-                  step="0.01"
-                  required
+                    type="month"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    placeholder="فلترة حسب الشهر"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">سبب الإرجاع</label>
-                <textarea
-                  value={returnData.return_reason}
-                  onChange={(e) => setReturnData(prev => ({ ...prev, return_reason: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                  rows={3}
-                  placeholder="اذكر سبب الإرجاع (تالف، زائد، غير مطابق للمواصفات...)"
-                  required
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={() => setShowReturnModal(false)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer"
-                >
-                  إلغاء
-                </button>
-                <button
-                  onClick={handleReturn}
-                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
-                >
-                  تسجيل الإرجاع
-                </button>
-              </div>
             </div>
-          </div>
+
+            {/* جدول المشتريات */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full table-fixed">
+                        <colgroup>
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "15%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "15%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "12%" }} />
+                            <col style={{ width: "22%" }} />
+                        </colgroup>
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    رقم المشتريات
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    المورد
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    تاريخ الطلب
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    تاريخ التسليم المتوقع
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    المبلغ الإجمالي
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    الحالة
+                                </th>
+                                <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    الإجراءات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredPurchases.map((purchase) => (
+                                <tr
+                                    key={purchase.id}
+                                    className="hover:bg-gray-50"
+                                >
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm font-medium text-gray-900 truncate">
+                                        {purchase.purchase_number}
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900 truncate">
+                                        {purchase.supplier?.name}
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900">
+                                            {formatDate(purchase.purchase_date)}
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm text-gray-900">
+                                            {formatDate(
+                                                  purchase.expected_delivery_date
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        <div className="text-sm font-medium text-gray-900">
+                                            {purchase.total_amount.toLocaleString()}{" "}
+                                            $
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        <span
+                                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                                                purchase.status
+                                            )}`}
+                                        >
+                                            {getStatusText(purchase.status)}
+                                        </span>
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        <div className="flex items-center gap-1 justify-end">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedPurchase(
+                                                        purchase.id
+                                                    );
+                                                    fetchPurchaseItems(
+                                                        purchase.id
+                                                    );
+                                                    setShowItemsModal(true);
+                                                }}
+                                                className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                                title="عرض التفاصيل"
+                                            >
+                                                <i className="ri-eye-line text-lg"></i>
+                                            </button>
+                                            {purchase.status === "pending" && (
+                                                <>
+                                                    <button
+                                                        onClick={() =>
+                                                            updatePurchaseStatus(
+                                                                purchase.id,
+                                                                "approved"
+                                                            )
+                                                        }
+                                                        className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                        title="اعتماد الطلب"
+                                                    >
+                                                        <i className="ri-check-line text-lg"></i>
+                                                    </button>
+                                                    <button
+                                                        onClick={() =>
+                                                            updatePurchaseStatus(
+                                                                purchase.id,
+                                                                "rejected"
+                                                            )
+                                                        }
+                                                        className="w-8 h-8 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                                        title="رفض الطلب"
+                                                    >
+                                                        <i className="ri-close-line text-lg"></i>
+                                                    </button>
+                                                </>
+                                            )}
+                                            {purchase.status === "approved" && (
+                                                <button
+                                                    onClick={() =>
+                                                        updatePurchaseStatus(
+                                                            purchase.id,
+                                                            "ordered"
+                                                        )
+                                                    }
+                                                    className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="تأكيد الطلب"
+                                                >
+                                                    <i className="ri-shopping-bag-line text-lg"></i>
+                                                </button>
+                                            )}
+                                            {purchase.status === "ordered" && (
+                                                <button
+                                                    onClick={() =>
+                                                        updatePurchaseStatus(
+                                                            purchase.id,
+                                                            "delivered"
+                                                        )
+                                                    }
+                                                    className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="تأكيد الاستلام"
+                                                >
+                                                    <i className="ri-truck-line text-lg"></i>
+                                                </button>
+                                            )}
+                                            {purchase.status ===
+                                                "delivered" && (
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedPurchase(
+                                                            purchase.id
+                                                        );
+                                                        fetchPurchaseItems(
+                                                            purchase.id
+                                                        );
+                                                        setShowReturnModal(
+                                                            true
+                                                        );
+                                                    }}
+                                                    className="w-8 h-8 flex items-center justify-center text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="إدارة المرتجعات"
+                                                >
+                                                    <i className="ri-arrow-go-back-line text-lg"></i>
+                                                </button>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* مودال إضافة مشتريات */}
+            {showAddModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
+                                إضافة مشتريات جديدة
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    setShowAddModal(false);
+                                    resetNewPurchase();
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                            >
+                                <i className="ri-close-line text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        المورد
+                                    </label>
+                                    <select
+                                        value={newPurchase.supplier_id}
+                                        onChange={(e) =>
+                                            setNewPurchase((prev) => ({
+                                                ...prev,
+                                                supplier_id: e.target.value,
+                                            }))
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        required
+                                    >
+                                        <option value="">اختر المورد</option>
+                                        {suppliers.map((supplier) => (
+                                            <option
+                                                key={supplier.id}
+                                                value={supplier.id}
+                                            >
+                                                {supplier.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        تاريخ الطلب
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={newPurchase.purchase_date}
+                                        onChange={(e) =>
+                                            setNewPurchase((prev) => ({
+                                                ...prev,
+                                                purchase_date: e.target.value,
+                                            }))
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        تاريخ التسليم المتوقع
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={
+                                            newPurchase.expected_delivery_date
+                                        }
+                                        onChange={(e) =>
+                                            setNewPurchase((prev) => ({
+                                                ...prev,
+                                                expected_delivery_date:
+                                                    e.target.value,
+                                            }))
+                                        }
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    ملاحظات
+                                </label>
+                                <textarea
+                                    value={newPurchase.notes}
+                                    onChange={(e) =>
+                                        setNewPurchase((prev) => ({
+                                            ...prev,
+                                            notes: e.target.value,
+                                        }))
+                                    }
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    rows={3}
+                                    placeholder="أدخل ملاحظات (اختياري)"
+                                />
+                            </div>
+
+                            {/* عناصر المشتريات */}
+                            <div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <h4 className="text-md font-medium">
+                                        عناصر المشتريات
+                                    </h4>
+                                    <button
+                                        onClick={addPurchaseItem}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap cursor-pointer"
+                                    >
+                                        <i className="ri-add-line"></i> إضافة
+                                        عنصر
+                                    </button>
+                                </div>
+
+                                <div className="space-y-3">
+                                    {newPurchase.items.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="grid grid-cols-1 md:grid-cols-5 gap-3 p-3 border border-gray-200 rounded-lg"
+                                        >
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="اسم العنصر"
+                                                    value={item.item_name}
+                                                    onChange={(e) =>
+                                                        updatePurchaseItem(
+                                                            index,
+                                                            "item_name",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="number"
+                                                    placeholder="الكمية"
+                                                    value={item.quantity}
+                                                    onChange={(e) =>
+                                                        updatePurchaseItem(
+                                                            index,
+                                                            "quantity",
+                                                            parseFloat(
+                                                                e.target.value
+                                                            ) || 0
+                                                        )
+                                                    }
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                    min="0"
+                                                    step="0.01"
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <select
+                                                    value={item.unit}
+                                                    onChange={(e) =>
+                                                        updatePurchaseItem(
+                                                            index,
+                                                            "unit",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                >
+                                                    <option value="كيلو">
+                                                        كيلو
+                                                    </option>
+                                                    <option value="جرام">
+                                                        جرام
+                                                    </option>
+                                                    <option value="لتر">
+                                                        لتر
+                                                    </option>
+                                                    <option value="قطعة">
+                                                        قطعة
+                                                    </option>
+                                                    <option value="علبة">
+                                                        علبة
+                                                    </option>
+                                                    <option value="كيس">
+                                                        كيس
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="number"
+                                                    placeholder="السعر للوحدة"
+                                                    value={item.unit_price}
+                                                    onChange={(e) =>
+                                                        updatePurchaseItem(
+                                                            index,
+                                                            "unit_price",
+                                                            parseFloat(
+                                                                e.target.value
+                                                            ) || 0
+                                                        )
+                                                    }
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                    min="0"
+                                                    step="0.01"
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm font-medium">
+                                                    {(
+                                                        item.quantity *
+                                                        item.unit_price
+                                                    ).toFixed(2)}{" "}
+                                                    $
+                                                </span>
+                                                {newPurchase.items.length >
+                                                    1 && (
+                                                    <button
+                                                        onClick={() =>
+                                                            removePurchaseItem(
+                                                                index
+                                                            )
+                                                        }
+                                                        className="text-red-600 hover:text-red-800 cursor-pointer"
+                                                    >
+                                                        <i className="ri-delete-bin-line"></i>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* إجمالي المبلغ */}
+                                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                                    <div className="flex justify-between text-sm">
+                                        <span>المجموع الفرعي:</span>
+                                        <span>
+                                            {newPurchase.items
+                                                .reduce(
+                                                    (sum, item) =>
+                                                        sum +
+                                                        item.quantity *
+                                                            item.unit_price,
+                                                    0
+                                                )
+                                                .toFixed(2)}{" "}
+                                            $
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span>الضريبة (15%):</span>
+                                        <span>
+                                            {(
+                                                newPurchase.items.reduce(
+                                                    (sum, item) =>
+                                                        sum +
+                                                        item.quantity *
+                                                            item.unit_price,
+                                                    0
+                                                ) * 0.15
+                                            ).toFixed(2)}{" "}
+                                            $
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between text-lg font-bold border-t pt-2 mt-2">
+                                        <span>الإجمالي:</span>
+                                        <span>
+                                            {(
+                                                newPurchase.items.reduce(
+                                                    (sum, item) =>
+                                                        sum +
+                                                        item.quantity *
+                                                            item.unit_price,
+                                                    0
+                                                ) * 1.15
+                                            ).toFixed(2)}{" "}
+                                            $
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowAddModal(false);
+                                        resetNewPurchase();
+                                    }}
+                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                >
+                                    إلغاء
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleAddPurchase}
+                                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                >
+                                    إضافة المشتريات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* مودال عرض عناصر المشتريات */}
+            {showItemsModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
+                                عناصر المشتريات
+                            </h3>
+                            <button
+                                onClick={() => setShowItemsModal(false)}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                            >
+                                <i className="ri-close-line text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            اسم العنصر
+                                        </th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            الكمية
+                                        </th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            الوحدة
+                                        </th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            سعر الوحدة
+                                        </th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            الإجمالي
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {purchaseItems.map((item) => (
+                                        <tr key={item.id}>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {item.item_name}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {item.quantity}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {item.unit}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {item.unit_price} $
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {item.total_price} $
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* مودال إدارة المرتجعات */}
+            {showReturnModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">
+                                إدارة المرتجعات
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    setShowReturnModal(false);
+                                    setReturnData({
+                                        item_id: "",
+                                        returned_quantity: 0,
+                                        return_reason: "",
+                                    });
+                                }}
+                                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                            >
+                                <i className="ri-close-line text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    العنصر
+                                </label>
+                                <select
+                                    value={returnData.item_id}
+                                    onChange={(e) =>
+                                        setReturnData((prev) => ({
+                                            ...prev,
+                                            item_id: e.target.value,
+                                        }))
+                                    }
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    required
+                                >
+                                    <option value="">اختر العنصر</option>
+                                    {purchaseItems.map((item) => (
+                                        <option key={item.id} value={item.id}>
+                                            {item.item_name} - الكمية:{" "}
+                                            {item.quantity} {item.unit}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    الكمية المرتجعة
+                                </label>
+                                <input
+                                    type="number"
+                                    value={returnData.returned_quantity}
+                                    onChange={(e) =>
+                                        setReturnData((prev) => ({
+                                            ...prev,
+                                            returned_quantity:
+                                                parseFloat(e.target.value) || 0,
+                                        }))
+                                    }
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    placeholder="أدخل الكمية المرتجعة"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    سبب الإرجاع
+                                </label>
+                                <textarea
+                                    value={returnData.return_reason}
+                                    onChange={(e) =>
+                                        setReturnData((prev) => ({
+                                            ...prev,
+                                            return_reason: e.target.value,
+                                        }))
+                                    }
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    rows={3}
+                                    placeholder="اذكر سبب الإرجاع (تالف، زائد، غير مطابق للمواصفات...)"
+                                    required
+                                />
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowReturnModal(false);
+                                        setReturnData({
+                                            item_id: "",
+                                            returned_quantity: 0,
+                                            return_reason: "",
+                                        });
+                                    }}
+                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                >
+                                    إلغاء
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleReturn}
+                                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                >
+                                    تسجيل الإرجاع
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <ToastContainer />
         </div>
-      )}
-    </div>
-  );
+    );
 }

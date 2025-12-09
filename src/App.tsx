@@ -1,30 +1,42 @@
-import { BrowserRouter } from 'react-router-dom'
-import { Suspense } from 'react'
-import { AppRoutes } from './router/index'
-import { AuthProvider } from './components/auth/AuthProvider'
+import { BrowserRouter } from "react-router-dom";
+import { Suspense, useState } from "react";
+import { AppRoutes } from "./router/index";
+import { AuthProvider } from "./components/auth/AuthProvider";
+import { DirectionProvider } from "./context/DirectionContext";
+import Loader from "./components/common/Loader";
+import SplashScreen from "./components/common/SplashScreen";
 
 function App() {
-  return (
-    <BrowserRouter basename={__BASE_PATH__}>
-      <AuthProvider>
-        <Suspense fallback={
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '100vh',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: '#4F46E5'
-          }}>
-            Loading...
-          </div>
-        }>
-          <AppRoutes />
-        </Suspense>
-      </AuthProvider>
-    </BrowserRouter>
-  )
+    const [showSplash, setShowSplash] = useState(true);
+
+    return (
+        <>
+            {showSplash && (
+                <SplashScreen
+                    onFinish={() => setShowSplash(false)}
+                    minDisplayTime={2000}
+                />
+            )}
+            <BrowserRouter basename={__BASE_PATH__}>
+                <DirectionProvider>
+                    <AuthProvider>
+                        <Suspense
+                            fallback={
+                                <Loader
+                                    fullScreen
+                                    size="xl"
+                                    variant="spinner"
+                                    text="جاري التحميل..."
+                                />
+                            }
+                        >
+                            <AppRoutes />
+                        </Suspense>
+                    </AuthProvider>
+                </DirectionProvider>
+            </BrowserRouter>
+        </>
+    );
 }
 
-export default App
+export default App;

@@ -1,41 +1,299 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QTap - نظام إدارة المطاعم الرقمي</title>
-    <meta name="description" content="QTap هو نظام رقمي متطور لإدارة المطاعم يوفر تجربة طعام سلسة وحديثة للعملاء والمطاعم" />
-    <meta name="keywords" content="مطعم, قائمة رقمية, طلبات, QR كود, نظام إدارة مطاعم" />
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Remix Icon -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- Readdy Agent Widget -->
-    <script 
-      src="https://readdy.ai/api/public/assistant/widget?projectId=fc842e47-f12d-4279-85e0-5a7800c14f98"
-      mode="hybrid"
-      voice-show-transcript="true"
-      theme="light"
-      size="compact"
-      accent-color="#f97316"
-      button-base-color="#1f2937"
-      button-accent-color="#ffffff"
-      main-label="تحدث معنا"
-      start-button-text="ابدأ المحادثة"
-      end-button-text="إنهاء المكالمة"
-      defer
-    ></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
+        <meta name="theme-color" content="#1B6EF3" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>QrTap - نظام إدارة المطاعم الرقمي</title>
+        <meta
+            name="description"
+            content="QTap هو نظام رقمي متطور لإدارة المطاعم يوفر تجربة طعام سلسة وحديثة للعملاء والمطاعم"
+        />
+        <meta
+            name="keywords"
+            content="مطعم, قائمة رقمية, طلبات, QR كود, نظام إدارة مطاعم"
+        />
+
+        <!-- Font Awesome -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <!-- Remix Icon -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+            rel="stylesheet"
+        />
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Splash Screen Styles -->
+        <style>
+            #splash-screen {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(
+                    135deg,
+                    #1b6ef3 0%,
+                    #2a8dc4 25%,
+                    #3eb5ea 50%,
+                    #1b6ef3 75%,
+                    #3eb5ea 100%
+                );
+                background-size: 400% 400%;
+                opacity: 1;
+                transition: opacity 0.6s ease-out;
+                animation: gradientShift 8s ease infinite;
+            }
+
+            @keyframes gradientShift {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+
+            #splash-screen.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .splash-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                z-index: 10;
+            }
+
+            .splash-logo-container {
+                position: relative;
+                margin-bottom: 2rem;
+            }
+
+            .splash-logo-container::before {
+                content: "";
+                position: absolute;
+                inset: -2rem;
+                border-radius: 50%;
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                animation: splashRing1 3s ease-in-out infinite;
+            }
+
+            .splash-logo-container::after {
+                content: "";
+                position: absolute;
+                inset: -2.5rem;
+                border-radius: 50%;
+                border: 4px solid rgba(255, 255, 255, 0.2);
+                animation: splashRing2 3.5s ease-in-out infinite;
+                animation-delay: 0.3s;
+            }
+
+            @keyframes splashRing1 {
+                0%,
+                100% {
+                    transform: scale(0.8);
+                    opacity: 0.3;
+                }
+                50% {
+                    transform: scale(1.1);
+                    opacity: 0.1;
+                }
+            }
+
+            @keyframes splashRing2 {
+                0%,
+                100% {
+                    transform: scale(0.9);
+                    opacity: 0.2;
+                }
+                50% {
+                    transform: scale(1.15);
+                    opacity: 0.05;
+                }
+            }
+
+            .splash-logo {
+                width: 9rem;
+                height: 9rem;
+                filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5));
+                animation: splashLogoModern 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+                position: relative;
+            }
+
+            .splash-logo::before {
+                content: "";
+                position: absolute;
+                inset: -1rem;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                filter: blur(20px);
+                animation: splashGlow 2s ease-in-out infinite;
+            }
+
+            @keyframes splashLogoModern {
+                0% {
+                    opacity: 0;
+                    transform: scale(0.5) rotate(-10deg);
+                }
+                50% {
+                    transform: scale(1.1) rotate(5deg);
+                }
+                100% {
+                    opacity: 1;
+                    transform: scale(1) rotate(0deg);
+                }
+            }
+
+            @keyframes splashGlow {
+                0%,
+                100% {
+                    opacity: 0.4;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.8;
+                    transform: scale(1.2);
+                }
+            }
+
+            .splash-loading {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .splash-progress {
+                width: 20rem;
+                height: 8px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 9999px;
+                overflow: hidden;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .splash-progress-bar {
+                height: 100%;
+                border-radius: 9999px;
+                background: linear-gradient(
+                    90deg,
+                    #1b6ef3 0%,
+                    #3eb5ea 50%,
+                    #1b6ef3 100%
+                );
+                background-size: 200% 100%;
+                box-shadow: 0 0 20px rgba(27, 110, 243, 0.6),
+                    inset 0 0 10px rgba(255, 255, 255, 0.3);
+                animation: splashProgress 2s ease-out, shimmer 1.5s infinite;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .splash-progress-bar::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: 9999px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.4),
+                    transparent
+                );
+                animation: shimmer 1.5s infinite;
+            }
+
+            @keyframes splashProgress {
+                0% {
+                    width: 0%;
+                    transform: translateX(-100%);
+                }
+                50% {
+                    width: 70%;
+                }
+                100% {
+                    width: 100%;
+                    transform: translateX(0%);
+                }
+            }
+
+            @keyframes shimmer {
+                0% {
+                    transform: translateX(-100%);
+                }
+                100% {
+                    transform: translateX(100%);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Splash Screen -->
+        <div id="splash-screen">
+            <div class="splash-content">
+                <div class="splash-logo-container">
+                    <img
+                        src="/splash-icon.svg"
+                        alt="QrTap Logo"
+                        class="splash-logo"
+                    />
+                </div>
+                <div class="splash-loading">
+                    <div class="splash-progress">
+                        <div class="splash-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="root"></div>
+        <script>
+            // Hide splash screen when React app loads
+            window.addEventListener("load", function () {
+                setTimeout(function () {
+                    const splash = document.getElementById("splash-screen");
+                    if (splash) {
+                        splash.classList.add("hidden");
+                        setTimeout(function () {
+                            splash.remove();
+                        }, 500);
+                    }
+                }, 2000); // Minimum display time
+            });
+        </script>
+        <script type="module" src="/src/main.tsx"></script>
+
+        <!-- Readdy Agent Widget -->
+        <script
+            src="https://readdy.ai/api/public/assistant/widget?projectId=fc842e47-f12d-4279-85e0-5a7800c14f98"
+            mode="hybrid"
+            voice-show-transcript="true"
+            theme="light"
+            size="compact"
+            accent-color="#f97316"
+            button-base-color="#1f2937"
+            button-accent-color="#ffffff"
+            main-label="تحدث معنا"
+            start-button-text="ابدأ المحادثة"
+            end-button-text="إنهاء المكالمة"
+            defer
+        ></script>
+    </body>
 </html>
