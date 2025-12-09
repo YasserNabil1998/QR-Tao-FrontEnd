@@ -159,7 +159,7 @@ const RestaurantSettings = ({
     const handleSaveHours = () => {
         // Validation - check if at least one day is open
         const hasOpenDay = Object.values(formData.opening_hours).some(
-            (day) => !day.closed
+            (day) => !(day as { open: string; close: string; closed: boolean }).closed
         );
 
         if (!hasOpenDay) {
@@ -169,7 +169,10 @@ const RestaurantSettings = ({
 
         // Validate time ranges
         const invalidDays = Object.entries(formData.opening_hours).filter(
-            ([_, day]) => !day.closed && day.open >= day.close
+            ([_, day]) => {
+                const dayObj = day as { open: string; close: string; closed: boolean };
+                return !dayObj.closed && dayObj.open >= dayObj.close;
+            }
         );
 
         if (invalidDays.length > 0) {

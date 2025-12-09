@@ -65,17 +65,32 @@ export default function GeneralLedger() {
     const [showEntryDetailsModal, setShowEntryDetailsModal] = useState(false);
     const { showToast, ToastContainer } = useToast();
 
-    const [newAccount, setNewAccount] = useState({
+    const [newAccount, setNewAccount] = useState<{
+        account_code: string;
+        account_name: string;
+        account_type: Account["account_type"];
+        parent_account_id: string;
+        opening_balance: number;
+    }>({
         account_code: "",
         account_name: "",
-        account_type: "assets" as const,
+        account_type: "assets",
         parent_account_id: "",
         opening_balance: 0,
     });
 
-    const [newEntry, setNewEntry] = useState({
+    const [newEntry, setNewEntry] = useState<{
+        description: string;
+        reference_type: JournalEntry["reference_type"];
+        lines: {
+            account_id: string;
+            debit_amount: number;
+            credit_amount: number;
+            description: string;
+        }[];
+    }>({
         description: "",
-        reference_type: "manual" as const,
+        reference_type: "manual",
         lines: [
             {
                 account_id: "",

@@ -10,7 +10,7 @@ const TablesManagement = () => {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingTable, setEditingTable] = useState<any>(null);
-    const [restaurantId, setRestaurantId] = useState<string | null>(null);
+    const [restaurantId] = useState<string | null>(null);
 
     // Initialize local state for tables (fallback if context not available)
     const [localTables, setLocalTables] = useState<any[]>([
@@ -59,7 +59,6 @@ const TablesManagement = () => {
 
     // Use context if available, otherwise use local state
     const tables = tablesContext?.tables || localTables;
-    const setTables = tablesContext?.setTables || setLocalTables;
     const addTable =
         tablesContext?.addTable ||
         ((table: any) => {
@@ -139,7 +138,7 @@ const TablesManagement = () => {
     };
 
     const handleDeleteTable = async (id: string) => {
-        const table = tables.find((t) => t.id === id);
+        const table = tables.find((t: { id: string }) => t.id === id);
         if (
             window.confirm(
                 `هل أنت متأكد من حذف طاولة رقم ${table?.table_number}؟`
@@ -212,7 +211,7 @@ const TablesManagement = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {tables.map((table) => (
+                    {tables.map((table: { id: string; table_number: string; capacity: number; location?: string; status: string; restaurant_id: string; qr_code?: string }) => (
                         <div
                             key={table.id}
                             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"

@@ -132,33 +132,6 @@ export default function InventoryManagement({
         setFormErrors({});
     };
 
-    const validateForm = (): boolean => {
-        const errors: { [key: string]: string } = {};
-
-        if (!formData.name.trim()) {
-            errors.name = "اسم الصنف مطلوب";
-        }
-
-        if (formData.current_stock < 0) {
-            errors.current_stock = "المخزون الحالي لا يمكن أن يكون سالباً";
-        }
-
-        if (formData.min_stock < 0) {
-            errors.min_stock = "الحد الأدنى لا يمكن أن يكون سالباً";
-        }
-
-        if (formData.cost_per_unit <= 0) {
-            errors.cost_per_unit = "التكلفة يجب أن تكون أكبر من صفر";
-        }
-
-        if (!formData.supplier.trim()) {
-            errors.supplier = "اسم المورد مطلوب";
-        }
-
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 

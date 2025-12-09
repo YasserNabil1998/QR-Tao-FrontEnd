@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "../../../../hooks/useToast";
-import CustomSelect from "../../../../components/common/CustomSelect";
-import { formatCurrency } from "../../../../utils/currency";
 import Loader from "../../../../components/common/Loader";
 
 interface Order {
@@ -484,22 +482,22 @@ export default function OrdersList() {
             <body>
                 <div class="header">
                     <h1>فاتورة الطلب</h1>
-                    <p>${selectedOrder.id}</p>
+                    <p>${orderToPrint.id}</p>
                 </div>
 
                 <div class="order-info">
                     <div class="info-item">
                         <strong>الطاولة</strong>
-                        <span>${selectedOrder.table}</span>
+                        <span>${orderToPrint.table}</span>
                     </div>
                     <div class="info-item">
                         <strong>العميل</strong>
-                        <span>${selectedOrder.customer}</span>
+                        <span>${orderToPrint.customer}</span>
                     </div>
                     <div class="info-item">
                         <strong>التاريخ</strong>
                         <span>${new Date(
-                            selectedOrder.created_at
+                            orderToPrint.created_at
                         ).toLocaleString("en-US", {
                             year: "numeric",
                             month: "2-digit",
@@ -510,7 +508,7 @@ export default function OrdersList() {
                     </div>
                     <div class="info-item">
                         <strong>حالة الطلب</strong>
-                        <span>${selectedOrder.status}</span>
+                        <span>${orderToPrint.status}</span>
                     </div>
                 </div>
 

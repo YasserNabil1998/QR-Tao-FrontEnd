@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useToast } from "../../../../hooks/useToast";
 import CustomDatePicker from "../../../../components/common/CustomDatePicker";
-import { formatCurrency } from "../../../../utils/currency";
 import Loader from "../../../../components/common/Loader";
 
 interface DailyReportProps {
@@ -156,7 +155,7 @@ const generateMockReport = (date: string): DailyReportData => {
     };
 };
 
-const DailyReport = ({ restaurantId }: DailyReportProps) => {
+const DailyReport = ({ restaurantId: _restaurantId }: DailyReportProps) => {
     const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
     const [selectedDate, setSelectedDate] = useState(() => {

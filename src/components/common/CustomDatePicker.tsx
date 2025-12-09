@@ -50,15 +50,6 @@ export default function CustomDatePicker({
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        const days = [
-            "الأحد",
-            "الإثنين",
-            "الثلاثاء",
-            "الأربعاء",
-            "الخميس",
-            "الجمعة",
-            "السبت",
-        ];
         const months = [
             "يناير",
             "فبراير",

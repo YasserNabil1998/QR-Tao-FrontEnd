@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useToast } from "../../../../hooks/useToast";
 import CustomSelect from "../../../../components/common/CustomSelect";
 import CustomDatePicker from "../../../../components/common/CustomDatePicker";
-import { formatCurrency } from "../../../../utils/currency";
 import Loader from "../../../../components/common/Loader";
 
 interface PaymentManagementProps {
