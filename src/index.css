@@ -282,7 +282,7 @@
 
     /* RTL Layout */
     [dir="rtl"] .dashboard-sidebar {
-        @apply fixed right-0 top-0 h-full w-72 bg-white border-l border-gray-200 shadow-sm z-30 flex flex-col;
+        @apply fixed right-0 top-0 h-full w-72 bg-white border-l border-gray-200 shadow-sm z-40 flex flex-col;
     }
 
     [dir="rtl"] .dashboard-content {
@@ -293,7 +293,7 @@
 
     /* LTR Layout */
     [dir="ltr"] .dashboard-sidebar {
-        @apply fixed left-0 top-0 h-full w-72 bg-white border-r border-gray-200 shadow-sm z-30 flex flex-col;
+        @apply fixed left-0 top-0 h-full w-72 bg-white border-r border-gray-200 shadow-sm z-40 flex flex-col;
     }
 
     [dir="ltr"] .dashboard-content {
@@ -307,7 +307,7 @@
     }
 
     .dashboard-wrapper {
-        @apply p-6 max-w-7xl mx-auto;
+        @apply p-4 sm:p-6 max-w-7xl mx-auto;
     }
 
     /* تحسينات للشاشات المتوسطة */
@@ -327,8 +327,8 @@
         }
     }
 
-    /* تحسينات للشاشات الصغيرة */
-    @media (max-width: 768px) {
+    /* تحسينات للشاشات الصغيرة - إخفاء الـ sidebar افتراضياً */
+    @media (max-width: 1023px) {
         [dir="rtl"] .dashboard-content {
             margin-right: 0;
             padding-right: 0;
@@ -339,16 +339,31 @@
             padding-left: 0;
         }
 
+        /* إخفاء الـ sidebar افتراضياً على الجوال */
         [dir="rtl"] .dashboard-sidebar {
-            @apply -translate-x-full transition-transform duration-300;
+            transform: translateX(100%) !important;
+            transition: transform 0.3s ease-in-out;
         }
 
         [dir="ltr"] .dashboard-sidebar {
-            @apply translate-x-full transition-transform duration-300;
+            transform: translateX(-100%) !important;
+            transition: transform 0.3s ease-in-out;
         }
 
-        .dashboard-sidebar.open {
-            @apply translate-x-0;
+        /* إظهار الـ sidebar عند فتحه */
+        [dir="rtl"] .dashboard-sidebar.open {
+            transform: translateX(0) !important;
+        }
+
+        [dir="ltr"] .dashboard-sidebar.open {
+            transform: translateX(0) !important;
+        }
+    }
+
+    /* تحسينات إضافية للشاشات الصغيرة جداً */
+    @media (max-width: 640px) {
+        .dashboard-wrapper {
+            @apply p-3;
         }
     }
 
@@ -487,4 +502,101 @@ html[dir="rtl"] h6 {
 
 .custom-scrollbar-left::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
+}
+
+/* Responsive Utilities */
+@layer utilities {
+    /* Mobile-first responsive containers */
+    .container-responsive {
+        @apply w-full px-4 sm:px-6 lg:px-8 xl:px-12;
+    }
+
+    /* Responsive text sizes */
+    .text-responsive-xs {
+        @apply text-xs sm:text-sm;
+    }
+
+    .text-responsive-sm {
+        @apply text-sm sm:text-base;
+    }
+
+    .text-responsive-base {
+        @apply text-base sm:text-lg;
+    }
+
+    .text-responsive-lg {
+        @apply text-lg sm:text-xl md:text-2xl;
+    }
+
+    .text-responsive-xl {
+        @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+    }
+
+    .text-responsive-2xl {
+        @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+    }
+
+    .text-responsive-3xl {
+        @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
+    }
+
+    /* Responsive spacing */
+    .section-padding {
+        @apply py-12 sm:py-16 md:py-20 lg:py-24;
+    }
+
+    .section-padding-sm {
+        @apply py-8 sm:py-12 md:py-16;
+    }
+
+    /* Responsive grid */
+    .grid-responsive {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8;
+    }
+
+    .grid-responsive-2 {
+        @apply grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8;
+    }
+
+    .grid-responsive-3 {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8;
+    }
+
+    /* Touch-friendly buttons */
+    .btn-touch {
+        @apply min-h-[44px] min-w-[44px];
+    }
+
+    /* Mobile menu toggle */
+    .mobile-menu-toggle {
+        @apply md:hidden;
+    }
+
+    .desktop-menu {
+        @apply hidden md:flex;
+    }
+
+    /* Responsive images */
+    .img-responsive {
+        @apply w-full h-auto object-cover;
+    }
+
+    /* Safe area for mobile */
+    .safe-area-top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Responsive card */
+    .card-responsive {
+        @apply bg-white rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm sm:shadow-md lg:shadow-lg;
+    }
+
+    /* Responsive modal */
+    .modal-responsive {
+        @apply w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto;
+    }
 }

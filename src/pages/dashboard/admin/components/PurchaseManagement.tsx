@@ -438,32 +438,32 @@ export default function PurchaseManagement() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">
+        <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     إدارة المشتريات
                 </h2>
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                    className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                 >
                     <i className="ri-add-line"></i>
-                    إضافة طلب شراء جديد
+                    <span className="text-sm sm:text-base">إضافة طلب شراء جديد</span>
                 </button>
             </div>
 
             {/* إحصائيات المشتريات */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                            <i className="ri-shopping-cart-line text-lg"></i>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 rounded-full bg-blue-100 text-blue-600 flex-shrink-0">
+                            <i className="ri-shopping-cart-line text-lg sm:text-xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 إجمالي المشتريات
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo mt-1">
                                 {purchases
                                 .reduce(
                                     (total, purchase) =>
@@ -476,16 +476,16 @@ export default function PurchaseManagement() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-yellow-100 text-yellow-600">
-                            <i className="ri-time-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 rounded-full bg-yellow-100 text-yellow-600 flex-shrink-0">
+                            <i className="ri-time-line text-lg sm:text-xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 قيمة المشتريات المنتظرة
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo mt-1">
                                 {purchases
                                 .filter((p) => p.status === "pending")
                                 .reduce(
@@ -499,16 +499,16 @@ export default function PurchaseManagement() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-purple-100 text-purple-600">
-                            <i className="ri-file-list-3-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 rounded-full bg-purple-100 text-purple-600 flex-shrink-0">
+                            <i className="ri-file-list-3-line text-lg sm:text-xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 إجمالي الضريبة
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo mt-1">
                                 {purchases
                                 .reduce(
                                     (total, purchase) =>
@@ -525,8 +525,8 @@ export default function PurchaseManagement() {
             </div>
 
             {/* فلاتر */}
-            <div className="flex gap-4 mb-6 items-center">
-                <div className="w-48">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6 items-stretch sm:items-center">
+                <div className="w-full sm:w-48">
                     <CustomSelect
                     value={filter}
                         onChange={(value) => setFilter(value)}
@@ -540,20 +540,22 @@ export default function PurchaseManagement() {
                             { value: "returned", label: "مرتجع" },
                         ]}
                         placeholder="اختر الحالة"
+                        className="w-full sm:w-48"
                     />
                 </div>
                 <input
                     type="month"
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="فلترة حسب الشهر"
                 />
             </div>
 
             {/* جدول المشتريات */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="overflow-x-auto">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow overflow-hidden">
+                {/* Desktop Table */}
+                <div className="hidden xl:block overflow-x-auto">
                     <table className="w-full table-fixed">
                         <colgroup>
                             <col style={{ width: "12%" }} />
@@ -732,14 +734,224 @@ export default function PurchaseManagement() {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Tablet Table (MD to LG) */}
+                <div className="hidden md:block xl:hidden overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم المشتريات</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المورد</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ الطلب</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المبلغ</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredPurchases.map((purchase) => (
+                                <tr key={purchase.id} className="hover:bg-gray-50">
+                                    <td className="px-3 py-3">
+                                        <div className="text-sm font-medium text-gray-900 truncate">{purchase.purchase_number}</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs text-gray-900 truncate">{purchase.supplier?.name}</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs text-gray-900">{formatDate(purchase.purchase_date)}</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs font-medium text-gray-900">
+                                            {purchase.total_amount.toLocaleString()} $
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(purchase.status)}`}>
+                                            {getStatusText(purchase.status)}
+                                        </span>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="flex items-center gap-1 justify-end">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedPurchase(purchase.id);
+                                                    fetchPurchaseItems(purchase.id);
+                                                    setShowItemsModal(true);
+                                                }}
+                                                className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                                title="عرض التفاصيل"
+                                            >
+                                                <i className="ri-eye-line text-lg"></i>
+                                            </button>
+                                            {purchase.status === "pending" && (
+                                                <>
+                                                    <button
+                                                        onClick={() => updatePurchaseStatus(purchase.id, "approved")}
+                                                        className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                        title="اعتماد"
+                                                    >
+                                                        <i className="ri-check-line text-lg"></i>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => updatePurchaseStatus(purchase.id, "rejected")}
+                                                        className="w-8 h-8 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                                        title="رفض"
+                                                    >
+                                                        <i className="ri-close-line text-lg"></i>
+                                                    </button>
+                                                </>
+                                            )}
+                                            {purchase.status === "approved" && (
+                                                <button
+                                                    onClick={() => updatePurchaseStatus(purchase.id, "ordered")}
+                                                    className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="تأكيد"
+                                                >
+                                                    <i className="ri-shopping-bag-line text-lg"></i>
+                                                </button>
+                                            )}
+                                            {purchase.status === "ordered" && (
+                                                <button
+                                                    onClick={() => updatePurchaseStatus(purchase.id, "delivered")}
+                                                    className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="استلام"
+                                                >
+                                                    <i className="ri-truck-line text-lg"></i>
+                                                </button>
+                                            )}
+                                            {purchase.status === "delivered" && (
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedPurchase(purchase.id);
+                                                        fetchPurchaseItems(purchase.id);
+                                                        setShowReturnModal(true);
+                                                    }}
+                                                    className="w-8 h-8 flex items-center justify-center text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="مرتجعات"
+                                                >
+                                                    <i className="ri-arrow-go-back-line text-lg"></i>
+                                                </button>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden divide-y divide-gray-200">
+                    {filteredPurchases.map((purchase) => (
+                        <div key={purchase.id} className="p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate font-cairo">
+                                        {purchase.purchase_number}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 truncate font-tajawal">
+                                        {purchase.supplier?.name}
+                                    </p>
+                                </div>
+                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${getStatusColor(purchase.status)}`}>
+                                    {getStatusText(purchase.status)}
+                                </span>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 mb-3 text-sm">
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">تاريخ الطلب:</span>
+                                    <span className="text-sm font-medium text-gray-900 mr-2 font-cairo block">{formatDate(purchase.purchase_date)}</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">تاريخ التسليم:</span>
+                                    <span className="text-sm font-medium text-gray-900 mr-2 font-cairo block">{formatDate(purchase.expected_delivery_date)}</span>
+                                </div>
+                                <div className="col-span-2">
+                                    <span className="text-xs text-gray-600 font-tajawal">المبلغ الإجمالي:</span>
+                                    <span className="text-sm font-semibold text-gray-900 mr-2 font-cairo">{purchase.total_amount.toLocaleString()} $</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
+                                <button
+                                    onClick={() => {
+                                        setSelectedPurchase(purchase.id);
+                                        fetchPurchaseItems(purchase.id);
+                                        setShowItemsModal(true);
+                                    }}
+                                    className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                    title="عرض التفاصيل"
+                                >
+                                    <i className="ri-eye-line text-lg"></i>
+                                </button>
+                                {purchase.status === "pending" && (
+                                    <>
+                                        <button
+                                            onClick={() => updatePurchaseStatus(purchase.id, "approved")}
+                                            className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                            title="اعتماد"
+                                        >
+                                            <i className="ri-check-line text-lg"></i>
+                                        </button>
+                                        <button
+                                            onClick={() => updatePurchaseStatus(purchase.id, "rejected")}
+                                            className="w-8 h-8 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                            title="رفض"
+                                        >
+                                            <i className="ri-close-line text-lg"></i>
+                                        </button>
+                                    </>
+                                )}
+                                {purchase.status === "approved" && (
+                                    <button
+                                        onClick={() => updatePurchaseStatus(purchase.id, "ordered")}
+                                        className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                                        title="تأكيد"
+                                    >
+                                        <i className="ri-shopping-bag-line text-lg"></i>
+                                    </button>
+                                )}
+                                {purchase.status === "ordered" && (
+                                    <button
+                                        onClick={() => updatePurchaseStatus(purchase.id, "delivered")}
+                                        className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                        title="استلام"
+                                    >
+                                        <i className="ri-truck-line text-lg"></i>
+                                    </button>
+                                )}
+                                {purchase.status === "delivered" && (
+                                    <button
+                                        onClick={() => {
+                                            setSelectedPurchase(purchase.id);
+                                            fetchPurchaseItems(purchase.id);
+                                            setShowReturnModal(true);
+                                        }}
+                                        className="w-8 h-8 flex items-center justify-center text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+                                        title="مرتجعات"
+                                    >
+                                        <i className="ri-arrow-go-back-line text-lg"></i>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                    {filteredPurchases.length === 0 && (
+                        <div className="p-8 text-center text-gray-500">
+                            <i className="ri-shopping-cart-line text-4xl mb-2"></i>
+                            <p className="font-tajawal">لا توجد مشتريات</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* مودال إضافة مشتريات */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 إضافة مشتريات جديدة
                             </h3>
                             <button
@@ -753,10 +965,10 @@ export default function PurchaseManagement() {
                             </button>
                         </div>
 
-                        <div className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4 sm:space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 font-tajawal">
                                         المورد
                                     </label>
                                     <select
@@ -767,7 +979,7 @@ export default function PurchaseManagement() {
                                                 supplier_id: e.target.value,
                                             }))
                                         }
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         required
                                     >
                                         <option value="">اختر المورد</option>
@@ -782,7 +994,7 @@ export default function PurchaseManagement() {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 font-tajawal">
                                         تاريخ الطلب
                                     </label>
                                     <input
@@ -794,12 +1006,12 @@ export default function PurchaseManagement() {
                                                 purchase_date: e.target.value,
                                             }))
                                         }
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 font-tajawal">
                                         تاريخ التسليم المتوقع
                                     </label>
                                     <input
@@ -814,13 +1026,13 @@ export default function PurchaseManagement() {
                                                     e.target.value,
                                             }))
                                         }
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 font-tajawal">
                                     ملاحظات
                                 </label>
                                 <textarea
@@ -831,7 +1043,7 @@ export default function PurchaseManagement() {
                                             notes: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     rows={3}
                                     placeholder="أدخل ملاحظات (اختياري)"
                                 />
@@ -839,16 +1051,16 @@ export default function PurchaseManagement() {
 
                             {/* عناصر المشتريات */}
                             <div>
-                                <div className="flex justify-between items-center mb-3">
-                                    <h4 className="text-md font-medium">
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mb-3">
+                                    <h4 className="text-sm sm:text-base font-medium font-cairo">
                                         عناصر المشتريات
                                     </h4>
                                     <button
                                         onClick={addPurchaseItem}
-                                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap cursor-pointer"
+                                        className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm whitespace-nowrap cursor-pointer flex items-center justify-center gap-1"
                                     >
-                                        <i className="ri-add-line"></i> إضافة
-                                        عنصر
+                                        <i className="ri-add-line"></i> 
+                                        <span>إضافة عنصر</span>
                                     </button>
                                 </div>
 
@@ -856,7 +1068,7 @@ export default function PurchaseManagement() {
                                     {newPurchase.items.map((item, index) => (
                                         <div
                                             key={index}
-                                            className="grid grid-cols-1 md:grid-cols-5 gap-3 p-3 border border-gray-200 rounded-lg"
+                                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 p-3 border border-gray-200 rounded-lg"
                                         >
                                             <div>
                                                 <input
@@ -1022,21 +1234,21 @@ export default function PurchaseManagement() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-start gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setShowAddModal(false);
                                         resetNewPurchase();
                                     }}
-                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleAddPurchase}
-                                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     إضافة المشتريات
                                 </button>
@@ -1048,10 +1260,10 @@ export default function PurchaseManagement() {
 
             {/* مودال عرض عناصر المشتريات */}
             {showItemsModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 عناصر المشتريات
                             </h3>
                             <button
@@ -1066,19 +1278,19 @@ export default function PurchaseManagement() {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             اسم العنصر
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             الكمية
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             الوحدة
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             سعر الوحدة
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             الإجمالي
                                         </th>
                                     </tr>
@@ -1086,19 +1298,19 @@ export default function PurchaseManagement() {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {purchaseItems.map((item) => (
                                         <tr key={item.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-3 sm:px-6 py-4 text-xs sm:text-sm text-gray-900">
                                                 {item.item_name}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-3 sm:px-6 py-4 text-xs sm:text-sm text-gray-900">
                                                 {item.quantity}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-3 sm:px-6 py-4 text-xs sm:text-sm text-gray-900">
                                                 {item.unit}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-3 sm:px-6 py-4 text-xs sm:text-sm text-gray-900">
                                                 {item.unit_price} $
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <td className="px-3 sm:px-6 py-4 text-xs sm:text-sm font-medium text-gray-900">
                                                 {item.total_price} $
                                             </td>
                                         </tr>
@@ -1112,10 +1324,10 @@ export default function PurchaseManagement() {
 
             {/* مودال إدارة المرتجعات */}
             {showReturnModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 إدارة المرتجعات
                             </h3>
                             <button
@@ -1133,9 +1345,9 @@ export default function PurchaseManagement() {
                             </button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 font-tajawal">
                                     العنصر
                                 </label>
                                 <select
@@ -1146,7 +1358,7 @@ export default function PurchaseManagement() {
                                             item_id: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm pr-8 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     required
                                 >
                                     <option value="">اختر العنصر</option>
@@ -1160,7 +1372,7 @@ export default function PurchaseManagement() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 font-tajawal">
                                     الكمية المرتجعة
                                 </label>
                                 <input
@@ -1173,7 +1385,7 @@ export default function PurchaseManagement() {
                                                 parseFloat(e.target.value) || 0,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="أدخل الكمية المرتجعة"
                                     min="0"
                                     step="0.01"
@@ -1182,7 +1394,7 @@ export default function PurchaseManagement() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2 font-tajawal">
                                     سبب الإرجاع
                                 </label>
                                 <textarea
@@ -1193,14 +1405,14 @@ export default function PurchaseManagement() {
                                             return_reason: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     rows={3}
                                     placeholder="اذكر سبب الإرجاع (تالف، زائد، غير مطابق للمواصفات...)"
                                     required
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-start gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -1211,14 +1423,14 @@ export default function PurchaseManagement() {
                                             return_reason: "",
                                         });
                                     }}
-                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleReturn}
-                                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     تسجيل الإرجاع
                                 </button>

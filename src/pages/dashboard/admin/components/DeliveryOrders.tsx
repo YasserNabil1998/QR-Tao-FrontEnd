@@ -571,44 +571,44 @@ export default function DeliveryOrders() {
     });
 
     return (
-        <div className="space-y-6 overflow-x-hidden">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">
+        <div className="space-y-4 sm:space-y-6 overflow-x-hidden">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     أوامر التوصيل
                 </h2>
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                    className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-colors font-medium"
                 >
-                    <i className="ri-add-line"></i>
-                    إضافة طلب توصيل
+                    <i className="ri-add-line text-lg"></i>
+                    <span className="text-sm sm:text-base">إضافة طلب توصيل</span>
                 </button>
             </div>
 
             {/* إحصائيات أوامر التوصيل */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-600 mb-1">
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
                                 إجمالي الطلبات
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
                                 {deliveryOrders.length}
                             </p>
                         </div>
-                        <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-truck-line text-xl text-blue-600"></i>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-truck-line text-lg sm:text-xl text-blue-600"></i>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-600 mb-1">
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
                                 في الانتظار
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) => order.status === "pending"
@@ -616,18 +616,18 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-time-line text-xl text-yellow-600"></i>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-time-line text-lg sm:text-xl text-yellow-600"></i>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-600 mb-1">
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
                                 في الطريق
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) =>
@@ -636,18 +636,18 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-road-map-line text-xl text-purple-600"></i>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-road-map-line text-lg sm:text-xl text-purple-600"></i>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-600 mb-1">
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
                                 تم التسليم
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) => order.status === "delivered"
@@ -655,18 +655,18 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-check-line text-xl text-green-600"></i>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-check-line text-lg sm:text-xl text-green-600"></i>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-600 mb-1">
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
                                 ملغى
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) => order.status === "cancelled"
@@ -674,21 +674,21 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-close-line text-xl text-red-600"></i>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-close-line text-lg sm:text-xl text-red-600"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* إحصائيات المبيعات والدفع */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-sm font-medium text-gray-600 mb-2">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
                             إجمالي المبيعات
                         </p>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) =>
@@ -700,12 +700,12 @@ export default function DeliveryOrders() {
                         </p>
                     </div>
                 </div>
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-sm font-medium text-gray-600 mb-2">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
                             المبالغ المحصلة
                         </p>
-                        <p className="text-2xl font-bold text-green-600">
+                        <p className="text-xl sm:text-2xl font-bold text-green-600 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) => total + order.paid_amount,
@@ -716,12 +716,12 @@ export default function DeliveryOrders() {
                         </p>
                     </div>
                 </div>
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-sm font-medium text-gray-600 mb-2">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
                             المبالغ المستحقة
                         </p>
-                        <p className="text-2xl font-bold text-red-600">
+                        <p className="text-xl sm:text-2xl font-bold text-red-600 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) =>
@@ -735,12 +735,12 @@ export default function DeliveryOrders() {
                         </p>
                     </div>
                 </div>
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-sm font-medium text-gray-600 mb-2">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
                             رسوم التوصيل
                         </p>
-                        <p className="text-2xl font-bold text-blue-600">
+                        <p className="text-xl sm:text-2xl font-bold text-blue-600 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) =>
@@ -755,10 +755,10 @@ export default function DeliveryOrders() {
             </div>
 
             {/* فلاتر */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex flex-wrap gap-4 items-end">
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="bg-white p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="w-full">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                             حالة الطلب
                         </label>
                         <CustomSelect
@@ -778,8 +778,8 @@ export default function DeliveryOrders() {
                             placeholder="اختر حالة الطلب"
                         />
                     </div>
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="w-full">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                             حالة الدفع
                         </label>
                         <CustomSelect
@@ -794,8 +794,8 @@ export default function DeliveryOrders() {
                             placeholder="اختر حالة الدفع"
                         />
                     </div>
-                    <div className="flex-1 min-w-[200px] relative">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="w-full sm:col-span-2 lg:col-span-1">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                             التاريخ
                         </label>
                         <CustomDatePicker
@@ -811,8 +811,9 @@ export default function DeliveryOrders() {
             </div>
 
             {/* جدول أوامر التوصيل */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-hidden w-full">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                {/* Desktop Table (XL and above) */}
+                <div className="hidden xl:block overflow-x-auto w-full">
                     <table className="w-full divide-y divide-gray-200">
                         <colgroup>
                             <col className="w-[8%]" />
@@ -1028,26 +1029,289 @@ export default function DeliveryOrders() {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Tablet Table (MD to LG) */}
+                <div className="hidden md:block xl:hidden overflow-x-auto w-full">
+                    <table className="w-full divide-y divide-gray-200 text-sm">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-3 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    رقم الطلب
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    العميل
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    الإجمالي
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    حالة الطلب
+                                </th>
+                                <th className="px-3 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    الإجراءات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredOrders.map((order) => (
+                                <tr
+                                    key={order.id}
+                                    className="hover:bg-gray-50 transition-colors"
+                                >
+                                    <td className="px-3 py-3 text-sm font-semibold text-gray-900 truncate">
+                                        {order.order_number}
+                                    </td>
+                                    <td className="px-3 py-3 text-sm text-gray-900">
+                                        <div>
+                                            <div className="font-medium truncate">{order.customer_name}</div>
+                                            <div className="text-xs text-gray-500">{order.customer_phone}</div>
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3 text-sm">
+                                        <div className="font-semibold text-gray-900">{order.total_amount.toLocaleString()} $</div>
+                                        <div className="text-xs text-green-600">مدفوع: {order.paid_amount.toLocaleString()} $</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <span
+                                            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
+                                                order.status
+                                            )}`}
+                                        >
+                                            {getStatusText(order.status)}
+                                        </span>
+                                    </td>
+                                    <td className="px-3 py-3 text-sm font-medium">
+                                        <div className="flex gap-1 justify-end flex-wrap">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedOrder(order);
+                                                    fetchOrderItems(order.id);
+                                                    setShowItemsModal(true);
+                                                }}
+                                                className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                                title="عرض التفاصيل"
+                                            >
+                                                <i className="ri-eye-line text-lg"></i>
+                                            </button>
+                                            {order.payment_status !== "paid" && (
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedOrder(order);
+                                                        setPaymentData((prev) => ({
+                                                            ...prev,
+                                                            amount: order.total_amount - order.paid_amount,
+                                                        }));
+                                                        setShowPaymentModal(true);
+                                                    }}
+                                                    className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="تسجيل دفعة"
+                                                >
+                                                    <i className="ri-money-dollar-circle-line text-lg"></i>
+                                                </button>
+                                            )}
+                                            {order.status === "pending" && (
+                                                <button
+                                                    onClick={() => updateOrderStatus(order.id, "preparing")}
+                                                    className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="بدء التحضير"
+                                                >
+                                                    <i className="ri-restaurant-line text-lg"></i>
+                                                </button>
+                                            )}
+                                            {order.status === "preparing" && (
+                                                <button
+                                                    onClick={() => updateOrderStatus(order.id, "out_for_delivery")}
+                                                    className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="إرسال للتوصيل"
+                                                >
+                                                    <i className="ri-truck-line text-lg"></i>
+                                                </button>
+                                            )}
+                                            {order.status === "out_for_delivery" && (
+                                                <button
+                                                    onClick={() => updateOrderStatus(order.id, "delivered")}
+                                                    className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="تأكيد التسليم"
+                                                >
+                                                    <i className="ri-check-line text-lg"></i>
+                                                </button>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden divide-y divide-gray-200">
+                    {filteredOrders.map((order) => (
+                        <div
+                            key={order.id}
+                            className="p-4 hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate font-cairo">
+                                        {order.order_number}
+                                    </h3>
+                                    <p className="text-sm text-gray-600 truncate font-tajawal">
+                                        {order.customer_name}
+                                    </p>
+                                </div>
+                                <span
+                                    className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ml-2 flex-shrink-0 ${getStatusColor(
+                                        order.status
+                                    )}`}
+                                >
+                                    {getStatusText(order.status)}
+                                </span>
+                            </div>
+
+                            <div className="space-y-2 text-sm mb-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-600 font-tajawal">الهاتف:</span>
+                                    <span className="text-gray-900 font-medium">{order.customer_phone}</span>
+                                </div>
+                                <div className="flex items-start justify-between">
+                                    <span className="text-gray-600 font-tajawal">العنوان:</span>
+                                    <span className="text-gray-900 text-right flex-1 ml-2">{order.delivery_address}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-600 font-tajawal">الإجمالي:</span>
+                                    <span className="text-gray-900 font-semibold font-cairo">{order.total_amount.toLocaleString()} $</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-600 font-tajawal">المدفوع:</span>
+                                    <span className="text-green-600 font-semibold font-cairo">{order.paid_amount.toLocaleString()} $</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-600 font-tajawal">طريقة الدفع:</span>
+                                    <span className="text-gray-900">{getPaymentMethodText(order.payment_method)}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-600 font-tajawal">حالة الدفع:</span>
+                                    <span
+                                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPaymentStatusColor(
+                                            order.payment_status
+                                        )}`}
+                                    >
+                                        {getPaymentStatusText(order.payment_status)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-200">
+                                <button
+                                    onClick={() => {
+                                        setSelectedOrder(order);
+                                        fetchOrderItems(order.id);
+                                        setShowItemsModal(true);
+                                    }}
+                                    className="flex-1 min-w-[80px] flex items-center justify-center gap-1 px-3 py-2 text-xs sm:text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer font-medium"
+                                >
+                                    <i className="ri-eye-line"></i>
+                                    <span>عرض</span>
+                                </button>
+                                {order.payment_status !== "paid" && (
+                                    <button
+                                        onClick={() => {
+                                            setSelectedOrder(order);
+                                            setPaymentData((prev) => ({
+                                                ...prev,
+                                                amount: order.total_amount - order.paid_amount,
+                                            }));
+                                            setShowPaymentModal(true);
+                                        }}
+                                        className="flex-1 min-w-[80px] flex items-center justify-center gap-1 px-3 py-2 text-xs sm:text-sm text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer font-medium"
+                                    >
+                                        <i className="ri-money-dollar-circle-line"></i>
+                                        <span>دفع</span>
+                                    </button>
+                                )}
+                                {order.paid_amount > 0 && (
+                                    <button
+                                        onClick={() => {
+                                            setSelectedOrder(order);
+                                            fetchPaymentHistory(order.id);
+                                            setShowPaymentHistoryModal(true);
+                                        }}
+                                        className="flex-1 min-w-[80px] flex items-center justify-center gap-1 px-3 py-2 text-xs sm:text-sm text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer font-medium"
+                                    >
+                                        <i className="ri-history-line"></i>
+                                        <span>تاريخ</span>
+                                    </button>
+                                )}
+                                {order.status === "pending" && (
+                                    <button
+                                        onClick={() => updateOrderStatus(order.id, "preparing")}
+                                        className="flex-1 min-w-[80px] flex items-center justify-center gap-1 px-3 py-2 text-xs sm:text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer font-medium"
+                                    >
+                                        <i className="ri-restaurant-line"></i>
+                                        <span>تحضير</span>
+                                    </button>
+                                )}
+                                {order.status === "preparing" && (
+                                    <button
+                                        onClick={() => updateOrderStatus(order.id, "out_for_delivery")}
+                                        className="flex-1 min-w-[80px] flex items-center justify-center gap-1 px-3 py-2 text-xs sm:text-sm text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer font-medium"
+                                    >
+                                        <i className="ri-truck-line"></i>
+                                        <span>إرسال</span>
+                                    </button>
+                                )}
+                                {order.status === "out_for_delivery" && (
+                                    <button
+                                        onClick={() => updateOrderStatus(order.id, "delivered")}
+                                        className="flex-1 min-w-[80px] flex items-center justify-center gap-1 px-3 py-2 text-xs sm:text-sm text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer font-medium"
+                                    >
+                                        <i className="ri-check-line"></i>
+                                        <span>تسليم</span>
+                                    </button>
+                                )}
+                                {(order.status === "pending" || order.status === "preparing") && (
+                                    <button
+                                        onClick={() => {
+                                            setOrderToCancel(order);
+                                            setShowCancelConfirmModal(true);
+                                        }}
+                                        className="flex-1 min-w-[80px] flex items-center justify-center gap-1 px-3 py-2 text-xs sm:text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer font-medium"
+                                    >
+                                        <i className="ri-close-line"></i>
+                                        <span>إلغاء</span>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                    {filteredOrders.length === 0 && (
+                        <div className="p-8 text-center text-gray-500">
+                            <i className="ri-inbox-line text-4xl mb-2"></i>
+                            <p className="font-tajawal">لا توجد طلبات</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* مودال إضافة طلب توصيل */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                            <h3 className="text-base sm:text-lg md:text-xl font-semibold font-cairo">
                                 إضافة طلب توصيل جديد
                             </h3>
                             <button
                                 onClick={() => setShowAddModal(false)}
-                                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
                             >
-                                <i className="ri-close-line text-xl"></i>
+                                <i className="ri-close-line text-xl sm:text-2xl"></i>
                             </button>
                         </div>
 
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-3 sm:space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         اسم العميل
@@ -1105,9 +1369,9 @@ export default function DeliveryOrders() {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         رسوم التوصيل
                                     </label>
                                     <input
@@ -1128,7 +1392,7 @@ export default function DeliveryOrders() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         ملاحظات
                                     </label>
                                     <input
@@ -1148,16 +1412,16 @@ export default function DeliveryOrders() {
 
                             {/* عناصر الطلب */}
                             <div>
-                                <div className="flex justify-between items-center mb-3">
-                                    <h4 className="text-md font-medium">
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mb-3">
+                                    <h4 className="text-sm sm:text-base font-medium font-cairo">
                                         عناصر الطلب
                                     </h4>
                                     <button
                                         onClick={addOrderItem}
-                                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm whitespace-nowrap cursor-pointer"
+                                        className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 sm:py-1 rounded text-xs sm:text-sm whitespace-nowrap cursor-pointer transition-colors flex items-center justify-center gap-1"
                                     >
-                                        <i className="ri-add-line"></i> إضافة
-                                        عنصر
+                                        <i className="ri-add-line"></i> 
+                                        <span>إضافة عنصر</span>
                                     </button>
                                 </div>
 
@@ -1165,7 +1429,7 @@ export default function DeliveryOrders() {
                                     {newOrder.items.map((item, index) => (
                                         <div
                                             key={index}
-                                            className="grid grid-cols-1 md:grid-cols-5 gap-3 p-3 border border-gray-200 rounded-lg"
+                                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 p-3 border border-gray-200 rounded-lg"
                                         >
                                             <div>
                                                 <input
@@ -1303,16 +1567,16 @@ export default function DeliveryOrders() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4">
                                 <button
                                     onClick={() => setShowAddModal(false)}
-                                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors font-medium"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     onClick={handleAddOrder}
-                                    className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors font-medium"
                                 >
                                     إضافة الطلب
                                 </button>
@@ -1324,8 +1588,8 @@ export default function DeliveryOrders() {
 
             {/* مودال عرض تفاصيل الطلب */}
             {showItemsModal && selectedOrder && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">
                                 تفاصيل الطلب - {selectedOrder.order_number}
@@ -1471,8 +1735,8 @@ export default function DeliveryOrders() {
 
             {/* مودال تسجيل الدفع */}
             {showPaymentModal && selectedOrder && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-md max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">
                                 تسجيل دفعة
@@ -1618,8 +1882,8 @@ export default function DeliveryOrders() {
 
             {/* مودال تاريخ المدفوعات */}
             {showPaymentHistoryModal && selectedOrder && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">
                                 تاريخ المدفوعات - {selectedOrder.order_number}
@@ -1733,8 +1997,8 @@ export default function DeliveryOrders() {
 
             {/* مودال تأكيد إلغاء الطلب */}
             {showCancelConfirmModal && orderToCancel && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-md shadow-xl">
                         <div className="flex items-center justify-center mb-4">
                             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
                                 <i className="ri-error-warning-line text-3xl text-red-500"></i>
@@ -1753,14 +2017,14 @@ export default function DeliveryOrders() {
                         <p className="text-sm text-gray-500 text-center mb-6">
                             لا يمكن التراجع عن هذه العملية.
                         </p>
-                        <div className="flex justify-start gap-3">
+                        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
                             <button
                                 type="button"
                                 onClick={() => {
                                     setShowCancelConfirmModal(false);
                                     setOrderToCancel(null);
                                 }}
-                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer font-medium"
                             >
                                 إلغاء
                             </button>
@@ -1776,7 +2040,7 @@ export default function DeliveryOrders() {
                                         setOrderToCancel(null);
                                     }
                                 }}
-                                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer font-medium"
                             >
                                 تأكيد الإلغاء
                             </button>

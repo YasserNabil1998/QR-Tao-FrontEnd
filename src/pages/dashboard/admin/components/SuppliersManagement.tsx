@@ -325,9 +325,9 @@ export default function SuppliersManagement() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">
+        <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     إدارة الموردين
                 </h2>
                 <button
@@ -335,86 +335,85 @@ export default function SuppliersManagement() {
                         resetForm();
                         setShowAddModal(true);
                     }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                    className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                 >
                     <i className="ri-add-line"></i>
-                    إضافة مورد جديد
+                    <span className="text-sm sm:text-base">إضافة مورد جديد</span>
                 </button>
             </div>
 
             {/* إحصائيات الموردين */}
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                            <i className="ri-group-line text-lg"></i>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-6 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-full bg-blue-100 text-blue-600 flex-shrink-0">
+                            <i className="ri-group-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الموردين
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {totalSuppliers}
                             </p>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-green-100 text-green-600">
-                            <i className="ri-check-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-full bg-green-100 text-green-600 flex-shrink-0">
+                            <i className="ri-check-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 نشط
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {activeSuppliers}
                             </p>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-red-100 text-red-600">
-                            <i className="ri-close-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-full bg-red-100 text-red-600 flex-shrink-0">
+                            <i className="ri-close-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 غير نشط
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {inactiveSuppliers}
                             </p>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-yellow-100 text-yellow-600">
-                            <i className="ri-star-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-full bg-yellow-100 text-yellow-600 flex-shrink-0">
+                            <i className="ri-star-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 تقييم عالي
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {highRatedSuppliers}
                             </p>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-purple-100 text-purple-600">
-                            <i className="ri-money-dollar-circle-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-full bg-purple-100 text-purple-600 flex-shrink-0">
+                            <i className="ri-money-dollar-circle-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الرصيد
                             </p>
-                            <p className="text-lg font-bold text-gray-900">
-                                {/* إجمالي الرصيد: مجموع current_balance لجميع الموردين */}
+                            <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 font-cairo mt-1">
                                 {suppliers
                                     .reduce(
                                         (total, supplier) =>
@@ -427,17 +426,16 @@ export default function SuppliersManagement() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-indigo-100 text-indigo-600">
-                            <i className="ri-bank-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-full bg-indigo-100 text-indigo-600 flex-shrink-0">
+                            <i className="ri-bank-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الحد الائتماني
                             </p>
-                            <p className="text-lg font-bold text-gray-900">
-                                {/* إجمالي الحد الائتماني: مجموع credit_limit لجميع الموردين */}
+                            <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 font-cairo mt-1">
                                 {suppliers
                                     .reduce(
                                         (total, supplier) =>
@@ -453,18 +451,18 @@ export default function SuppliersManagement() {
             </div>
 
             {/* فلاتر وبحث */}
-            <div className="flex gap-4 mb-6 items-center">
-                <div className="relative w-64">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6 items-stretch sm:items-center">
+                <div className="relative flex-1 sm:flex-initial sm:w-64">
                     <input
                         type="text"
                         placeholder="البحث في الموردين..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg py-2 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        className="w-full text-sm border border-gray-300 rounded-lg py-2 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                     <i className="ri-search-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                 </div>
-                <div className="w-48">
+                <div className="w-full sm:w-48">
                     <CustomSelect
                         value={filter}
                         onChange={(value) => setFilter(value)}
@@ -479,13 +477,15 @@ export default function SuppliersManagement() {
                             },
                         ]}
                         placeholder="اختر الفلتر"
+                        className="w-full sm:w-48"
                     />
                 </div>
             </div>
 
             {/* جدول الموردين */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="overflow-x-auto">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow overflow-hidden">
+                {/* Desktop Table */}
+                <div className="hidden xl:block overflow-x-auto">
                     <table className="w-full table-fixed">
                         <colgroup>
                             <col style={{ width: "15%" }} />
@@ -652,14 +652,194 @@ export default function SuppliersManagement() {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Tablet Table (MD to LG) */}
+                <div className="hidden md:block xl:hidden overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">اسم المورد</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الشخص المسؤول</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الهاتف</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحد الائتماني</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الرصيد</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التقييم</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredSuppliers.map((supplier) => (
+                                <tr key={supplier.id} className="hover:bg-gray-50">
+                                    <td className="px-3 py-3">
+                                        <div className="text-sm font-medium text-gray-900 truncate">{supplier.name}</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs text-gray-900 truncate">{supplier.contact_person}</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs text-gray-900 truncate">{supplier.phone}</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs font-medium text-gray-900">
+                                            {supplier.credit_limit.toLocaleString()} $
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs font-medium text-gray-900">
+                                            {supplier.current_balance.toLocaleString()} $
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="flex items-center">
+                                            <span className="text-xs font-medium text-gray-900">{supplier.rating}</span>
+                                            <i className="ri-star-fill text-yellow-400 text-xs mr-1"></i>
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        {supplier.is_active ? (
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <i className="ri-check-line ml-1"></i>
+                                                نشط
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                <i className="ri-close-line ml-1"></i>
+                                                غير نشط
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="flex items-center gap-1 justify-end">
+                                            <button
+                                                onClick={() => openEditModal(supplier)}
+                                                className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                                title="تعديل"
+                                            >
+                                                <i className="ri-edit-line text-lg"></i>
+                                            </button>
+                                            <button
+                                                onClick={() => toggleSupplierStatus(supplier)}
+                                                className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors cursor-pointer ${
+                                                    supplier.is_active
+                                                        ? "text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        : "text-green-600 hover:text-green-700 hover:bg-green-50"
+                                                }`}
+                                                title={supplier.is_active ? "إلغاء التفعيل" : "تفعيل"}
+                                            >
+                                                <i className={`ri-${supplier.is_active ? "close" : "check"}-line text-lg`}></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden divide-y divide-gray-200">
+                    {filteredSuppliers.map((supplier) => (
+                        <div key={supplier.id} className="p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate font-cairo">
+                                        {supplier.name}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 truncate font-tajawal">
+                                        {supplier.contact_person}
+                                    </p>
+                                </div>
+                                {supplier.is_active ? (
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 flex-shrink-0">
+                                        <i className="ri-check-line ml-1"></i>
+                                        نشط
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 flex-shrink-0">
+                                        <i className="ri-close-line ml-1"></i>
+                                        غير نشط
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 mb-3 text-sm">
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">الهاتف:</span>
+                                    <span className="text-sm font-medium text-gray-900 mr-2 font-cairo">{supplier.phone}</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">البريد:</span>
+                                    <span className="text-sm text-gray-900 mr-2 truncate font-tajawal">{supplier.email}</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">الحد الائتماني:</span>
+                                    <span className="text-sm font-semibold text-gray-900 mr-2 font-cairo">{supplier.credit_limit.toLocaleString()} $</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">الرصيد الحالي:</span>
+                                    <span className="text-sm font-semibold text-gray-900 mr-2 font-cairo">{supplier.current_balance.toLocaleString()} $</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">شروط الدفع:</span>
+                                    <span className="text-sm text-gray-900 mr-2 font-tajawal">{supplier.payment_terms}</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">التقييم:</span>
+                                    <span className="text-sm font-medium text-gray-900 mr-2 font-cairo flex items-center">
+                                        {supplier.rating}
+                                        <i className="ri-star-fill text-yellow-400 text-xs mr-1"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
+                                <button
+                                    onClick={() => openEditModal(supplier)}
+                                    className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                    title="تعديل"
+                                >
+                                    <i className="ri-edit-line text-lg"></i>
+                                </button>
+                                <button
+                                    onClick={() => toggleSupplierStatus(supplier)}
+                                    className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors cursor-pointer ${
+                                        supplier.is_active
+                                            ? "text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            : "text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    }`}
+                                    title={supplier.is_active ? "إلغاء التفعيل" : "تفعيل"}
+                                >
+                                    <i className={`ri-${supplier.is_active ? "close" : "check"}-line text-lg`}></i>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setSelectedSupplier(supplier);
+                                        setShowPerformanceModal(true);
+                                    }}
+                                    className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                                    title="تقييم الأداء"
+                                >
+                                    <i className="ri-bar-chart-line text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                    {filteredSuppliers.length === 0 && (
+                        <div className="p-8 text-center text-gray-500">
+                            <i className="ri-truck-line text-4xl mb-2"></i>
+                            <p className="font-tajawal">لا توجد موردين</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* مودال إضافة مورد */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 إضافة مورد جديد
                             </h3>
                             <button
@@ -674,9 +854,9 @@ export default function SuppliersManagement() {
                         </div>
 
                         <div className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         اسم المورد
                                     </label>
                                     <input
@@ -693,7 +873,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         الشخص المسؤول
                                     </label>
                                     <input
@@ -710,7 +890,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         رقم الهاتف
                                     </label>
                                     <input
@@ -727,7 +907,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         البريد الإلكتروني
                                     </label>
                                     <input
@@ -743,7 +923,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         العنوان
                                     </label>
                                     <textarea
@@ -759,7 +939,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         شروط الدفع (بالأيام)
                                     </label>
                                     <CustomSelect
@@ -781,7 +961,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         الحد الائتماني
                                     </label>
                                     <input
@@ -803,7 +983,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         تاريخ بداية العقد
                                     </label>
                                     <input
@@ -820,7 +1000,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         تاريخ انتهاء العقد
                                     </label>
                                     <input
@@ -837,7 +1017,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         نسبة الخصم (%)
                                     </label>
                                     <input
@@ -860,7 +1040,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         مدة التوريد (بالأيام)
                                     </label>
                                     <input
@@ -880,7 +1060,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         التقييم
                                     </label>
                                     <CustomSelect
@@ -908,7 +1088,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         ملاحظات
                                     </label>
                                     <textarea
@@ -926,21 +1106,21 @@ export default function SuppliersManagement() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-start gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setShowAddModal(false);
                                         resetForm();
                                     }}
-                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleAddSupplier}
-                                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     إضافة المورد
                                 </button>
@@ -952,10 +1132,10 @@ export default function SuppliersManagement() {
 
             {/* مودال تعديل مورد */}
             {showEditModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex justify-between items-center mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-semibold font-cairo">
                                 تعديل بيانات المورد
                             </h3>
                             <button
@@ -966,10 +1146,10 @@ export default function SuppliersManagement() {
                             </button>
                         </div>
 
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-4 sm:space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         اسم المورد
                                     </label>
                                     <input
@@ -986,7 +1166,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         الشخص المسؤول
                                     </label>
                                     <input
@@ -1003,7 +1183,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         رقم الهاتف
                                     </label>
                                     <input
@@ -1020,7 +1200,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         البريد الإلكتروني
                                     </label>
                                     <input
@@ -1036,7 +1216,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-tajawal">
                                         العنوان
                                     </label>
                                     <textarea
@@ -1052,7 +1232,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         شروط الدفع (بالأيام)
                                     </label>
                                     <CustomSelect
@@ -1074,7 +1254,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         الحد الائتماني
                                     </label>
                                     <input
@@ -1096,7 +1276,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         تاريخ بداية العقد
                                     </label>
                                     <input
@@ -1113,7 +1293,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         تاريخ انتهاء العقد
                                     </label>
                                     <input
@@ -1130,7 +1310,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         نسبة الخصم (%)
                                     </label>
                                     <input
@@ -1153,7 +1333,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         مدة التوريد (بالأيام)
                                     </label>
                                     <input
@@ -1173,7 +1353,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         التقييم
                                     </label>
                                     <CustomSelect
@@ -1201,7 +1381,7 @@ export default function SuppliersManagement() {
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         ملاحظات
                                     </label>
                                     <textarea
@@ -1219,17 +1399,17 @@ export default function SuppliersManagement() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex flex-col-reverse sm:flex-row justify-start gap-2 sm:gap-3 pt-4">
                                 <button
                                     onClick={() => setShowEditModal(false)}
-                                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 whitespace-nowrap cursor-pointer"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     onClick={handleEditSupplier}
                                     type="button"
-                                    className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer"
                                 >
                                     حفظ التغييرات
                                 </button>
@@ -1241,10 +1421,10 @@ export default function SuppliersManagement() {
 
             {/* مودال تقييم الأداء */}
             {showPerformanceModal && selectedSupplier && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 shadow-xl">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-2xl shadow-xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 تقييم أداء المورد - {selectedSupplier.name}
                             </h3>
                             <button
@@ -1294,13 +1474,13 @@ export default function SuppliersManagement() {
                                     {selectedSupplier.delivery_time_days} يوم
                                 </p>
                             </div>
-                            <div className="flex justify-end">
+                            <div className="flex justify-start pt-4">
                                 <button
                                     onClick={() => {
                                         setShowPerformanceModal(false);
                                         setSelectedSupplier(null);
                                     }}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium bg-gray-500 text-white rounded-lg hover:bg-gray-600 whitespace-nowrap cursor-pointer"
                                 >
                                     إغلاق
                                 </button>
@@ -1312,39 +1492,39 @@ export default function SuppliersManagement() {
 
             {/* نافذة تأكيد إلغاء التفعيل */}
             {showDeactivateModal && supplierToDeactivate && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-md shadow-xl">
                         <div className="flex items-center justify-center mb-4">
-                            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-                                <i className="ri-error-warning-line text-3xl text-orange-500"></i>
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                                <i className="ri-error-warning-line text-2xl sm:text-3xl text-orange-500"></i>
                             </div>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 text-center mb-2 font-cairo">
                             تأكيد إلغاء التفعيل
                         </h3>
-                        <p className="text-gray-600 text-center mb-4">
+                        <p className="text-sm sm:text-base text-gray-600 text-center mb-2 font-tajawal">
                             هل أنت متأكد من إلغاء تفعيل المورد{" "}
-                            <span className="font-semibold">
+                            <span className="font-semibold text-gray-900">
                                 {supplierToDeactivate.name}
                             </span>
                             ؟
                         </p>
-                        <p className="text-sm text-gray-500 text-center mb-6">
+                        <p className="text-xs sm:text-sm text-gray-500 text-center mb-4 sm:mb-6 font-tajawal">
                             سيتم إلغاء تفعيل هذا المورد ولن يظهر في القائمة
                             النشطة.
                         </p>
-                        <div className="flex justify-start gap-3">
+                        <div className="flex flex-col-reverse sm:flex-row justify-start gap-2 sm:gap-3 pt-4">
                             <button
                                 type="button"
                                 onClick={cancelDeactivate}
-                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap cursor-pointer"
                             >
                                 إلغاء
                             </button>
                             <button
                                 type="button"
                                 onClick={confirmDeactivate}
-                                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer"
                             >
                                 تأكيد إلغاء التفعيل
                             </button>

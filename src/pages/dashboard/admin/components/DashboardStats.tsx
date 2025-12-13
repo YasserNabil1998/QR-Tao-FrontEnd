@@ -228,18 +228,18 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
     ];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             {/* Period Selector */}
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     لوحة المعلومات
                 </h2>
-                <div className="flex bg-gray-100 rounded-full p-1">
+                <div className="flex flex-wrap bg-gray-100 rounded-full p-1 gap-1 w-full sm:w-auto">
                     {periods.map((period) => (
                         <button
                             key={period.value}
                             onClick={() => setSelectedPeriod(period.value)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap cursor-pointer flex-1 sm:flex-initial ${
                                 selectedPeriod === period.value
                                     ? "bg-orange-500 text-white"
                                     : "text-gray-600 hover:text-gray-900"
@@ -252,15 +252,15 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {stats.map((stat, index) => (
                     <div
                         key={index}
-                        className="bg-white rounded-xl p-4 shadow-sm border border-gray-100"
+                        className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                     >
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center justify-between mb-2 sm:mb-3">
                             <div
-                                className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                                     stat.color === "blue"
                                         ? "bg-blue-100"
                                         : stat.color === "green"
@@ -271,7 +271,7 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                                 }`}
                             >
                                 <i
-                                    className={`${stat.icon} text-lg ${
+                                    className={`${stat.icon} text-base sm:text-lg ${
                                         stat.color === "blue"
                                             ? "text-blue-500"
                                             : stat.color === "green"
@@ -283,7 +283,7 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                                 ></i>
                             </div>
                             <span
-                                className={`text-sm font-medium ${
+                                className={`text-xs sm:text-sm font-medium ${
                                     stat.changeType === "increase"
                                         ? "text-green-600"
                                         : "text-red-600"
@@ -292,59 +292,59 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                                 {stat.change}
                             </span>
                         </div>
-                        <h3 className="text-gray-600 text-sm mb-1">
+                        <h3 className="text-gray-600 text-xs sm:text-sm mb-1 font-tajawal">
                             {stat.title}
                         </h3>
-                        <p className="text-xl font-bold text-gray-900">
+                        <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                             {stat.value}
                         </p>
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Recent Orders */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 shadow-sm border border-gray-100">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 font-cairo">
                             الطلبات الأخيرة
                         </h3>
                         <button
                             onClick={() => setActiveTab?.("orders")}
-                            className="text-orange-500 hover:text-orange-600 text-sm font-medium cursor-pointer"
+                            className="text-orange-500 hover:text-orange-600 text-xs sm:text-sm font-medium cursor-pointer whitespace-nowrap"
                         >
                             عرض الكل
                         </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                         {recentOrders.map((order, index) => (
                             <div
                                 key={index}
-                                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg gap-2 sm:gap-3"
                             >
-                                <div className="flex-1">
+                                <div className="flex-1 min-w-0 w-full sm:w-auto">
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className="font-medium text-gray-900">
+                                        <span className="font-medium text-gray-900 text-sm sm:text-base">
                                             {order.id}
                                         </span>
-                                        <span className="text-sm text-gray-500">
+                                        <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
                                             {order.time}
                                         </span>
                                     </div>
-                                    <p className="text-sm text-gray-600 mb-1">
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-1">
                                         {order.table}
                                     </p>
                                     <p className="text-xs text-gray-500 truncate">
                                         {order.items}
                                     </p>
                                 </div>
-                                <div className={`${direction === 'rtl' ? 'text-right mr-3' : 'text-left ml-3'}`}>
-                                    <p className="font-semibold text-gray-900 mb-1">
+                                <div className={`flex items-center justify-between sm:flex-col sm:items-end gap-2 w-full sm:w-auto ${direction === 'rtl' ? 'sm:text-right sm:mr-3' : 'sm:text-left sm:ml-3'}`}>
+                                    <p className="font-semibold text-gray-900 text-sm sm:text-base">
                                         {order.amount}
                                     </p>
                                     <span
-                                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                                             order.statusColor === "yellow"
                                                 ? "bg-yellow-100 text-yellow-800"
                                                 : order.statusColor === "green"
@@ -363,46 +363,46 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                 </div>
 
                 {/* Top Dishes */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 shadow-sm border border-gray-100">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 font-cairo">
                             الأطباق الأكثر طلباً
                         </h3>
                         <button
                             onClick={() => setActiveTab?.("analytics")}
-                            className="text-orange-500 hover:text-orange-600 text-sm font-medium cursor-pointer"
+                            className="text-orange-500 hover:text-orange-600 text-xs sm:text-sm font-medium cursor-pointer whitespace-nowrap"
                         >
                             عرض التقرير
                         </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                         {topDishes.map((dish, index) => (
                             <div
                                 key={index}
-                                className="flex items-center justify-between"
+                                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg"
                             >
-                                <div className="flex items-center">
+                                <div className="flex items-center flex-1 min-w-0">
                                     <img
                                         src={dish.image}
                                         alt={dish.name}
-                                        className={`w-10 h-10 rounded-lg object-cover object-top ${direction === 'rtl' ? 'ml-3' : 'mr-3'}`}
+                                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover object-top flex-shrink-0 ${direction === 'rtl' ? 'ml-2 sm:ml-3' : 'mr-2 sm:mr-3'}`}
                                     />
-                                    <div>
-                                        <h4 className="font-medium text-gray-900">
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate font-cairo">
                                             {dish.name}
                                         </h4>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-xs sm:text-sm text-gray-500 font-tajawal">
                                             {dish.orders} طلب
                                         </p>
                                     </div>
                                 </div>
-                                <div className={direction === 'rtl' ? 'text-right' : 'text-left'}>
-                                    <p className="font-semibold text-gray-900">
+                                <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto ${direction === 'rtl' ? 'sm:text-right' : 'sm:text-left'}`}>
+                                    <p className="font-semibold text-gray-900 text-sm sm:text-base">
                                         {dish.revenue}
                                     </p>
-                                    <div className="flex items-center">
-                                        <div className={`w-12 bg-gray-200 rounded-full h-2 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}>
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-16 sm:w-20 bg-gray-200 rounded-full h-2 ${direction === 'rtl' ? 'ml-2' : 'mr-2'}`}>
                                             <div
                                                 className="bg-orange-500 h-2 rounded-full"
                                                 style={{
@@ -412,7 +412,7 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                                                 }}
                                             ></div>
                                         </div>
-                                        <span className="text-xs text-gray-500">
+                                        <span className="text-xs text-gray-500 whitespace-nowrap">
                                             {Math.round(
                                                 (dish.orders / 45) * 100
                                             )}

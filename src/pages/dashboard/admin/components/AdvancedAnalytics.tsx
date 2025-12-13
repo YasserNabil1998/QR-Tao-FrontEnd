@@ -271,14 +271,14 @@ export default function AdvancedAnalytics({
     if (!analytics) return null;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     التحليلات المتقدمة
                 </h2>
-                <div className="flex items-center gap-3">
-                    <div className="w-48">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                    <div className="w-full sm:w-48">
                         <CustomSelect
                             value={timeRange}
                             onChange={(value) => setTimeRange(value)}
@@ -289,29 +289,33 @@ export default function AdvancedAnalytics({
                                 { value: "year", label: "السنة" },
                             ]}
                             placeholder="اختر الفترة"
+                            className="w-full sm:w-48"
                         />
                     </div>
                     <button
                         onClick={() => {
                             showToast("ميزة تصدير التقرير قيد التطوير", "info");
                         }}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap cursor-pointer flex items-center gap-2"
+                        className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                     >
                         <i className="ri-download-line"></i>
-                        تصدير التقرير
+                        <span className="text-sm sm:text-base">تصدير التقرير</span>
                     </button>
                 </div>
             </div>
 
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-5 xl:p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-green-100 text-green-600 flex-shrink-0">
+                            <i className="ri-money-dollar-circle-line text-lg sm:text-xl lg:text-2xl"></i>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الإيرادات
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {timeRange === "day"
                                     ? analytics.revenue.daily
                                           .reduce((a, b) => a + b, 0)
@@ -329,64 +333,64 @@ export default function AdvancedAnalytics({
                                           .toLocaleString()}{" "}
                                 $
                             </p>
-                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                            <p className="text-xs sm:text-sm text-green-600 mt-1 flex items-center font-tajawal">
                                 <i className="ri-arrow-up-line ml-1"></i>
-                                +12.5% من الأسبوع الماضي
+                                <span className="line-clamp-1">+12.5% من الأسبوع الماضي</span>
                             </p>
-                        </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i className="ri-money-dollar-circle-line text-green-600 text-xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-5 xl:p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-blue-100 text-blue-600 flex-shrink-0">
+                            <i className="ri-shopping-cart-line text-lg sm:text-xl lg:text-2xl"></i>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الطلبات
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {analytics.orders.total}
                             </p>
-                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                            <p className="text-xs sm:text-sm text-green-600 mt-1 flex items-center font-tajawal">
                                 <i className="ri-arrow-up-line ml-1"></i>
-                                +8.3% من الأسبوع الماضي
+                                <span className="line-clamp-1">+8.3% من الأسبوع الماضي</span>
                             </p>
-                        </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i className="ri-shopping-cart-line text-blue-600 text-xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-5 xl:p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-purple-100 text-purple-600 flex-shrink-0">
+                            <i className="ri-user-add-line text-lg sm:text-xl lg:text-2xl"></i>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 العملاء الجدد
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {analytics.customers.new}
                             </p>
-                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                            <p className="text-xs sm:text-sm text-green-600 mt-1 flex items-center font-tajawal">
                                 <i className="ri-arrow-up-line ml-1"></i>
-                                +15.2% من الأسبوع الماضي
+                                <span className="line-clamp-1">+15.2% من الأسبوع الماضي</span>
                             </p>
-                        </div>
-                        <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <i className="ri-user-add-line text-purple-600 text-xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-5 xl:p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-orange-100 text-orange-600 flex-shrink-0">
+                            <i className="ri-check-double-line text-lg sm:text-xl lg:text-2xl"></i>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 معدل الإكمال
                             </p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
                                 {(
                                     (analytics.orders.completed /
                                         analytics.orders.total) *
@@ -394,23 +398,20 @@ export default function AdvancedAnalytics({
                                 ).toFixed(1)}
                                 %
                             </p>
-                            <p className="text-sm text-green-600 mt-1 flex items-center">
+                            <p className="text-xs sm:text-sm text-green-600 mt-1 flex items-center font-tajawal">
                                 <i className="ri-arrow-up-line ml-1"></i>
-                                +2.1% من الأسبوع الماضي
+                                <span className="line-clamp-1">+2.1% من الأسبوع الماضي</span>
                             </p>
-                        </div>
-                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <i className="ri-check-double-line text-orange-600 text-xl"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Revenue Chart */}
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-6">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 font-cairo">
                         {timeRange === "day"
                             ? "الإيرادات بالساعة"
                             : timeRange === "week"
@@ -419,9 +420,9 @@ export default function AdvancedAnalytics({
                             ? "الإيرادات الأسبوعية"
                             : "الإيرادات الشهرية"}
                     </h3>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
                         <div
-                            className={`h-64 flex items-end ${
+                            className={`h-48 sm:h-64 flex items-end ${
                                 timeRange === "day" ? "gap-1" : "gap-2"
                             } min-w-max`}
                         >
@@ -484,7 +485,7 @@ export default function AdvancedAnalytics({
                                               "ديسمبر",
                                           ];
                                 const barWidth =
-                                    timeRange === "day" ? "w-6" : "w-8";
+                                    timeRange === "day" ? "w-4 sm:w-6" : "w-6 sm:w-8";
                                 return (
                                     <div
                                         key={index}
@@ -502,7 +503,7 @@ export default function AdvancedAnalytics({
                                             }}
                                         ></div>
                                         <span
-                                            className={`text-xs text-gray-500 mt-2 text-center ${
+                                            className={`text-xs text-gray-500 mt-1 sm:mt-2 text-center ${
                                                 timeRange === "day"
                                                     ? "transform -rotate-45 origin-top-right whitespace-nowrap"
                                                     : ""
@@ -518,70 +519,69 @@ export default function AdvancedAnalytics({
                 </div>
 
                 {/* Peak Hours Chart */}
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-6">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 font-cairo">
                         ساعات الذروة
                     </h3>
-                    <div className="h-64 flex items-end justify-between space-x-2 space-x-reverse">
-                        {analytics.peakHours.map((hour, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center"
-                            >
+                    <div className="h-48 sm:h-64 flex items-end justify-between gap-1 sm:gap-2 overflow-x-auto">
+                        {analytics.peakHours.map((hour, index) => {
+                            const maxOrders = Math.max(
+                                ...analytics.peakHours.map((h) => h.orders)
+                            );
+                            return (
                                 <div
-                                    className="bg-blue-500 rounded-t w-8 transition-all duration-300 hover:bg-blue-600"
-                                    style={{
-                                        height: `${
-                                            (hour.orders /
-                                                Math.max(
-                                                    ...analytics.peakHours.map(
-                                                        (h) => h.orders
-                                                    )
-                                                )) *
-                                            200
-                                        }px`,
-                                    }}
-                                ></div>
-                                <span className="text-xs text-gray-500 mt-2">
-                                    {hour.hour}
-                                </span>
-                            </div>
-                        ))}
+                                    key={index}
+                                    className="flex flex-col items-center flex-shrink-0"
+                                >
+                                    <div
+                                        className="bg-blue-500 rounded-t w-6 sm:w-8 transition-all duration-300 hover:bg-blue-600"
+                                        style={{
+                                            height: `${
+                                                (hour.orders / maxOrders) * 200
+                                            }px`,
+                                        }}
+                                    ></div>
+                                    <span className="text-xs text-gray-500 mt-1 sm:mt-2 font-tajawal">
+                                        {hour.hour}
+                                    </span>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
 
             {/* Popular Items and Order Status */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Popular Items */}
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-6">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 font-cairo">
                         الأطباق الأكثر طلباً
                     </h3>
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                         {analytics.popularItems.map((item, index) => (
                             <div
                                 key={index}
-                                className="flex items-center justify-between"
+                                className="flex items-center justify-between gap-2 sm:gap-3"
                             >
-                                <div className="flex items-center">
-                                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center ml-3">
-                                        <span className="text-orange-600 font-semibold text-sm">
+                                <div className="flex items-center min-w-0 flex-1">
+                                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-100 rounded-full flex items-center justify-center ml-2 sm:ml-3 flex-shrink-0">
+                                        <span className="text-orange-600 font-semibold text-xs sm:text-sm font-cairo">
                                             {index + 1}
                                         </span>
                                     </div>
-                                    <div>
-                                        <p className="font-medium text-gray-900">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm sm:text-base font-medium text-gray-900 truncate font-cairo">
                                             {item.name}
                                         </p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-xs sm:text-sm text-gray-500 font-tajawal">
                                             {item.orders} طلب
                                         </p>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="font-semibold text-gray-900">
-                                        {item.revenue} $
+                                <div className="text-right flex-shrink-0">
+                                    <p className="text-sm sm:text-base font-semibold text-gray-900 font-cairo">
+                                        {item.revenue.toLocaleString()} $
                                     </p>
                                 </div>
                             </div>
@@ -590,21 +590,21 @@ export default function AdvancedAnalytics({
                 </div>
 
                 {/* Order Status */}
-                <div className="bg-white rounded-lg shadow p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-6">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 font-cairo">
                         حالة الطلبات
                     </h3>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <div className="w-4 h-4 bg-green-500 rounded-full ml-3"></div>
-                                <span className="text-gray-700">مكتملة</span>
+                    <div className="space-y-3 sm:space-y-4">
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center min-w-0 flex-1">
+                                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full ml-2 sm:ml-3 flex-shrink-0"></div>
+                                <span className="text-sm sm:text-base text-gray-700 font-tajawal truncate">مكتملة</span>
                             </div>
-                            <div className="flex items-center">
-                                <span className="text-gray-900 font-semibold ml-2">
+                            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                                <span className="text-sm sm:text-base text-gray-900 font-semibold font-cairo">
                                     {analytics.orders.completed}
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-xs sm:text-sm text-gray-500 font-tajawal">
                                     (
                                     {(
                                         (analytics.orders.completed /
@@ -616,18 +616,18 @@ export default function AdvancedAnalytics({
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <div className="w-4 h-4 bg-yellow-500 rounded-full ml-3"></div>
-                                <span className="text-gray-700">
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center min-w-0 flex-1">
+                                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full ml-2 sm:ml-3 flex-shrink-0"></div>
+                                <span className="text-sm sm:text-base text-gray-700 font-tajawal truncate">
                                     قيد التحضير
                                 </span>
                             </div>
-                            <div className="flex items-center">
-                                <span className="text-gray-900 font-semibold ml-2">
+                            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                                <span className="text-sm sm:text-base text-gray-900 font-semibold font-cairo">
                                     {analytics.orders.pending}
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-xs sm:text-sm text-gray-500 font-tajawal">
                                     (
                                     {(
                                         (analytics.orders.pending /
@@ -639,16 +639,16 @@ export default function AdvancedAnalytics({
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <div className="w-4 h-4 bg-red-500 rounded-full ml-3"></div>
-                                <span className="text-gray-700">ملغية</span>
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center min-w-0 flex-1">
+                                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full ml-2 sm:ml-3 flex-shrink-0"></div>
+                                <span className="text-sm sm:text-base text-gray-700 font-tajawal truncate">ملغية</span>
                             </div>
-                            <div className="flex items-center">
-                                <span className="text-gray-900 font-semibold ml-2">
+                            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                                <span className="text-sm sm:text-base text-gray-900 font-semibold font-cairo">
                                     {analytics.orders.cancelled}
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-xs sm:text-sm text-gray-500 font-tajawal">
                                     (
                                     {(
                                         (analytics.orders.cancelled /
@@ -661,11 +661,11 @@ export default function AdvancedAnalytics({
                         </div>
 
                         {/* Progress Bars */}
-                        <div className="mt-6 space-y-3">
+                        <div className="mt-4 sm:mt-6 space-y-3">
                             <div>
-                                <div className="flex justify-between text-sm mb-1">
+                                <div className="flex justify-between text-xs sm:text-sm mb-1 font-tajawal">
                                     <span>معدل الإكمال</span>
-                                    <span>
+                                    <span className="font-cairo">
                                         {(
                                             (analytics.orders.completed /
                                                 analytics.orders.total) *
@@ -689,9 +689,9 @@ export default function AdvancedAnalytics({
                             </div>
 
                             <div>
-                                <div className="flex justify-between text-sm mb-1">
+                                <div className="flex justify-between text-xs sm:text-sm mb-1 font-tajawal">
                                     <span>معدل الإلغاء</span>
-                                    <span>
+                                    <span className="font-cairo">
                                         {(
                                             (analytics.orders.cancelled /
                                                 analytics.orders.total) *
@@ -719,39 +719,39 @@ export default function AdvancedAnalytics({
             </div>
 
             {/* Customer Analytics */}
-            <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow p-4 sm:p-5 lg:p-6">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 font-cairo">
                     تحليل العملاء
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                     <div className="text-center">
-                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i className="ri-user-line text-blue-600 text-2xl"></i>
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                            <i className="ri-user-line text-blue-600 text-xl sm:text-2xl"></i>
                         </div>
-                        <p className="text-2xl font-semibold text-gray-900">
+                        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
                             {analytics.customers.new}
                         </p>
-                        <p className="text-sm text-gray-600">عملاء جدد</p>
+                        <p className="text-xs sm:text-sm text-gray-600 font-tajawal mt-1">عملاء جدد</p>
                     </div>
 
                     <div className="text-center">
-                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i className="ri-user-heart-line text-green-600 text-2xl"></i>
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                            <i className="ri-user-heart-line text-green-600 text-xl sm:text-2xl"></i>
                         </div>
-                        <p className="text-2xl font-semibold text-gray-900">
+                        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
                             {analytics.customers.returning}
                         </p>
-                        <p className="text-sm text-gray-600">عملاء عائدون</p>
+                        <p className="text-xs sm:text-sm text-gray-600 font-tajawal mt-1">عملاء عائدون</p>
                     </div>
 
                     <div className="text-center">
-                        <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i className="ri-team-line text-purple-600 text-2xl"></i>
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                            <i className="ri-team-line text-purple-600 text-xl sm:text-2xl"></i>
                         </div>
-                        <p className="text-2xl font-semibold text-gray-900">
+                        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
                             {analytics.customers.total}
                         </p>
-                        <p className="text-sm text-gray-600">إجمالي العملاء</p>
+                        <p className="text-xs sm:text-sm text-gray-600 font-tajawal mt-1">إجمالي العملاء</p>
                     </div>
                 </div>
             </div>

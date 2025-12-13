@@ -298,10 +298,10 @@ export default function InventoryManagement({
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     إدارة المخزون
                 </h2>
                 <button
@@ -310,23 +310,23 @@ export default function InventoryManagement({
                         resetForm();
                         setShowAddModal(true);
                     }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap cursor-pointer"
+                    className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                 >
-                    <i className="ri-add-line ml-2"></i>
-                    إضافة صنف جديد
+                    <i className="ri-add-line"></i>
+                    <span className="text-sm sm:text-base">إضافة صنف جديد</span>
                 </button>
             </div>
 
             {/* Low Stock Alert */}
             {lowStockItems.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4">
                     <div className="flex items-center">
-                        <i className="ri-alert-line text-red-500 text-xl ml-3"></i>
+                        <i className="ri-alert-line text-red-500 text-lg sm:text-xl ml-2 sm:ml-3 flex-shrink-0"></i>
                         <div>
-                            <h3 className="text-red-800 font-semibold">
+                            <h3 className="text-sm sm:text-base text-red-800 font-semibold font-cairo">
                                 تنبيه: مخزون منخفض
                             </h3>
-                            <p className="text-red-600">
+                            <p className="text-xs sm:text-sm text-red-600 font-tajawal">
                                 {lowStockItems.length} صنف يحتاج إعادة تموين
                             </p>
                         </div>
@@ -335,10 +335,10 @@ export default function InventoryManagement({
             )}
 
             {/* Filters */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:w-2/3">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="sm:w-full">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                             البحث
                         </label>
                         <div className="relative">
@@ -348,12 +348,12 @@ export default function InventoryManagement({
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 placeholder="ابحث عن صنف..."
-                                className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                className="w-full pr-10 pl-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                             />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                             الفئة
                         </label>
                         <CustomSelect
@@ -361,14 +361,16 @@ export default function InventoryManagement({
                             onChange={(value) => setFilterCategory(value)}
                             options={categories}
                             placeholder="اختر الفئة"
+                            className="w-full"
                         />
                     </div>
                 </div>
             </div>
 
             {/* Inventory Table */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm overflow-hidden">
+                {/* Desktop Table */}
+                <div className="hidden xl:block overflow-x-auto">
                     <table className="w-full table-fixed">
                         <colgroup>
                             <col style={{ width: "18%" }} />
@@ -483,55 +485,200 @@ export default function InventoryManagement({
                         </tbody>
                     </table>
                 </div>
+
+                {/* Tablet Table (MD to LG) */}
+                <div className="hidden md:block xl:hidden overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الصنف</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الفئة</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المخزون</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التكلفة</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+                                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredInventory.map((item) => (
+                                <tr key={item.id} className="hover:bg-gray-50">
+                                    <td className="px-3 py-3">
+                                        <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {item.category}
+                                        </span>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs text-gray-900">
+                                            {item.current_stock} {item.unit}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                            حد أدنى: {item.min_stock} {item.unit}
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="text-xs font-medium text-gray-900">
+                                            {item.cost_per_unit.toLocaleString()} $/{item.unit}
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        {item.current_stock <= item.min_stock ? (
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                <i className="ri-alert-line ml-1"></i>
+                                                منخفض
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <i className="ri-check-line ml-1"></i>
+                                                متوفر
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="flex items-center gap-1 justify-end">
+                                            <button
+                                                onClick={() => setEditingItem(item)}
+                                                className="w-8 h-8 flex items-center justify-center text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+                                                title="تعديل"
+                                            >
+                                                <i className="ri-edit-line text-lg"></i>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(item)}
+                                                className="w-8 h-8 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                                title="حذف"
+                                            >
+                                                <i className="ri-delete-bin-line text-lg"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden divide-y divide-gray-200">
+                    {filteredInventory.map((item) => (
+                        <div key={item.id} className="p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate font-cairo">
+                                        {item.name}
+                                    </h3>
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {item.category}
+                                    </span>
+                                </div>
+                                {item.current_stock <= item.min_stock ? (
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 flex-shrink-0">
+                                        <i className="ri-alert-line ml-1"></i>
+                                        منخفض
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 flex-shrink-0">
+                                        <i className="ri-check-line ml-1"></i>
+                                        متوفر
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 mb-3 text-sm">
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">المخزون الحالي:</span>
+                                    <span className="text-sm font-semibold text-gray-900 mr-2 font-cairo">{item.current_stock} {item.unit}</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">الحد الأدنى:</span>
+                                    <span className="text-sm font-medium text-gray-900 mr-2 font-cairo">{item.min_stock} {item.unit}</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">التكلفة:</span>
+                                    <span className="text-sm font-semibold text-gray-900 mr-2 font-cairo">{item.cost_per_unit.toLocaleString()} $/{item.unit}</span>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-600 font-tajawal">المورد:</span>
+                                    <span className="text-sm text-gray-900 mr-2 truncate font-tajawal">{item.supplier}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200">
+                                <button
+                                    onClick={() => setEditingItem(item)}
+                                    className="w-8 h-8 flex items-center justify-center text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+                                    title="تعديل"
+                                >
+                                    <i className="ri-edit-line text-lg"></i>
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(item)}
+                                    className="w-8 h-8 flex items-center justify-center text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                    title="حذف"
+                                >
+                                    <i className="ri-delete-bin-line text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                    {filteredInventory.length === 0 && (
+                        <div className="p-8 text-center text-gray-500">
+                            <i className="ri-archive-line text-4xl mb-2"></i>
+                            <p className="font-tajawal">لا توجد أصناف</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <i className="ri-archive-line text-blue-600"></i>
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i className="ri-archive-line text-blue-600 text-base sm:text-lg"></i>
                             </div>
                         </div>
-                        <div className="mr-4">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="mr-3 sm:mr-4">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 إجمالي الأصناف
                             </p>
-                            <p className="text-2xl font-semibold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
                                 {inventory.length}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                                <i className="ri-alert-line text-red-600"></i>
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i className="ri-alert-line text-red-600 text-base sm:text-lg"></i>
                             </div>
                         </div>
-                        <div className="mr-4">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="mr-3 sm:mr-4">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 مخزون منخفض
                             </p>
-                            <p className="text-2xl font-semibold text-gray-900">
+                            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
                                 {lowStockItems.length}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i className="ri-money-dollar-circle-line text-green-600"></i>
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i className="ri-money-dollar-circle-line text-green-600 text-base sm:text-lg"></i>
                             </div>
                         </div>
-                        <div className="mr-4">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="mr-3 sm:mr-4">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 قيمة المخزون
                             </p>
                             <p className="text-2xl font-semibold text-gray-900">
@@ -550,7 +697,7 @@ export default function InventoryManagement({
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
                             <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -575,10 +722,10 @@ export default function InventoryManagement({
 
             {/* Add/Edit Item Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 {editingItem
                                     ? "تعديل بيانات الصنف"
                                     : "إضافة صنف جديد"}
@@ -595,11 +742,11 @@ export default function InventoryManagement({
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                             {/* الصف الأول: اسم الصنف والفئة */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 font-tajawal">
                                         اسم الصنف{" "}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -635,7 +782,7 @@ export default function InventoryManagement({
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 font-tajawal">
                                         الفئة{" "}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -654,9 +801,9 @@ export default function InventoryManagement({
                             </div>
 
                             {/* الصف الثاني: المخزون الحالي والحد الأدنى */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 font-tajawal">
                                         المخزون الحالي{" "}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -700,7 +847,7 @@ export default function InventoryManagement({
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 font-tajawal">
                                         الحد الأدنى{" "}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -745,9 +892,9 @@ export default function InventoryManagement({
                             </div>
 
                             {/* الصف الثالث: الوحدة والتكلفة */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 font-tajawal">
                                         الوحدة{" "}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -765,7 +912,7 @@ export default function InventoryManagement({
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 font-tajawal">
                                         التكلفة لكل وحدة ($){" "}
                                         <span className="text-red-500">*</span>
                                     </label>
@@ -890,7 +1037,7 @@ export default function InventoryManagement({
                                 )}
 
                             {/* الأزرار */}
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-start gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -898,13 +1045,13 @@ export default function InventoryManagement({
                                         setEditingItem(null);
                                         resetForm();
                                     }}
-                                    className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer font-medium text-sm"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer font-medium text-sm shadow-sm hover:shadow"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer"
                                 >
                                     {editingItem
                                         ? "حفظ التعديلات"
@@ -918,38 +1065,38 @@ export default function InventoryManagement({
 
             {/* Delete Confirmation Modal */}
             {showDeleteModal && itemToDelete && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-md shadow-xl">
                         <div className="flex items-center justify-center mb-4">
-                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-                                <i className="ri-error-warning-line text-3xl text-red-500"></i>
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                <i className="ri-error-warning-line text-2xl sm:text-3xl text-red-500"></i>
                             </div>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 text-center mb-2 font-cairo">
                             تأكيد الحذف
                         </h3>
-                        <p className="text-gray-600 text-center mb-4">
+                        <p className="text-sm sm:text-base text-gray-600 text-center mb-2 font-tajawal">
                             هل أنت متأكد من حذف الصنف{" "}
-                            <span className="font-semibold">
+                            <span className="font-semibold text-gray-900">
                                 {itemToDelete.name}
                             </span>
                             ؟
                         </p>
-                        <p className="text-sm text-gray-500 text-center mb-6">
+                        <p className="text-xs sm:text-sm text-gray-500 text-center mb-4 sm:mb-6 font-tajawal">
                             لا يمكن التراجع عن هذه العملية.
                         </p>
-                        <div className="flex justify-start gap-3">
+                        <div className="flex flex-col-reverse sm:flex-row justify-start gap-2 sm:gap-3 pt-4">
                             <button
                                 type="button"
                                 onClick={cancelDelete}
-                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap cursor-pointer"
                             >
                                 إلغاء
                             </button>
                             <button
                                 type="button"
                                 onClick={confirmDelete}
-                                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors whitespace-nowrap cursor-pointer"
                             >
                                 حذف
                             </button>
