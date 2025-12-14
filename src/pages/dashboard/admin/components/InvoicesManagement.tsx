@@ -528,7 +528,7 @@ export default function InvoicesManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الفواتير
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {invoices.length}
                             </p>
                         </div>
@@ -543,7 +543,7 @@ export default function InvoicesManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 مدفوعة
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     invoices.filter(
                                         (inv) => inv.status === "paid"
@@ -562,7 +562,7 @@ export default function InvoicesManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 في الانتظار
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     invoices.filter(
                                         (inv) => inv.status === "pending"
@@ -581,7 +581,7 @@ export default function InvoicesManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 مدفوعة جزئياً
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     invoices.filter(
                                         (inv) => inv.status === "partial"
@@ -600,7 +600,7 @@ export default function InvoicesManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 متأخرة
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     invoices.filter((inv) =>
                                         isOverdue(inv.due_date, inv.status)
@@ -619,7 +619,7 @@ export default function InvoicesManagement() {
                         إجمالي المبالغ
                     </h3>
                     <div className="text-right">
-                        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                             {invoices
                                 .reduce(
                                     (total, invoice) =>
@@ -636,7 +636,7 @@ export default function InvoicesManagement() {
                         المبالغ المدفوعة
                     </h3>
                     <div className="text-right">
-                        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                             {invoices
                                 .reduce(
                                     (total, invoice) =>
@@ -653,7 +653,7 @@ export default function InvoicesManagement() {
                         المبالغ المتبقية
                     </h3>
                     <div className="text-right">
-                        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                             {invoices
                                 .reduce(
                                     (total, invoice) =>
@@ -672,7 +672,7 @@ export default function InvoicesManagement() {
                         متأخرة
                     </h3>
                     <div className="text-right">
-                        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                             {invoices
                                 .filter((i) => isOverdue(i.due_date, i.status))
                                 .reduce(

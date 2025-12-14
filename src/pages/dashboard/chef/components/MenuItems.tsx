@@ -219,10 +219,10 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     إدارة عناصر المنيو
                 </h2>
                 <button
@@ -230,20 +230,20 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                         setEditingItem(null);
                         setShowAddModal(true);
                     }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
+                    className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                 >
-                    <i className="ri-add-line ml-2"></i>
-                    إضافة عنصر جديد
+                    <i className="ri-add-line"></i>
+                    <span className="text-sm sm:text-base">إضافة عنصر جديد</span>
                 </button>
             </div>
 
             {/* Category Filter */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 overflow-x-auto scrollbar-hide pb-2">
                 <button
                     onClick={() => setSelectedCategory("all")}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                    className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
                         selectedCategory === "all"
-                            ? "bg-orange-500 text-white"
+                            ? "bg-green-500 text-white"
                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                 >
@@ -257,9 +257,9 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                         <button
                             key={category.id}
                             onClick={() => setSelectedCategory(category.id)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
                                 selectedCategory === category.id
-                                    ? "bg-orange-500 text-white"
+                                    ? "bg-green-500 text-white"
                                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                             }`}
                         >
@@ -270,15 +270,15 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
             </div>
 
             {/* Menu Items Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                <div className="p-3 sm:p-4 md:p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 font-cairo">
                             الأصناف ({filteredItems.length})
                         </h3>
-                        <div className="flex items-center space-x-4">
-                            <div className="relative">
-                                <i className="ri-search-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                        <div className="w-full sm:w-auto flex items-center">
+                            <div className="relative w-full sm:w-64">
+                                <i className="ri-search-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none text-base sm:text-lg"></i>
                                 <input
                                     type="text"
                                     placeholder="البحث في الأصناف..."
@@ -286,107 +286,354 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
                                     }
-                                    className="pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm w-64"
+                                    className="w-full pr-10 pl-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-xs sm:text-sm"
                                 />
                             </div>
                         </div>
                     </div>
 
                     {filteredItems.length === 0 ? (
-                        <div className="text-center py-12">
-                            <i className="ri-restaurant-line text-6xl text-gray-300 mb-4"></i>
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        <div className="text-center py-8 sm:py-12">
+                            <i className="ri-restaurant-line text-4xl sm:text-6xl text-gray-300 mb-3 sm:mb-4"></i>
+                            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-cairo">
                                 لا توجد عناصر
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-sm sm:text-base text-gray-600 px-4">
                                 {searchTerm || selectedCategory !== "all"
                                     ? "لا توجد عناصر تطابق معايير البحث"
                                     : "ابدأ بإضافة عناصر جديدة إلى المنيو"}
                             </p>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b border-gray-200">
-                                        <th className="text-right py-3 px-4 font-medium text-gray-900">
-                                            الصنف
-                                        </th>
-                                        <th className="text-right py-3 px-4 font-medium text-gray-900">
-                                            الفئة
-                                        </th>
-                                        <th className="text-right py-3 px-4 font-medium text-gray-900">
-                                            السعر
-                                        </th>
-                                        <th className="text-right py-3 px-4 font-medium text-gray-900">
-                                            وقت التحضير
-                                        </th>
-                                        <th className="text-right py-3 px-4 font-medium text-gray-900">
-                                            الحالة
-                                        </th>
-                                        <th className="text-right py-3 px-4 font-medium text-gray-900">
-                                            الإجراءات
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredItems.map((item) => (
-                                        <tr
-                                            key={item.id}
-                                            className="border-b border-gray-100 hover:bg-gray-50"
-                                        >
-                                            <td className="py-4 px-4">
-                                                <div className="flex items-center">
-                                                    <div className="w-12 h-12 rounded-lg overflow-hidden ml-3 flex-shrink-0 bg-gray-100">
-                                                        <img
-                                                            src={item.image_url}
-                                                            alt={item.name}
-                                                            className="w-full h-full object-cover"
-                                                            onError={(e) => {
-                                                                const target =
-                                                                    e.target as HTMLImageElement;
-                                                                target.src = `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop&q=80`;
-                                                            }}
-                                                        />
+                        <>
+                            {/* Desktop Table */}
+                            <div className="hidden xl:block overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b border-gray-200">
+                                            <th className="text-right py-3 px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                                الصنف
+                                            </th>
+                                            <th className="text-right py-3 px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                                الفئة
+                                            </th>
+                                            <th className="text-right py-3 px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                                السعر
+                                            </th>
+                                            <th className="text-right py-3 px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                                وقت التحضير
+                                            </th>
+                                            <th className="text-right py-3 px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                                الحالة
+                                            </th>
+                                            <th className="text-right py-3 px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                                الإجراءات
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredItems.map((item) => (
+                                            <tr
+                                                key={item.id}
+                                                className="border-b border-gray-100 hover:bg-gray-50"
+                                            >
+                                                <td className="py-4 px-4">
+                                                    <div className="flex items-center">
+                                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden ml-3 flex-shrink-0 bg-gray-100">
+                                                            <img
+                                                                src={item.image_url}
+                                                                alt={item.name}
+                                                                className="w-full h-full object-cover"
+                                                                onError={(e) => {
+                                                                    const target =
+                                                                        e.target as HTMLImageElement;
+                                                                    target.src = `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop&q=80`;
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                                                                {item.name}
+                                                            </h4>
+                                                            <p className="text-xs sm:text-sm text-gray-500 truncate">
+                                                                {item.description}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <h4 className="font-medium text-gray-900">
-                                                            {item.name}
-                                                        </h4>
-                                                        <p className="text-sm text-gray-500 truncate max-w-xs">
-                                                            {item.description}
-                                                        </p>
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+                                                        {getCategoryName(
+                                                            item.category_id
+                                                        )}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4 px-4 font-medium text-gray-900 text-sm sm:text-base">
+                                                    {formatCurrency(item.price)}
+                                                </td>
+                                                <td className="py-4 px-4 text-gray-600 text-sm">
+                                                    {item.preparation_time} دقيقة
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    <span
+                                                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                                                            item.is_available
+                                                                ? "bg-green-100 text-green-800"
+                                                                : "bg-red-100 text-red-800"
+                                                        }`}
+                                                    >
+                                                        {item.is_available
+                                                            ? "متاح"
+                                                            : "غير متاح"}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => {
+                                                                setEditingItem(
+                                                                    item
+                                                                );
+                                                                setShowAddModal(
+                                                                    true
+                                                                );
+                                                            }}
+                                                            className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors cursor-pointer"
+                                                            title="تعديل"
+                                                        >
+                                                            <i className="ri-edit-line text-base sm:text-lg"></i>
+                                                        </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                toggleItemAvailability(
+                                                                    item.id,
+                                                                    item.is_available
+                                                                )
+                                                            }
+                                                            className={`w-8 h-8 flex items-center justify-center transition-colors cursor-pointer ${
+                                                                item.is_available
+                                                                    ? "text-gray-400 hover:text-yellow-500"
+                                                                    : "text-gray-400 hover:text-green-500"
+                                                            }`}
+                                                            title={
+                                                                item.is_available
+                                                                    ? "إيقاف"
+                                                                    : "تفعيل"
+                                                            }
+                                                        >
+                                                            <i
+                                                                className={`text-base sm:text-lg ${
+                                                                    item.is_available
+                                                                        ? "ri-pause-line"
+                                                                        : "ri-play-line"
+                                                                }`}
+                                                            ></i>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setItemToDelete(
+                                                                    item
+                                                                );
+                                                                setShowDeleteConfirm(
+                                                                    true
+                                                                );
+                                                            }}
+                                                            className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                                                            title="حذف"
+                                                        >
+                                                            <i className="ri-delete-bin-line text-base sm:text-lg"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Tablet Table */}
+                            <div className="hidden md:block xl:hidden overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b border-gray-200">
+                                            <th className="text-right py-2 px-3 font-medium text-gray-900 text-xs">
+                                                الصنف
+                                            </th>
+                                            <th className="text-right py-2 px-3 font-medium text-gray-900 text-xs">
+                                                السعر
+                                            </th>
+                                            <th className="text-right py-2 px-3 font-medium text-gray-900 text-xs">
+                                                الحالة
+                                            </th>
+                                            <th className="text-right py-2 px-3 font-medium text-gray-900 text-xs">
+                                                الإجراءات
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredItems.map((item) => (
+                                            <tr
+                                                key={item.id}
+                                                className="border-b border-gray-100 hover:bg-gray-50"
+                                            >
+                                                <td className="py-3 px-3">
+                                                    <div className="flex items-center">
+                                                        <div className="w-10 h-10 rounded-lg overflow-hidden ml-2 flex-shrink-0 bg-gray-100">
+                                                            <img
+                                                                src={item.image_url}
+                                                                alt={item.name}
+                                                                className="w-full h-full object-cover"
+                                                                onError={(e) => {
+                                                                    const target =
+                                                                        e.target as HTMLImageElement;
+                                                                    target.src = `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop&q=80`;
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <h4 className="font-medium text-gray-900 text-xs truncate">
+                                                                {item.name}
+                                                            </h4>
+                                                            <p className="text-xs text-gray-500 truncate">
+                                                                {getCategoryName(item.category_id)}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-3 font-medium text-gray-900 text-xs">
+                                                    {formatCurrency(item.price)}
+                                                </td>
+                                                <td className="py-3 px-3">
+                                                    <span
+                                                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                                                            item.is_available
+                                                                ? "bg-green-100 text-green-800"
+                                                                : "bg-red-100 text-red-800"
+                                                        }`}
+                                                    >
+                                                        {item.is_available
+                                                            ? "متاح"
+                                                            : "غير متاح"}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-3">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <button
+                                                            onClick={() => {
+                                                                setEditingItem(
+                                                                    item
+                                                                );
+                                                                setShowAddModal(
+                                                                    true
+                                                                );
+                                                            }}
+                                                            className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors cursor-pointer"
+                                                            title="تعديل"
+                                                        >
+                                                            <i className="ri-edit-line text-sm"></i>
+                                                        </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                toggleItemAvailability(
+                                                                    item.id,
+                                                                    item.is_available
+                                                                )
+                                                            }
+                                                            className={`w-7 h-7 flex items-center justify-center transition-colors cursor-pointer ${
+                                                                item.is_available
+                                                                    ? "text-gray-400 hover:text-yellow-500"
+                                                                    : "text-gray-400 hover:text-green-500"
+                                                            }`}
+                                                            title={
+                                                                item.is_available
+                                                                    ? "إيقاف"
+                                                                    : "تفعيل"
+                                                            }
+                                                        >
+                                                            <i
+                                                                className={`text-sm ${
+                                                                    item.is_available
+                                                                        ? "ri-pause-line"
+                                                                        : "ri-play-line"
+                                                                }`}
+                                                            ></i>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setItemToDelete(
+                                                                    item
+                                                                );
+                                                                setShowDeleteConfirm(
+                                                                    true
+                                                                );
+                                                            }}
+                                                            className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                                                            title="حذف"
+                                                        >
+                                                            <i className="ri-delete-bin-line text-sm"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Mobile Cards */}
+                            <div className="md:hidden space-y-3">
+                                {filteredItems.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="bg-gray-50 rounded-lg p-3 border border-gray-200"
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                                                <img
+                                                    src={item.image_url}
+                                                    alt={item.name}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        const target =
+                                                            e.target as HTMLImageElement;
+                                                        target.src = `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop&q=80`;
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-start justify-between gap-2 mb-1">
+                                                    <h4 className="font-medium text-gray-900 text-sm truncate">
+                                                        {item.name}
+                                                    </h4>
+                                                    <span
+                                                        className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
+                                                            item.is_available
+                                                                ? "bg-green-100 text-green-800"
+                                                                : "bg-red-100 text-red-800"
+                                                        }`}
+                                                    >
+                                                        {item.is_available
+                                                            ? "متاح"
+                                                            : "غير متاح"}
+                                                    </span>
+                                                </div>
+                                                <p className="text-xs text-gray-500 mb-2 line-clamp-2">
+                                                    {item.description}
+                                                </p>
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <div className="flex items-center gap-3 text-xs text-gray-600">
+                                                        <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">
+                                                            {getCategoryName(item.category_id)}
+                                                        </span>
+                                                        <span>
+                                                            {item.preparation_time} دقيقة
+                                                        </span>
+                                                    </div>
+                                                    <div className="font-medium text-gray-900 text-sm">
+                                                        {formatCurrency(item.price)}
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td className="py-4 px-4">
-                                                <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
-                                                    {getCategoryName(
-                                                        item.category_id
-                                                    )}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-4 font-medium text-gray-900">
-                                                {formatCurrency(item.price)}
-                                            </td>
-                                            <td className="py-4 px-4 text-gray-600">
-                                                {item.preparation_time} دقيقة
-                                            </td>
-                                            <td className="py-4 px-4">
-                                                <span
-                                                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                                                        item.is_available
-                                                            ? "bg-green-100 text-green-800"
-                                                            : "bg-red-100 text-red-800"
-                                                    }`}
-                                                >
-                                                    {item.is_available
-                                                        ? "متاح"
-                                                        : "غير متاح"}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-4">
-                                                <div className="flex items-center space-x-2">
+                                                <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-200">
                                                     <button
                                                         onClick={() => {
                                                             setEditingItem(
@@ -399,7 +646,7 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                                                         className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors cursor-pointer"
                                                         title="تعديل"
                                                     >
-                                                        <i className="ri-edit-line"></i>
+                                                        <i className="ri-edit-line text-base"></i>
                                                     </button>
                                                     <button
                                                         onClick={() =>
@@ -420,7 +667,7 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                                                         }
                                                     >
                                                         <i
-                                                            className={`${
+                                                            className={`text-base ${
                                                                 item.is_available
                                                                     ? "ri-pause-line"
                                                                     : "ri-play-line"
@@ -439,15 +686,15 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                                                         className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
                                                         title="حذف"
                                                     >
-                                                        <i className="ri-delete-bin-line"></i>
+                                                        <i className="ri-delete-bin-line text-base"></i>
                                                     </button>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
                     )}
                 </div>
             </div>
@@ -467,10 +714,10 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && itemToDelete && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-md">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-gray-900">
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 font-cairo">
                                 تأكيد الحذف
                             </h3>
                             <button
@@ -483,25 +730,25 @@ const MenuItems = ({ restaurantId }: MenuItemsProps) => {
                                 <i className="ri-close-line text-xl"></i>
                             </button>
                         </div>
-                        <p className="text-gray-700 mb-6">
+                        <p className="text-sm sm:text-base text-gray-700 mb-6">
                             هل أنت متأكد من حذف العنصر "{itemToDelete.name}"؟ لا
                             يمكن التراجع عن هذا الإجراء.
                         </p>
-                        <div className="flex justify-end gap-3">
+                        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
                             <button
                                 type="button"
                                 onClick={() => {
                                     setShowDeleteConfirm(false);
                                     setItemToDelete(null);
                                 }}
-                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                             >
                                 إلغاء
                             </button>
                             <button
                                 type="button"
                                 onClick={handleDeleteItem}
-                                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors cursor-pointer"
                             >
                                 حذف
                             </button>
@@ -584,10 +831,10 @@ const MenuItemModal = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-gray-900">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                         {item ? "تعديل العنصر" : "إضافة عنصر جديد"}
                     </h3>
                     <button
@@ -598,10 +845,10 @@ const MenuItemModal = ({
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                                 اسم العنصر *
                             </label>
                             <input
@@ -613,13 +860,13 @@ const MenuItemModal = ({
                                         name: e.target.value,
                                     })
                                 }
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                className="w-full border border-gray-300 rounded-md sm:rounded-lg px-2.5 sm:px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                                 الفئة *
                             </label>
                             <CustomSelect
@@ -637,7 +884,7 @@ const MenuItemModal = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                             الوصف
                         </label>
                         <textarea
@@ -649,14 +896,14 @@ const MenuItemModal = ({
                                 })
                             }
                             rows={3}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                            className="w-full border border-gray-300 rounded-md sm:rounded-lg px-2.5 sm:px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
                             placeholder="أدخل وصف العنصر"
                         />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                                 السعر ($) *
                             </label>
                             <input
@@ -670,13 +917,13 @@ const MenuItemModal = ({
                                         price: parseFloat(e.target.value) || 0,
                                     })
                                 }
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                className="w-full border border-gray-300 rounded-md sm:rounded-lg px-2.5 sm:px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                                 وقت التحضير (دقيقة)
                             </label>
                             <input
@@ -690,13 +937,13 @@ const MenuItemModal = ({
                                             parseInt(e.target.value) || 0,
                                     })
                                 }
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                className="w-full border border-gray-300 rounded-md sm:rounded-lg px-2.5 sm:px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                             صورة العنصر
                         </label>
                         <div
@@ -732,14 +979,14 @@ const MenuItemModal = ({
                                 e.preventDefault();
                                 e.stopPropagation();
                             }}
-                            className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-colors"
+                            className="border-2 border-dashed border-gray-300 rounded-md sm:rounded-lg p-4 sm:p-6 text-center cursor-pointer hover:border-green-400 hover:bg-green-50 transition-colors"
                         >
                             {selectedImage ? (
-                                <div className="space-y-3">
+                                <div className="space-y-2 sm:space-y-3">
                                     <img
                                         src={selectedImage}
                                         alt="Preview"
-                                        className="w-full h-48 object-cover rounded-lg mx-auto"
+                                        className="w-full h-32 sm:h-48 object-cover rounded-lg mx-auto"
                                     />
                                     <button
                                         type="button"
@@ -751,7 +998,7 @@ const MenuItemModal = ({
                                                 fileInputRef.current.value = "";
                                             }
                                         }}
-                                        className="text-sm text-red-500 hover:text-red-700"
+                                        className="text-xs sm:text-sm text-red-500 hover:text-red-700"
                                     >
                                         <i className="ri-delete-bin-line ml-1"></i>
                                         حذف الصورة
@@ -759,8 +1006,8 @@ const MenuItemModal = ({
                                 </div>
                             ) : (
                                 <>
-                                    <i className="ri-image-line text-3xl text-gray-400 mb-2"></i>
-                                    <p className="text-gray-600 mb-2">
+                                    <i className="ri-image-line text-2xl sm:text-3xl text-gray-400 mb-2"></i>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
                                         اسحب الصورة هنا أو اضغط للاختيار
                                     </p>
                                     <p className="text-xs text-gray-500">
@@ -815,17 +1062,17 @@ const MenuItemModal = ({
                         )}
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors whitespace-nowrap cursor-pointer"
+                            className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                         >
                             إلغاء
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer"
+                            className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors cursor-pointer"
                         >
                             {item ? "حفظ التعديلات" : "إضافة العنصر"}
                         </button>

@@ -794,48 +794,48 @@ export default function GeneralLedger() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">
+        <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                     الحسابات العامة
                 </h2>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                     <button
                         onClick={() => setShowTrialBalance(true)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                        className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                     >
                         <i className="ri-scales-line"></i>
-                        ميزان المراجعة
+                        <span className="text-sm sm:text-base">ميزان المراجعة</span>
                     </button>
                     <button
                         onClick={() => setShowProfitLoss(true)}
-                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                        className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                     >
                         <i className="ri-line-chart-line"></i>
-                        الأرباح والخسائر
+                        <span className="text-sm sm:text-base">الأرباح والخسائر</span>
                     </button>
                     <button
                         onClick={() => setShowCashFlow(true)}
-                        className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                        className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                     >
                         <i className="ri-money-dollar-circle-line"></i>
-                        التدفقات النقدية
+                        <span className="text-sm sm:text-base">التدفقات النقدية</span>
                     </button>
                 </div>
             </div>
 
             {/* إحصائيات سريعة */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-green-100 text-green-600">
-                            <i className="ri-wallet-line text-lg"></i>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-green-100 text-green-600 flex-shrink-0">
+                            <i className="ri-wallet-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الأصول
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {accounts
                                     .filter(
                                         (acc) => acc.account_type === "assets"
@@ -847,16 +847,16 @@ export default function GeneralLedger() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-red-100 text-red-600">
-                            <i className="ri-bank-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-red-100 text-red-600 flex-shrink-0">
+                            <i className="ri-bank-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الخصوم
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {accounts
                                     .filter(
                                         (acc) =>
@@ -869,16 +869,16 @@ export default function GeneralLedger() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                            <i className="ri-pie-chart-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-blue-100 text-blue-600 flex-shrink-0">
+                            <i className="ri-pie-chart-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 حقوق الملكية
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {accounts
                                     .filter(
                                         (acc) => acc.account_type === "equity"
@@ -890,16 +890,16 @@ export default function GeneralLedger() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-green-100 text-green-600">
-                            <i className="ri-arrow-up-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-green-100 text-green-600 flex-shrink-0">
+                            <i className="ri-arrow-up-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 الإيرادات
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {accounts
                                     .filter(
                                         (acc) => acc.account_type === "revenue"
@@ -911,16 +911,16 @@ export default function GeneralLedger() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <div className="flex items-center">
-                        <div className="p-2 rounded-full bg-red-100 text-red-600">
-                            <i className="ri-arrow-down-line text-lg"></i>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="p-2.5 sm:p-3 lg:p-3.5 rounded-lg bg-red-100 text-red-600 flex-shrink-0">
+                            <i className="ri-arrow-down-line text-lg sm:text-xl lg:text-2xl"></i>
                         </div>
-                        <div className="mr-3">
-                            <p className="text-sm font-medium text-gray-600">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 المصروفات
                             </p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {accounts
                                     .filter(
                                         (acc) => acc.account_type === "expenses"
@@ -935,12 +935,12 @@ export default function GeneralLedger() {
             </div>
 
             {/* التبويبات */}
-            <div className="bg-white rounded-lg shadow">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow">
                 <div className="border-b border-gray-200">
-                    <nav className="-mb-px flex space-x-8 px-6">
+                    <nav className="-mb-px flex space-x-4 sm:space-x-8 px-3 sm:px-6 overflow-x-auto">
                         <button
                             onClick={() => setActiveTab("accounts")}
-                            className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
+                            className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap cursor-pointer transition-colors font-tajawal ${
                                 activeTab === "accounts"
                                     ? "border-orange-500 text-orange-600"
                                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -950,7 +950,7 @@ export default function GeneralLedger() {
                         </button>
                         <button
                             onClick={() => setActiveTab("journal")}
-                            className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
+                            className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap cursor-pointer transition-colors font-tajawal ${
                                 activeTab === "journal"
                                     ? "border-orange-500 text-orange-600"
                                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -960,7 +960,7 @@ export default function GeneralLedger() {
                         </button>
                         <button
                             onClick={() => setActiveTab("ledger")}
-                            className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
+                            className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap cursor-pointer transition-colors font-tajawal ${
                                 activeTab === "ledger"
                                     ? "border-orange-500 text-orange-600"
                                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -971,23 +971,24 @@ export default function GeneralLedger() {
                     </nav>
                 </div>
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                     {activeTab === "accounts" && (
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                                <h3 className="text-lg font-semibold">
+                        <div className="space-y-3 sm:space-y-4">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                                <h3 className="text-base sm:text-lg font-semibold font-cairo">
                                     دليل الحسابات
                                 </h3>
                                 <button
                                     onClick={() => setShowAddAccountModal(true)}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                                 >
                                     <i className="ri-add-line"></i>
-                                    إضافة حساب
+                                    <span className="text-sm sm:text-base">إضافة حساب</span>
                                 </button>
                             </div>
 
-                            <div className="overflow-x-auto">
+                            {/* Desktop Table */}
+                            <div className="hidden xl:block overflow-x-auto">
                                 <table className="w-full table-fixed">
                                     <colgroup>
                                         <col style={{ width: "12%" }} />
@@ -1083,27 +1084,84 @@ export default function GeneralLedger() {
                                     </tbody>
                                 </table>
                             </div>
+
+                            {/* Tablet Table */}
+                            <div className="hidden md:block xl:hidden overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">رمز الحساب</th>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">اسم الحساب</th>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">الرصيد</th>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">الحالة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {accounts.map((account) => (
+                                            <tr key={account.id} className="hover:bg-gray-50">
+                                                <td className="px-3 py-3 text-sm font-medium text-gray-900">{account.account_code}</td>
+                                                <td className="px-3 py-3 text-sm text-gray-900">
+                                                    <div className="truncate max-w-[200px]">{account.account_name}</div>
+                                                </td>
+                                                <td className="px-3 py-3 text-sm">
+                                                    <span className={account.balance >= 0 ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
+                                                        {Math.abs(account.balance).toLocaleString()} $
+                                                    </span>
+                                                </td>
+                                                <td className="px-3 py-3">
+                                                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${account.is_active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                                        {account.is_active ? "نشط" : "غير نشط"}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Mobile Cards */}
+                            <div className="md:hidden space-y-3">
+                                {accounts.map((account) => (
+                                    <div key={account.id} className="bg-gray-50 rounded-lg p-4 space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium text-gray-900 truncate">{account.account_name}</p>
+                                                <p className="text-xs text-gray-500 mt-1">{account.account_code}</p>
+                                            </div>
+                                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${account.is_active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                                {account.is_active ? "نشط" : "غير نشط"}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                                            <span className="text-xs text-gray-600">{getAccountTypeText(account.account_type)}</span>
+                                            <span className={`text-sm font-medium ${account.balance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                                                {Math.abs(account.balance).toLocaleString()} $
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
 
                     {activeTab === "journal" && (
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                                <h3 className="text-lg font-semibold">
+                        <div className="space-y-3 sm:space-y-4">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                                <h3 className="text-base sm:text-lg font-semibold font-cairo">
                                     دفتر اليومية
                                 </h3>
                                 <button
                                     onClick={() => setShowAddEntryModal(true)}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
                                 >
                                     <i className="ri-add-line"></i>
-                                    إضافة قيد
+                                    <span className="text-sm sm:text-base">إضافة قيد</span>
                                 </button>
                             </div>
 
-                            <div className="flex flex-wrap gap-4 mb-4 items-end">
-                                <div className="flex-1 min-w-[200px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
+                                <div className="flex-1 min-w-0 sm:min-w-[200px]">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         من تاريخ
                                     </label>
                                     <input
@@ -1115,11 +1173,11 @@ export default function GeneralLedger() {
                                                 from: e.target.value,
                                             }))
                                         }
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     />
                                 </div>
-                                <div className="flex-1 min-w-[200px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="flex-1 min-w-0 sm:min-w-[200px]">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         إلى تاريخ
                                     </label>
                                     <input
@@ -1131,11 +1189,11 @@ export default function GeneralLedger() {
                                                 to: e.target.value,
                                             }))
                                         }
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     />
                                 </div>
-                                <div className="flex-1 min-w-[200px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="flex-1 min-w-0 sm:min-w-[200px]">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         الحالة
                                     </label>
                                     <CustomSelect
@@ -1155,8 +1213,8 @@ export default function GeneralLedger() {
                                         placeholder="اختر الحالة"
                                     />
                                 </div>
-                                <div className="flex-1 min-w-[200px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="flex-1 min-w-0 sm:min-w-[200px]">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                         البحث
                                     </label>
                                     <input
@@ -1166,12 +1224,13 @@ export default function GeneralLedger() {
                                             setSearchQuery(e.target.value)
                                         }
                                         placeholder="ابحث برقم القيد، الوصف، أو المنشئ..."
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     />
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto">
+                            {/* Desktop Table */}
+                            <div className="hidden xl:block overflow-x-auto">
                                 <table className="w-full table-fixed">
                                     <colgroup>
                                         <col style={{ width: "12%" }} />
@@ -1311,16 +1370,149 @@ export default function GeneralLedger() {
                                     </tbody>
                                 </table>
                             </div>
+
+                            {/* Tablet Table */}
+                            <div className="hidden md:block xl:hidden overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">رقم القيد</th>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">التاريخ</th>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">الوصف</th>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">المبلغ</th>
+                                            <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">الحالة</th>
+                                            <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {filteredJournalEntries.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={6} className="px-3 py-8 text-center text-gray-500 text-sm">
+                                                    لا توجد قيود محاسبية
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            filteredJournalEntries.map((entry) => (
+                                                <tr key={entry.id} className="hover:bg-gray-50">
+                                                    <td className="px-3 py-3 text-sm font-medium text-gray-900">{entry.entry_number}</td>
+                                                    <td className="px-3 py-3 text-sm text-gray-900">{formatDate(entry.entry_date)}</td>
+                                                    <td className="px-3 py-3 text-sm text-gray-900">
+                                                        <div className="truncate max-w-[200px]">{entry.description}</div>
+                                                    </td>
+                                                    <td className="px-3 py-3 text-sm font-medium text-gray-900">{entry.total_amount.toLocaleString()} $</td>
+                                                    <td className="px-3 py-3">
+                                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(entry.status)}`}>
+                                                            {getStatusText(entry.status)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-3 py-3">
+                                                        <div className="flex items-center justify-end gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleViewEntryDetails(entry)}
+                                                                className="w-8 h-8 flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                                                title="عرض التفاصيل"
+                                                            >
+                                                                <i className="ri-eye-line text-lg"></i>
+                                                            </button>
+                                                            {entry.status === "draft" && (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleApproveEntry(entry)}
+                                                                    className="w-8 h-8 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                                    title="اعتماد القيد"
+                                                                >
+                                                                    <i className="ri-check-line text-lg"></i>
+                                                                </button>
+                                                            )}
+                                                            {entry.status === "approved" && (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handlePostEntry(entry)}
+                                                                    className="w-8 h-8 flex items-center justify-center text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                                                                    title="ترحيل القيد"
+                                                                >
+                                                                    <i className="ri-arrow-right-line text-lg"></i>
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Mobile Cards */}
+                            <div className="md:hidden space-y-3">
+                                {filteredJournalEntries.length === 0 ? (
+                                    <div className="text-center py-8 text-gray-500 text-sm">
+                                        لا توجد قيود محاسبية
+                                    </div>
+                                ) : (
+                                    filteredJournalEntries.map((entry) => (
+                                        <div key={entry.id} className="bg-gray-50 rounded-lg p-4 space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-gray-900">{entry.entry_number}</p>
+                                                    <p className="text-xs text-gray-500 mt-1">{formatDate(entry.entry_date)}</p>
+                                                </div>
+                                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${getStatusColor(entry.status)}`}>
+                                                    {getStatusText(entry.status)}
+                                                </span>
+                                            </div>
+                                            <div className="pt-2 border-t border-gray-200">
+                                                <p className="text-sm text-gray-900 mb-2 line-clamp-2">{entry.description}</p>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xs text-gray-600">المبلغ</span>
+                                                    <span className="text-sm font-medium text-gray-900">{entry.total_amount.toLocaleString()} $</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-200">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleViewEntryDetails(entry)}
+                                                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                                                >
+                                                    <i className="ri-eye-line"></i>
+                                                    عرض
+                                                </button>
+                                                {entry.status === "draft" && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleApproveEntry(entry)}
+                                                        className="px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                                                    >
+                                                        <i className="ri-check-line"></i>
+                                                        اعتماد
+                                                    </button>
+                                                )}
+                                                {entry.status === "approved" && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handlePostEntry(entry)}
+                                                        className="px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                                                    >
+                                                        <i className="ri-arrow-right-line"></i>
+                                                        ترحيل
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
                         </div>
                     )}
 
                     {activeTab === "ledger" && (
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold">
+                        <div className="space-y-3 sm:space-y-4">
+                            <h3 className="text-base sm:text-lg font-semibold font-cairo">
                                 دفتر الأستاذ العام
                             </h3>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                                 {[
                                     "assets",
                                     "liabilities",
@@ -1330,9 +1522,9 @@ export default function GeneralLedger() {
                                 ].map((type) => (
                                     <div
                                         key={type}
-                                        className="bg-gray-50 p-4 rounded-lg"
+                                        className="bg-gray-50 p-3 sm:p-4 rounded-lg"
                                     >
-                                        <h4 className="font-semibold text-gray-900 mb-3">
+                                        <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3 font-cairo">
                                             {getAccountTypeText(type)}
                                         </h4>
                                         <div className="space-y-2">
@@ -1346,15 +1538,15 @@ export default function GeneralLedger() {
                                                 .map((account) => (
                                                     <div
                                                         key={account.id}
-                                                        className="bg-white p-3 rounded border"
+                                                        className="bg-white p-2.5 sm:p-3 rounded border"
                                                     >
                                                         <div className="flex justify-between items-center">
-                                                            <span className="text-sm font-medium">
+                                                            <span className="text-xs sm:text-sm font-medium truncate flex-1 min-w-0">
                                                                 {
                                                                     account.account_name
                                                                 }
                                                             </span>
-                                                            <span className="text-sm text-gray-600">
+                                                            <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0 mr-2">
                                                                 {account.balance.toLocaleString()}{" "}
                                                                 $
                                                             </span>
@@ -1373,14 +1565,14 @@ export default function GeneralLedger() {
                                                                         key={
                                                                             subAccount.id
                                                                         }
-                                                                        className="mr-4 mt-2 flex justify-between items-center text-sm"
+                                                                        className="mr-3 sm:mr-4 mt-2 flex justify-between items-center text-xs sm:text-sm"
                                                                     >
-                                                                        <span className="text-gray-600">
+                                                                        <span className="text-gray-600 truncate flex-1 min-w-0">
                                                                             {
                                                                                 subAccount.account_name
                                                                             }
                                                                         </span>
-                                                                        <span className="text-gray-600">
+                                                                        <span className="text-gray-600 flex-shrink-0 mr-2">
                                                                             {subAccount.balance.toLocaleString()}{" "}
                                                                             $
                                                                         </span>
@@ -1400,10 +1592,10 @@ export default function GeneralLedger() {
 
             {/* مودال إضافة حساب */}
             {showAddAccountModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 إضافة حساب جديد
                             </h3>
                             <button
@@ -1542,21 +1734,21 @@ export default function GeneralLedger() {
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setShowAddAccountModal(false);
                                         resetNewAccount();
                                     }}
-                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleAddAccount}
-                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إضافة الحساب
                                 </button>
@@ -1568,10 +1760,10 @@ export default function GeneralLedger() {
 
             {/* مودال إضافة قيد */}
             {showAddEntryModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 إضافة قيد محاسبي
                             </h3>
                             <button
@@ -1585,9 +1777,9 @@ export default function GeneralLedger() {
                             </button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                     وصف القيد
                                 </label>
                                 <input
@@ -1599,14 +1791,14 @@ export default function GeneralLedger() {
                                             description: e.target.value,
                                         }))
                                     }
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="وصف العملية المحاسبية"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 font-tajawal">
                                     نوع المرجع
                                 </label>
                                 <CustomSelect
@@ -1855,21 +2047,21 @@ export default function GeneralLedger() {
                                 )}
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setShowAddEntryModal(false);
                                         resetNewEntry();
                                     }}
-                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إلغاء
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleAddJournalEntry}
-                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium bg-orange-500 text-white rounded-lg hover:bg-orange-600 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     حفظ القيد
                                 </button>
@@ -1881,10 +2073,10 @@ export default function GeneralLedger() {
 
             {/* مودال ميزان المراجعة */}
             {showTrialBalance && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 ميزان المراجعة
                             </h3>
                             <button
@@ -1998,10 +2190,10 @@ export default function GeneralLedger() {
 
             {/* مودال الأرباح والخسائر */}
             {showProfitLoss && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 قائمة الأرباح والخسائر
                             </h3>
                             <button
@@ -2112,10 +2304,10 @@ export default function GeneralLedger() {
 
             {/* مودال التدفقات النقدية */}
             {showCashFlow && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 قائمة التدفقات النقدية
                             </h3>
                             <button
@@ -2319,10 +2511,10 @@ export default function GeneralLedger() {
 
             {/* مودال تفاصيل القيد */}
             {showEntryDetailsModal && selectedEntry && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar-left">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+                    <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar-left">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
                                 تفاصيل القيد: {selectedEntry.entry_number}
                             </h3>
                             <button
@@ -2564,7 +2756,7 @@ export default function GeneralLedger() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -2572,7 +2764,7 @@ export default function GeneralLedger() {
                                         setSelectedEntry(null);
                                         setEntryDetailsLines([]);
                                     }}
-                                    className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap cursor-pointer transition-colors"
                                 >
                                     إغلاق
                                 </button>

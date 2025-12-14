@@ -36,9 +36,9 @@ export default function Hero({ onNavigateToSection }: HeroProps) {
             </div>
 
             {/* Navigation */}
-            <nav className="absolute top-0 left-0 right-0 z-30 px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-5">
+            <nav className="absolute top-0 left-0 right-0 z-30 px-3 sm:px-4 md:px-6 lg:px-8 pt-0 pb-3 sm:pb-4 md:pb-5">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div className={`flex items-center ${direction === 'rtl' ? 'space-x-3 sm:space-x-6 md:space-x-8 space-x-reverse' : 'space-x-3 sm:space-x-6 md:space-x-8'}`}>
+                    <div className="flex items-center gap-3 sm:gap-6 md:gap-8">
                         <Link to="/" className="flex items-center">
                             <img
                                 src="/logo-Qr.svg"
@@ -46,7 +46,7 @@ export default function Hero({ onNavigateToSection }: HeroProps) {
                                 className="h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 w-auto"
                             />
                         </Link>
-                        <div className={`hidden lg:flex items-center ${direction === 'rtl' ? 'space-x-4 md:space-x-6 space-x-reverse' : 'space-x-4 md:space-x-6'}`}>
+                        <div className="hidden lg:flex items-center gap-4 md:gap-6">
                             <button
                                 onClick={() => {
                                     handleSectionClick("features");
@@ -85,11 +85,11 @@ export default function Hero({ onNavigateToSection }: HeroProps) {
                             </button>
                         </div>
                     </div>
-                    <div className={`flex items-center ${direction === 'rtl' ? 'space-x-2 sm:space-x-3 md:space-x-4 space-x-reverse' : 'space-x-2 sm:space-x-3 md:space-x-4'}`}>
+                    <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
                         {/* Language Toggle Button */}
                         <button
                             onClick={toggleDirection}
-                            className={`flex items-center ${direction === 'rtl' ? 'space-x-1 sm:space-x-2 space-x-reverse' : 'space-x-1 sm:space-x-2'} px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-white hover:text-orange-400 transition-colors rounded-lg hover:bg-white/10 border border-white/20 btn-touch`}
+                            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-white hover:text-orange-400 transition-colors rounded-lg hover:bg-white/10 border border-white/20 btn-touch"
                             title={
                                 direction === "rtl"
                                     ? "Switch to English"
@@ -103,7 +103,7 @@ export default function Hero({ onNavigateToSection }: HeroProps) {
                         </button>
 
                         {user ? (
-                            <div className={`hidden md:flex items-center ${direction === 'rtl' ? 'space-x-3 md:space-x-4 space-x-reverse' : 'space-x-3 md:space-x-4'}`}>
+                            <div className="hidden md:flex items-center gap-3 md:gap-4">
                                 <Link
                                     to={
                                         user.role === "restaurant_admin"
@@ -279,7 +279,7 @@ export default function Hero({ onNavigateToSection }: HeroProps) {
                     </div>
                 </div>
 
-                <div className={`flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 ${direction === 'rtl' ? 'sm:space-x-4 md:space-x-6 sm:space-x-reverse' : 'sm:space-x-4 md:space-x-6'} mb-8 sm:mb-10 md:mb-12`}>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-4 md:gap-6 mb-8 sm:mb-10 md:mb-12">
                     {!user && (
                         <>
                             <Link
@@ -312,7 +312,7 @@ export default function Hero({ onNavigateToSection }: HeroProps) {
                     )}
                 </div>
 
-                <div className={`flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 ${direction === 'rtl' ? 'space-x-reverse' : ''} text-gray-300 px-4`}>
+                <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 text-gray-300 px-4">
                     <div className="text-center">
                         <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-orange-400 font-cairo">
                             500+

@@ -372,7 +372,7 @@ export default function PurchaseProductsManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي المنتجات
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {products.length}
                             </p>
                         </div>
@@ -387,7 +387,7 @@ export default function PurchaseProductsManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 أسعار مرتفعة
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     products.filter(
                                         (p) => p.price_trend === "up"
@@ -406,7 +406,7 @@ export default function PurchaseProductsManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 أسعار منخفضة
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     products.filter(
                                         (p) => p.price_trend === "down"
@@ -425,7 +425,7 @@ export default function PurchaseProductsManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 أسعار ثابتة
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     products.filter(
                                         (p) => p.price_trend === "stable"
@@ -444,7 +444,7 @@ export default function PurchaseProductsManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 تغيير كبير
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {
                                     products.filter(
                                         (p) =>

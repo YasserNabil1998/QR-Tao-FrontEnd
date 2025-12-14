@@ -586,29 +586,32 @@ export default function DeliveryOrders() {
             </div>
 
             {/* إحصائيات أوامر التوصيل */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-truck-line text-base sm:text-lg lg:text-base xl:text-lg text-blue-600"></i>
+                        </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
+                            <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-1 line-clamp-2 leading-tight font-tajawal">
                                 إجمالي الطلبات
                             </p>
-                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {deliveryOrders.length}
                             </p>
                         </div>
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-truck-line text-lg sm:text-xl text-blue-600"></i>
                         </div>
                     </div>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-time-line text-base sm:text-lg lg:text-base xl:text-lg text-yellow-600"></i>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
+                            <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-1 line-clamp-2 leading-tight font-tajawal">
                                 في الانتظار
                             </p>
-                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) => order.status === "pending"
@@ -616,18 +619,18 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-time-line text-lg sm:text-xl text-yellow-600"></i>
                         </div>
                     </div>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-road-map-line text-base sm:text-lg lg:text-base xl:text-lg text-purple-600"></i>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
+                            <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-1 line-clamp-2 leading-tight font-tajawal">
                                 في الطريق
                             </p>
-                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) =>
@@ -636,18 +639,18 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-road-map-line text-lg sm:text-xl text-purple-600"></i>
                         </div>
                     </div>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-check-line text-base sm:text-lg lg:text-base xl:text-lg text-green-600"></i>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
+                            <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-1 line-clamp-2 leading-tight font-tajawal">
                                 تم التسليم
                             </p>
-                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) => order.status === "delivered"
@@ -655,18 +658,18 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-check-line text-lg sm:text-xl text-green-600"></i>
                         </div>
                     </div>
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-10 lg:h-10 xl:w-12 xl:h-12 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-close-line text-base sm:text-lg lg:text-base xl:text-lg text-red-600"></i>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1 truncate">
+                            <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-1 line-clamp-2 leading-tight font-tajawal">
                                 ملغى
                             </p>
-                            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     deliveryOrders.filter(
                                         (order) => order.status === "cancelled"
@@ -674,21 +677,18 @@ export default function DeliveryOrders() {
                                 }
                             </p>
                         </div>
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
-                            <i className="ri-close-line text-lg sm:text-xl text-red-600"></i>
-                        </div>
                     </div>
                 </div>
             </div>
 
             {/* إحصائيات المبيعات والدفع */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
+                        <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-2 font-tajawal line-clamp-2 leading-tight">
                             إجمالي المبيعات
                         </p>
-                        <p className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) =>
@@ -700,12 +700,12 @@ export default function DeliveryOrders() {
                         </p>
                     </div>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
+                        <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-2 font-tajawal line-clamp-2 leading-tight">
                             المبالغ المحصلة
                         </p>
-                        <p className="text-xl sm:text-2xl font-bold text-green-600 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-green-600 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) => total + order.paid_amount,
@@ -716,12 +716,12 @@ export default function DeliveryOrders() {
                         </p>
                     </div>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
+                        <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-2 font-tajawal line-clamp-2 leading-tight">
                             المبالغ المستحقة
                         </p>
-                        <p className="text-xl sm:text-2xl font-bold text-red-600 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-red-600 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) =>
@@ -735,12 +735,12 @@ export default function DeliveryOrders() {
                         </p>
                     </div>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow-sm border border-gray-100">
                     <div className="text-center">
-                        <p className="text-xs sm:text-sm font-medium text-gray-600 mb-2 font-tajawal">
+                        <p className="text-xs sm:text-sm lg:text-xs xl:text-sm font-medium text-gray-600 mb-2 font-tajawal line-clamp-2 leading-tight">
                             رسوم التوصيل
                         </p>
-                        <p className="text-xl sm:text-2xl font-bold text-blue-600 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-blue-600 font-cairo">
                             {deliveryOrders
                                 .reduce(
                                     (total, order) =>

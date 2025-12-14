@@ -290,88 +290,88 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
     return (
         <>
             <ToastContainer />
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-gray-900">
+            <div className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo">
                         مولد رموز QR
                     </h2>
                     {tables.length > 0 && (
                         <button
                             onClick={downloadAllQRCodes}
-                            className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                            className="w-full sm:w-auto bg-orange-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-orange-600 transition-colors font-medium flex items-center justify-center gap-2"
                         >
-                            <i className="ri-download-line ml-2"></i>
-                            تحميل جميع الرموز
+                            <i className="ri-download-line"></i>
+                            <span className="text-sm sm:text-base">تحميل جميع الرموز</span>
                         </button>
                     )}
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <div className="mb-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-6">
+                    <div className="mb-4 sm:mb-6">
+                        <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4 font-cairo">
                             معلومات المطعم
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <span className="font-medium text-gray-700">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                <span className="font-medium text-gray-700 font-tajawal">
                                     اسم المطعم:
                                 </span>
-                                <span className="mr-2 text-gray-600">
+                                <span className="text-gray-600 font-cairo">
                                     {restaurant?.name ||
                                         user?.full_name ||
                                         "مطعم تجريبي"}
                                 </span>
                             </div>
-                            <div>
-                                <span className="font-medium text-gray-700">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                <span className="font-medium text-gray-700 font-tajawal">
                                     الرابط المختصر:
                                 </span>
-                                <span className="mr-2 text-gray-600">
+                                <span className="text-gray-600 font-cairo break-all">
                                     {restaurantId ||
                                         user?.restaurant_id ||
                                         "demo-restaurant"}
                                 </span>
                             </div>
-                            <div>
-                                <span className="font-medium text-gray-700">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                <span className="font-medium text-gray-700 font-tajawal">
                                     البريد الإلكتروني:
                                 </span>
-                                <span className="mr-2 text-gray-600">
+                                <span className="text-gray-600 font-cairo break-all">
                                     {restaurant?.email ||
                                         user?.email ||
                                         "demo@restaurant.com"}
                                 </span>
                             </div>
-                            <div>
-                                <span className="font-medium text-gray-700">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                <span className="font-medium text-gray-700 font-tajawal">
                                     الهاتف:
                                 </span>
-                                <span className="mr-2 text-gray-600">
+                                <span className="text-gray-600 font-cairo">
                                     {restaurant?.phone || "0501234567"}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-200 pt-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">
+                    <div className="border-t border-gray-200 pt-4 sm:pt-6">
+                        <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4 font-cairo">
                             رموز QR للطاولات
                         </h3>
 
                         {tables.length === 0 ? (
-                            <div className="text-center py-12">
-                                <i className="ri-table-line text-6xl text-gray-300 mb-4"></i>
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                            <div className="text-center py-8 sm:py-12">
+                                <i className="ri-table-line text-4xl sm:text-6xl text-gray-300 mb-3 sm:mb-4"></i>
+                                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-cairo">
                                     لا توجد طاولات
                                 </h3>
-                                <p className="text-gray-500 mb-4">
+                                <p className="text-sm sm:text-base text-gray-500 mb-4 px-4 font-tajawal">
                                     {!restaurantId && !user?.restaurant_id
                                         ? "يرجى ربط حسابك بمطعم أولاً من صفحة الإعدادات"
                                         : "يرجى إضافة طاولات أولاً من صفحة إدارة الطاولات"}
                                 </p>
                                 {!restaurantId && !user?.restaurant_id && (
-                                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-md mx-auto">
-                                        <p className="text-sm text-yellow-800">
+                                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 sm:p-4 max-w-md mx-auto">
+                                        <p className="text-xs sm:text-sm text-yellow-800 font-tajawal">
                                             <i className="ri-information-line ml-1"></i>
                                             يجب ربط حسابك بمطعم لعرض رموز QR.
                                             يمكنك إضافة مطعم من صفحة الإعدادات.
@@ -380,33 +380,33 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                 )}
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
                                 {tables.map((table: any) => (
                                     <div
                                         key={table.id}
-                                        className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                                        className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200"
                                     >
                                         <div className="text-center">
-                                            <div className="inline-block p-4 bg-white rounded-lg shadow-sm">
+                                            <div className="inline-block p-3 sm:p-4 bg-white rounded-lg shadow-sm w-full max-w-[200px]">
                                                 <img
                                                     src={generateQRCode(
                                                         table.id
                                                     )}
                                                     alt={`QR Code for Table ${table.table_number}`}
-                                                    className="w-32 h-32 mx-auto"
+                                                    className="w-24 h-24 sm:w-32 sm:h-32 mx-auto"
                                                 />
-                                                <p className="mt-2 text-sm font-medium text-gray-900">
+                                                <p className="mt-2 text-xs sm:text-sm font-medium text-gray-900 font-cairo">
                                                     طاولة رقم{" "}
                                                     {table.table_number}
                                                 </p>
                                                 {table.capacity && (
-                                                    <p className="text-xs text-gray-500 mt-1">
+                                                    <p className="text-xs text-gray-500 mt-1 font-tajawal">
                                                         السعة: {table.capacity}{" "}
                                                         أشخاص
                                                     </p>
                                                 )}
                                                 {table.location && (
-                                                    <p className="text-xs text-gray-500 mt-1">
+                                                    <p className="text-xs text-gray-500 mt-1 line-clamp-2 font-tajawal">
                                                         {table.location}
                                                     </p>
                                                 )}
@@ -417,9 +417,9 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                                             table.table_number
                                                         )
                                                     }
-                                                    className="mt-2 text-xs text-blue-500 hover:text-blue-700"
+                                                    className="mt-2 text-xs sm:text-sm text-blue-500 hover:text-blue-700 font-medium transition-colors cursor-pointer flex items-center justify-center gap-1 mx-auto"
                                                 >
-                                                    <i className="ri-download-line ml-1"></i>
+                                                    <i className="ri-download-line"></i>
                                                     تحميل
                                                 </button>
                                             </div>
@@ -429,15 +429,15 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                             </div>
                         )}
 
-                        <div className="space-y-4">
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <div className="flex items-start">
-                                    <i className="ri-information-line text-blue-500 text-xl mt-1 ml-3"></i>
-                                    <div>
-                                        <h4 className="font-medium text-blue-900 mb-2">
+                        <div className="space-y-3 sm:space-y-4">
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+                                <div className="flex items-start gap-2 sm:gap-3">
+                                    <i className="ri-information-line text-blue-500 text-lg sm:text-xl flex-shrink-0 mt-0.5 sm:mt-1"></i>
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="text-sm sm:text-base font-medium text-blue-900 mb-2 font-cairo">
                                             كيفية استخدام رموز QR:
                                         </h4>
-                                        <ul className="text-sm text-blue-800 space-y-1">
+                                        <ul className="text-xs sm:text-sm text-blue-800 space-y-1 font-tajawal">
                                             <li>
                                                 • اطبع رموز QR وضعها على كل
                                                 طاولة
@@ -459,14 +459,14 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                                 </div>
                             </div>
 
-                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                <div className="flex items-start">
-                                    <i className="ri-lightbulb-line text-yellow-500 text-xl mt-1 ml-3"></i>
-                                    <div>
-                                        <h4 className="font-medium text-yellow-900 mb-2">
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 sm:p-4">
+                                <div className="flex items-start gap-2 sm:gap-3">
+                                    <i className="ri-lightbulb-line text-yellow-500 text-lg sm:text-xl flex-shrink-0 mt-0.5 sm:mt-1"></i>
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="text-sm sm:text-base font-medium text-yellow-900 mb-2 font-cairo">
                                             نصائح للاستخدام الأمثل:
                                         </h4>
-                                        <ul className="text-sm text-yellow-800 space-y-1">
+                                        <ul className="text-xs sm:text-sm text-yellow-800 space-y-1 font-tajawal">
                                             <li>
                                                 • ضع الرمز في مكان واضح ومرئي
                                                 على الطاولة
@@ -492,16 +492,16 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                 </div>
 
                 {/* Instructions for printing */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-6">
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4 font-cairo">
                         تعليمات الطباعة
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div>
-                            <h4 className="font-medium text-gray-900 mb-2">
+                            <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-2 font-cairo">
                                 المواصفات المقترحة:
                             </h4>
-                            <ul className="text-sm text-gray-600 space-y-1">
+                            <ul className="text-xs sm:text-sm text-gray-600 space-y-1 font-tajawal">
                                 <li>• حجم الرمز: 5×5 سم على الأقل</li>
                                 <li>• جودة الطباعة: 300 DPI أو أعلى</li>
                                 <li>• نوع الورق: ورق مقوى أو لامع</li>
@@ -509,10 +509,10 @@ const QRCodeGenerator = ({ restaurant }: QRCodeGeneratorProps) => {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-medium text-gray-900 mb-2">
+                            <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-2 font-cairo">
                                 التصميم المقترح:
                             </h4>
-                            <ul className="text-sm text-gray-600 space-y-1">
+                            <ul className="text-xs sm:text-sm text-gray-600 space-y-1 font-tajawal">
                                 <li>• أضف شعار المطعم أعلى الرمز</li>
                                 <li>• اكتب "امسح للطلب" تحت الرمز</li>
                                 <li>• أضف رقم الطاولة بخط واضح</li>

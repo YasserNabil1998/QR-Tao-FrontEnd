@@ -289,7 +289,7 @@ export default function StaffManagement({
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 lg:p-5 xl:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
                             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -300,14 +300,14 @@ export default function StaffManagement({
                             <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 إجمالي الموظفين
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {staff.length}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 lg:p-5 xl:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
                             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -318,7 +318,7 @@ export default function StaffManagement({
                             <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 نشط
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {
                                     staff.filter((s) => s.status === "active")
                                         .length
@@ -328,7 +328,7 @@ export default function StaffManagement({
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 lg:p-5 xl:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
                             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-lg flex items-center justify-center">
@@ -339,14 +339,14 @@ export default function StaffManagement({
                             <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 الشيفات
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {staff.filter((s) => s.role === "chef").length}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 lg:p-5 xl:p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
                             <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -357,7 +357,7 @@ export default function StaffManagement({
                             <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 إجمالي الرواتب
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 font-cairo">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                                 {staff
                                     .reduce(
                                         (total, member) =>

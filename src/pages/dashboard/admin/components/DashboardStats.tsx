@@ -256,7 +256,7 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                 {stats.map((stat, index) => (
                     <div
                         key={index}
-                        className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                        className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-5 lg:p-5 xl:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                     >
                         <div className="flex items-center justify-between mb-2 sm:mb-3">
                             <div
@@ -295,7 +295,7 @@ export default function DashboardStats({ setActiveTab }: DashboardStatsProps) {
                         <h3 className="text-gray-600 text-xs sm:text-sm mb-1 font-tajawal">
                             {stat.title}
                         </h3>
-                        <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 font-cairo">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo">
                             {stat.value}
                         </p>
                     </div>

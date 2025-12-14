@@ -340,7 +340,7 @@ export default function PaymentMethods() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي اليوم
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {todayReport.total.toLocaleString()} $
                             </p>
                             <p className="text-xs sm:text-sm text-gray-500 font-tajawal mt-1">
@@ -359,7 +359,7 @@ export default function PaymentMethods() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 المدفوعات النقدية
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {todayReport.cashTotal.toLocaleString()} $
                             </p>
                             <p className="text-xs sm:text-sm text-gray-500 font-tajawal mt-1">
@@ -378,7 +378,7 @@ export default function PaymentMethods() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 مدفوعات الفيزا
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {todayReport.visaTotal.toLocaleString()} $
                             </p>
                             <p className="text-xs sm:text-sm text-gray-500 font-tajawal mt-1">
@@ -397,7 +397,7 @@ export default function PaymentMethods() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 نسبة الفيزا
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {todayReport.total > 0
                                     ? (
                                           (todayReport.visaTotal /

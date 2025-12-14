@@ -353,7 +353,7 @@ export default function SuppliersManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الموردين
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {totalSuppliers}
                             </p>
                         </div>
@@ -368,7 +368,7 @@ export default function SuppliersManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 نشط
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {activeSuppliers}
                             </p>
                         </div>
@@ -383,7 +383,7 @@ export default function SuppliersManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 غير نشط
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {inactiveSuppliers}
                             </p>
                         </div>
@@ -398,7 +398,7 @@ export default function SuppliersManagement() {
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 تقييم عالي
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {highRatedSuppliers}
                             </p>
                         </div>

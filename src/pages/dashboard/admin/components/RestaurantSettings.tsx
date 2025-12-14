@@ -209,45 +209,51 @@ const RestaurantSettings = ({
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">
+        <div className="space-y-3 sm:space-y-4 md:space-y-6 w-full max-w-full overflow-x-hidden">
+            <div className="flex items-center justify-between w-full px-2 sm:px-0">
+                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 font-cairo">
                     إعدادات المطعم
                 </h2>
             </div>
 
             {/* Tabs */}
-            <div className="bg-white rounded-lg shadow">
-                <div className="border-b border-gray-200">
-                    <nav className="-mb-px flex space-x-8 px-6">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow overflow-hidden w-full max-w-full">
+                <div className="border-b border-gray-200 w-full">
+                    <nav className="-mb-px flex space-x-2 sm:space-x-4 md:space-x-8 px-2 sm:px-3 md:px-6 overflow-x-auto w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        <style>{`
+                            nav::-webkit-scrollbar {
+                                display: none;
+                            }
+                        `}</style>
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 type="button"
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer transition-colors ${
+                                className={`py-2.5 sm:py-3 md:py-4 px-1 border-b-2 font-medium text-[10px] sm:text-xs md:text-sm whitespace-nowrap cursor-pointer transition-colors font-tajawal ${
                                     activeTab === tab.id
                                         ? "border-orange-500 text-orange-600"
                                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                 }`}
                             >
-                                <i className={`${tab.icon} ml-2`}></i>
-                                {tab.label}
+                                <i className={`${tab.icon} ml-0.5 sm:ml-1 md:ml-2 text-xs sm:text-sm md:text-base`}></i>
+                                <span className="hidden sm:inline">{tab.label}</span>
+                                <span className="sm:hidden text-[9px]">{tab.label.split(' ')[0]}</span>
                             </button>
                         ))}
                     </nav>
                 </div>
 
-                <div className="p-6">
+                <div className="p-3 sm:p-4 md:p-6 w-full max-w-full overflow-x-hidden">
                     {/* General Settings */}
                     {activeTab === "general" && (
                         <form
                             onSubmit={handleSaveGeneral}
-                            className="space-y-6"
+                            className="space-y-3 sm:space-y-4 md:space-y-6 w-full max-w-full"
                         >
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6 w-full">
+                                <div className="w-full min-w-0">
+                                    <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                         اسم المطعم
                                     </label>
                                     <input
@@ -259,13 +265,13 @@ const RestaurantSettings = ({
                                                 name: e.target.value,
                                             })
                                         }
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="أدخل اسم المطعم"
                                         required
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="w-full min-w-0">
+                                    <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                         البريد الإلكتروني
                                     </label>
                                     <input
@@ -277,13 +283,13 @@ const RestaurantSettings = ({
                                                 email: e.target.value,
                                             })
                                         }
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="example@email.com"
                                         required
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="w-full min-w-0">
+                                    <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                         رقم الهاتف
                                     </label>
                                     <input
@@ -295,12 +301,12 @@ const RestaurantSettings = ({
                                                 phone: e.target.value,
                                             })
                                         }
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="+20 123 456 7890"
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="w-full min-w-0">
+                                    <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                         رابط الشعار
                                     </label>
                                     <input
@@ -312,13 +318,13 @@ const RestaurantSettings = ({
                                                 logo_url: e.target.value,
                                             })
                                         }
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent break-all"
                                         placeholder="https://example.com/logo.png"
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <div className="w-full min-w-0">
+                                <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                     العنوان
                                 </label>
                                 <textarea
@@ -329,16 +335,16 @@ const RestaurantSettings = ({
                                             address: e.target.value,
                                         })
                                     }
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    className="w-full min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
                                     rows={3}
                                     placeholder="أدخل عنوان المطعم"
                                 />
                             </div>
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200">
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-medium bg-orange-500 text-white rounded-md sm:rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer"
                                 >
                                     {loading
                                         ? "جاري الحفظ..."
@@ -350,17 +356,17 @@ const RestaurantSettings = ({
 
                     {/* Theme Settings */}
                     {activeTab === "theme" && (
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                        <div className="space-y-3 sm:space-y-4 md:space-y-6 w-full max-w-full">
+                            <div className="w-full min-w-0">
+                                <h3 className="text-sm sm:text-base md:text-lg font-medium text-gray-900 mb-2.5 sm:mb-3 md:mb-4 font-cairo">
                                     ألوان المطعم
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full">
+                                    <div className="w-full min-w-0">
+                                        <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                             اللون الأساسي
                                         </label>
-                                        <div className="flex items-center space-x-3 space-x-reverse">
+                                        <div className="flex items-center gap-2 sm:gap-3 w-full">
                                             <input
                                                 type="color"
                                                 value={
@@ -377,7 +383,7 @@ const RestaurantSettings = ({
                                                         },
                                                     })
                                                 }
-                                                className="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer"
+                                                className="w-10 h-9 sm:w-12 sm:h-10 md:w-14 md:h-12 border border-gray-300 rounded-md sm:rounded-lg cursor-pointer flex-shrink-0"
                                             />
                                             <input
                                                 type="text"
@@ -395,15 +401,15 @@ const RestaurantSettings = ({
                                                         },
                                                     })
                                                 }
-                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                className="flex-1 min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                             />
                                         </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <div className="w-full min-w-0">
+                                        <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                             اللون الثانوي
                                         </label>
-                                        <div className="flex items-center space-x-3 space-x-reverse">
+                                        <div className="flex items-center gap-2 sm:gap-3 w-full">
                                             <input
                                                 type="color"
                                                 value={
@@ -420,7 +426,7 @@ const RestaurantSettings = ({
                                                         },
                                                     })
                                                 }
-                                                className="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer"
+                                                className="w-10 h-9 sm:w-12 sm:h-10 md:w-14 md:h-12 border border-gray-300 rounded-md sm:rounded-lg cursor-pointer flex-shrink-0"
                                             />
                                             <input
                                                 type="text"
@@ -438,15 +444,15 @@ const RestaurantSettings = ({
                                                         },
                                                     })
                                                 }
-                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                className="flex-1 min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                             />
                                         </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <div className="w-full min-w-0">
+                                        <label className="block text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 font-tajawal">
                                             لون التمييز
                                         </label>
-                                        <div className="flex items-center space-x-3 space-x-reverse">
+                                        <div className="flex items-center gap-2 sm:gap-3 w-full">
                                             <input
                                                 type="color"
                                                 value={
@@ -462,7 +468,7 @@ const RestaurantSettings = ({
                                                         },
                                                     })
                                                 }
-                                                className="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer"
+                                                className="w-10 h-9 sm:w-12 sm:h-10 md:w-14 md:h-12 border border-gray-300 rounded-md sm:rounded-lg cursor-pointer flex-shrink-0"
                                             />
                                             <input
                                                 type="text"
@@ -479,18 +485,18 @@ const RestaurantSettings = ({
                                                         },
                                                     })
                                                 }
-                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                className="flex-1 min-w-0 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={handleSaveTheme}
                                     disabled={loading}
-                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-medium bg-orange-500 text-white rounded-md sm:rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer"
                                 >
                                     {loading ? "جاري الحفظ..." : "حفظ الألوان"}
                                 </button>
@@ -500,22 +506,23 @@ const RestaurantSettings = ({
 
                     {/* Opening Hours */}
                     {activeTab === "hours" && (
-                        <div className="space-y-6">
-                            <h3 className="text-lg font-medium text-gray-900">
+                        <div className="space-y-3 sm:space-y-4 md:space-y-6 w-full max-w-full">
+                            <h3 className="text-sm sm:text-base md:text-lg font-medium text-gray-900 font-cairo">
                                 أوقات العمل
                             </h3>
-                            <div className="space-y-4">
+                            <div className="space-y-2.5 sm:space-y-3 md:space-y-4 w-full">
                                 {days.map((day) => (
                                     <div
                                         key={day.key}
-                                        className="flex items-center space-x-4 space-x-reverse"
+                                        className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-3 md:gap-4 p-2.5 sm:p-3 md:p-4 bg-gray-50 rounded-md sm:rounded-lg w-full min-w-0"
                                     >
-                                        <div className="w-20">
-                                            <span className="text-sm font-medium text-gray-700">
+                                        <div className="w-full sm:w-20 flex-shrink-0 min-w-0">
+                                            <span className="text-[11px] sm:text-xs md:text-sm font-medium text-gray-700 font-tajawal">
                                                 {day.label}
                                             </span>
                                         </div>
-                                        <div className="flex items-center space-x-2 space-x-reverse">
+                                        <div className="flex items-center gap-2 sm:gap-3 flex-1 w-full sm:w-auto min-w-0">
+                                            <div className="flex items-center gap-1.5 sm:gap-2">
                                             <input
                                                 type="checkbox"
                                                 checked={
@@ -540,16 +547,15 @@ const RestaurantSettings = ({
                                                         },
                                                     })
                                                 }
-                                                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                                                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded cursor-pointer"
                                             />
-                                            <span className="text-sm text-gray-600">
+                                                <span className="text-[11px] sm:text-xs md:text-sm text-gray-600 font-tajawal">
                                                 مفتوح
                                             </span>
                                         </div>
                                         {!formData.opening_hours[day.key]
                                             ?.closed && (
-                                            <>
-                                                <div>
+                                                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-1 sm:flex-initial">
                                                     <input
                                                         type="time"
                                                         value={
@@ -576,13 +582,11 @@ const RestaurantSettings = ({
                                                                 },
                                                             })
                                                         }
-                                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                        className="flex-1 sm:flex-initial px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                                     />
-                                                </div>
-                                                <span className="text-gray-500">
+                                                    <span className="text-[11px] sm:text-xs md:text-sm text-gray-500 font-tajawal">
                                                     إلى
                                                 </span>
-                                                <div>
                                                     <input
                                                         type="time"
                                                         value={
@@ -609,20 +613,20 @@ const RestaurantSettings = ({
                                                                 },
                                                             })
                                                         }
-                                                        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                                        className="flex-1 sm:flex-initial px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                                     />
                                                 </div>
-                                            </>
                                         )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200">
                                 <button
                                     type="button"
                                     onClick={handleSaveHours}
                                     disabled={loading}
-                                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer"
+                                    className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-medium bg-orange-500 text-white rounded-md sm:rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer"
                                 >
                                     {loading
                                         ? "جاري الحفظ..."
@@ -634,22 +638,22 @@ const RestaurantSettings = ({
 
                     {/* Subscription */}
                     {activeTab === "subscription" && (
-                        <div className="space-y-6">
-                            <h3 className="text-lg font-medium text-gray-900">
+                        <div className="space-y-3 sm:space-y-4 md:space-y-6">
+                            <h3 className="text-sm sm:text-base md:text-lg font-medium text-gray-900 font-cairo">
                                 معلومات الاشتراك
                             </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                                    <div className="flex items-center mb-2">
-                                        <i className="ri-vip-crown-line text-green-500 text-xl ml-2"></i>
-                                        <h4 className="font-medium text-green-900">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+                                <div className="bg-green-50 border border-green-200 rounded-md sm:rounded-lg p-2.5 sm:p-3 md:p-4">
+                                    <div className="flex items-center mb-1.5 sm:mb-2">
+                                        <i className="ri-vip-crown-line text-green-500 text-base sm:text-lg md:text-xl ml-1.5 sm:ml-2 flex-shrink-0"></i>
+                                        <h4 className="text-xs sm:text-sm md:text-base font-medium text-green-900 font-cairo">
                                             الخطة الحالية
                                         </h4>
                                     </div>
-                                    <p className="text-sm text-green-800 capitalize">
+                                    <p className="text-[11px] sm:text-xs md:text-sm text-green-800 capitalize font-tajawal">
                                         {restaurant.subscription_plan}
                                     </p>
-                                    <p className="text-xs text-green-600 mt-1">
+                                    <p className="text-[10px] sm:text-xs text-green-600 mt-1 font-tajawal">
                                         الحالة:{" "}
                                         {restaurant.subscription_status ===
                                         "active"
@@ -657,14 +661,14 @@ const RestaurantSettings = ({
                                             : "غير نشط"}
                                     </p>
                                 </div>
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                    <div className="flex items-center mb-2">
-                                        <i className="ri-calendar-line text-blue-500 text-xl ml-2"></i>
-                                        <h4 className="font-medium text-blue-900">
+                                <div className="bg-blue-50 border border-blue-200 rounded-md sm:rounded-lg p-2.5 sm:p-3 md:p-4">
+                                    <div className="flex items-center mb-1.5 sm:mb-2">
+                                        <i className="ri-calendar-line text-blue-500 text-base sm:text-lg md:text-xl ml-1.5 sm:ml-2 flex-shrink-0"></i>
+                                        <h4 className="text-xs sm:text-sm md:text-base font-medium text-blue-900 font-cairo">
                                             انتهاء التجربة
                                         </h4>
                                     </div>
-                                    <p className="text-sm text-blue-800">
+                                    <p className="text-[11px] sm:text-xs md:text-sm text-blue-800 font-tajawal">
                                         {restaurant.trial_ends_at
                                             ? formatDate(
                                                   restaurant.trial_ends_at
@@ -673,14 +677,14 @@ const RestaurantSettings = ({
                                     </p>
                                 </div>
                             </div>
-                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                <div className="flex items-start">
-                                    <i className="ri-information-line text-yellow-500 text-xl mt-1 ml-3"></i>
-                                    <div>
-                                        <h4 className="font-medium text-yellow-900 mb-2">
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-md sm:rounded-lg p-2.5 sm:p-3 md:p-4">
+                                <div className="flex items-start gap-2 sm:gap-3">
+                                    <i className="ri-information-line text-yellow-500 text-base sm:text-lg md:text-xl flex-shrink-0 mt-0.5 sm:mt-1"></i>
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="text-xs sm:text-sm md:text-base font-medium text-yellow-900 mb-1.5 sm:mb-2 font-cairo">
                                             معلومات مهمة
                                         </h4>
-                                        <ul className="text-sm text-yellow-800 space-y-1">
+                                        <ul className="text-[11px] sm:text-xs md:text-sm text-yellow-800 space-y-0.5 sm:space-y-1 font-tajawal">
                                             <li>
                                                 • يمكنك ترقية خطتك في أي وقت
                                             </li>

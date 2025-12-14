@@ -26,7 +26,7 @@ export default function AdminSidebar({
         }
     };
 
-    const menuItems = [
+  const menuItems = [
         { id: "dashboard", label: "لوحة التحكم", icon: "ri-dashboard-line" },
         { id: "orders", label: "إدارة الطلبات", icon: "ri-shopping-cart-line" },
         { id: "menu", label: "إدارة القائمة", icon: "ri-restaurant-line" },
@@ -54,18 +54,18 @@ export default function AdminSidebar({
         { id: "ledger", label: "دفتر الأستاذ العام", icon: "ri-book-line" },
         { id: "qr-generator", label: "مولد رمز QR", icon: "ri-qr-code-line" },
         { id: "settings", label: "إعدادات المطعم", icon: "ri-settings-line" },
-    ];
+  ];
 
-    const handleSignOut = async () => {
+  const handleSignOut = async () => {
         await signOut();
         navigate("/");
     };
 
-    return (
+  return (
         <div className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
             <div
                 className={`flex items-center h-14 sm:h-16 px-3 sm:px-4 bg-orange-500 border-b border-orange-600 ${
-                    direction === "rtl" ? "justify-between" : "flex-row-reverse"
+                    direction === "rtl" ? "flex-row-reverse justify-between" : "flex-row-reverse"
                 }`}
             >
                 <h1 className="text-lg sm:text-xl font-bold text-white font-cairo hidden lg:block">
@@ -76,20 +76,20 @@ export default function AdminSidebar({
                         direction === "rtl" ? "" : "ml-3"
                     }`}
                 >
-                    <button
-                        onClick={toggleDirection}
+        <button
+          onClick={toggleDirection}
                         className="flex items-center space-x-1 sm:space-x-2 space-x-reverse px-2 sm:px-3 py-1.5 text-white hover:text-orange-200 transition-colors rounded-lg hover:bg-white/10 border border-white/20 font-medium"
-                        title={
-                            direction === "rtl"
-                                ? "Switch to English"
-                                : "التبديل إلى العربية"
-                        }
-                    >
+          title={
+            direction === "rtl"
+              ? "Switch to English"
+              : "التبديل إلى العربية"
+          }
+        >
                         <i className="ri-global-line text-base sm:text-lg"></i>
                         <span className="font-semibold text-xs sm:text-sm">
-                            {direction === "rtl" ? "ع" : "en"}
-                        </span>
-                    </button>
+            {direction === "rtl" ? "ع" : "en"}
+          </span>
+        </button>
                     <button
                         onClick={onClose}
                         className="lg:hidden p-1.5 text-white hover:text-orange-200 hover:bg-white/10 rounded-lg transition-colors"
@@ -98,24 +98,24 @@ export default function AdminSidebar({
                         <i className="ri-close-line text-xl"></i>
                     </button>
                 </div>
-            </div>
-
+      </div>
+      
             <nav className="flex-1 overflow-y-auto py-3 sm:py-4">
                 <div className="space-y-1 px-2 sm:px-3">
-                    {menuItems.map((item) => (
-                        <button
-                            key={item.id}
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
                             onClick={() => handleTabClick(item.id)}
                             className={`w-full flex items-center px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg cursor-pointer transition-all duration-200 ${
-                                activeTab === item.id
+                activeTab === item.id
                                     ? `bg-orange-100 text-orange-900 ${
                                           direction === "rtl"
                                               ? "border-r-4 border-r-orange-500"
                                               : "border-l-4 border-l-orange-500"
                                       }`
                                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                            }`}
-                        >
+              }`}
+            >
                             <div
                                 className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0 ${
                                     direction === "rtl"
@@ -126,7 +126,7 @@ export default function AdminSidebar({
                                 <i
                                     className={`${item.icon} text-base sm:text-lg`}
                                 ></i>
-                            </div>
+              </div>
                             <span
                                 className={`flex-1 truncate ${
                                     direction === "rtl"
@@ -136,16 +136,16 @@ export default function AdminSidebar({
                             >
                                 {item.label}
                             </span>
-                        </button>
-                    ))}
-                </div>
-            </nav>
+            </button>
+          ))}
+        </div>
+      </nav>
 
             <div className="border-t border-gray-200 p-2 sm:p-3">
-                <button
-                    onClick={handleSignOut}
+        <button
+          onClick={handleSignOut}
                     className="w-full flex items-center px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 cursor-pointer"
-                >
+        >
                     <div
                         className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center flex-shrink-0 ${
                             direction === "rtl"
@@ -154,7 +154,7 @@ export default function AdminSidebar({
                         }`}
                     >
                         <i className="ri-logout-box-line text-base sm:text-lg"></i>
-                    </div>
+          </div>
                     <span
                         className={`flex-1 truncate ${
                             direction === "rtl" ? "text-right" : "text-left"
@@ -162,8 +162,8 @@ export default function AdminSidebar({
                     >
                         تسجيل الخروج
                     </span>
-                </button>
-            </div>
-        </div>
+        </button>
+      </div>
+    </div>
     );
 }

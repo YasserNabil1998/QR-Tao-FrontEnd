@@ -454,7 +454,7 @@ export default function PurchaseManagement() {
 
             {/* إحصائيات المشتريات */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                         <div className="p-2.5 sm:p-3 rounded-full bg-blue-100 text-blue-600 flex-shrink-0">
                             <i className="ri-shopping-cart-line text-lg sm:text-xl"></i>
@@ -463,7 +463,7 @@ export default function PurchaseManagement() {
                             <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 إجمالي المشتريات
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {purchases
                                 .reduce(
                                     (total, purchase) =>
@@ -476,7 +476,7 @@ export default function PurchaseManagement() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                         <div className="p-2.5 sm:p-3 rounded-full bg-yellow-100 text-yellow-600 flex-shrink-0">
                             <i className="ri-time-line text-lg sm:text-xl"></i>
@@ -485,7 +485,7 @@ export default function PurchaseManagement() {
                             <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 قيمة المشتريات المنتظرة
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {purchases
                                 .filter((p) => p.status === "pending")
                                 .reduce(
@@ -499,7 +499,7 @@ export default function PurchaseManagement() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 sm:p-5 rounded-lg sm:rounded-xl shadow">
+                <div className="bg-white p-4 sm:p-5 lg:p-5 xl:p-6 rounded-lg sm:rounded-xl shadow">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                         <div className="p-2.5 sm:p-3 rounded-full bg-purple-100 text-purple-600 flex-shrink-0">
                             <i className="ri-file-list-3-line text-lg sm:text-xl"></i>
@@ -508,7 +508,7 @@ export default function PurchaseManagement() {
                             <p className="text-xs sm:text-sm font-medium text-gray-600 font-tajawal">
                                 إجمالي الضريبة
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {purchases
                                 .reduce(
                                     (total, purchase) =>

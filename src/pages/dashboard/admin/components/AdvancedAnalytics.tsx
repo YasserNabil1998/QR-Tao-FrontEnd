@@ -315,7 +315,7 @@ export default function AdvancedAnalytics({
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الإيرادات
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {timeRange === "day"
                                     ? analytics.revenue.daily
                                           .reduce((a, b) => a + b, 0)
@@ -350,7 +350,7 @@ export default function AdvancedAnalytics({
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 إجمالي الطلبات
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {analytics.orders.total}
                             </p>
                             <p className="text-xs sm:text-sm text-green-600 mt-1 flex items-center font-tajawal">
@@ -370,7 +370,7 @@ export default function AdvancedAnalytics({
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 العملاء الجدد
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {analytics.customers.new}
                             </p>
                             <p className="text-xs sm:text-sm text-green-600 mt-1 flex items-center font-tajawal">
@@ -390,7 +390,7 @@ export default function AdvancedAnalytics({
                             <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-600 font-tajawal line-clamp-2 leading-tight">
                                 معدل الإكمال
                             </p>
-                            <p className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 font-cairo mt-1">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl font-bold text-gray-900 font-cairo mt-1">
                                 {(
                                     (analytics.orders.completed /
                                         analytics.orders.total) *
